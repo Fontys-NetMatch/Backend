@@ -1,8 +1,12 @@
-using Microsoft.AspNetCore.Authentication.BearerToken;
+using System.Text;
+using LinqToDB.Data;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using TravelPlanner;
 using TravelPlanner.API;
-using TravelPlanner.API.Infrastructure;
+using TravelPlanner.API.Controllers;
+using TravelPlanner.API.Database;
+using TravelPlanner.API.Database.MigrationsManager;
 using TravelPlanner.API.Infrastructure.Middleware;
 using TravelPlanner.Domain.Interfaces;
 using TravelPlanner.Domain.Models;
@@ -23,7 +27,6 @@ if (devMode)
 builder.Configuration.Sources.Clear();
 builder.Configuration.AddJsonFile(devMode ? "appsettings.Development.json" : "appsettings.json", false, true);
 
-// Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
@@ -35,7 +38,7 @@ builder.Services.AddSwaggerGen(options =>
         Description = "The api for the TravelPlanner application",
     });
     // TODO: Implement JWT Bearer token security
-    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    options.AddSecurityDefinition("JTW", new OpenApiSecurityScheme
     {
         Description = @"JWT Authorization header using the Bearer scheme.<br> 
                       Enter 'Bearer' [space] and then your token in the text input below.<br>
@@ -72,33 +75,40 @@ var allowedOrigins = builder.Configuration.GetValue<string>("AllowedOrigins");
 if (appUrl == null) throw new ArgumentNullException(appUrl);
 if (allowedOrigins == null) throw new ArgumentNullException(allowedOrigins);
 
-DbConfig dalDatabaseConfig = new();
-builder.Configuration.GetSection("Database").Bind(dalDatabaseConfig);
+DbConfig dbConfig = new();
+builder.Configuration.GetSection("Database").Bind(dbConfig);
 
 // Setup dependency injection
-var config = new AppConfig(appUrl, allowedOrigins, dalDatabaseConfig);
+var config = new AppConfig(appUrl, allowedOrigins, dbConfig);
 builder.Services.Add(new ServiceDescriptor(typeof(IAppConfig), config));
+
+// Setup database
+DataConnection.DefaultSettings = new DbSettings(config);
+var migrationManager = new MigrationManager();
+migrationManager.Init();
+
+// Register services
+builder.Services.AddTransient<DbContext>();
+builder.Services.AddTransient<StatusController>();
+builder.Services.AddTransient<AuthController>();
 
 // Auth
 builder.Services.AddAuthorization();
-builder.Services.AddAuthentication(option =>
-{
-    option.DefaultAuthenticateScheme = BearerTokenDefaults.AuthenticationScheme;
-    option.DefaultChallengeScheme = BearerTokenDefaults.AuthenticationScheme;
-}).AddBearerToken(options =>
-{
-    options.Events = new BearerTokenEvents
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
     {
-        OnMessageReceived = context =>
+        options.TokenValidationParameters = new TokenValidationParameters
         {
-            JwtTokenValidator picturaApiKeyValidator = new(
-                //context.HttpContext.RequestServices.GetRequiredService<IApiKeyContainer>(),
-                //context.HttpContext.RequestServices.GetRequiredService<IUserContainer>()
-            );
-            return picturaApiKeyValidator.VerifyToken(context);
-        }
-    };
-});
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = "yourdomain.com",
+            ValidAudience = "yourdomain.com",
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("your_super_secret_key"))
+        };
+    });
+
 builder.Services.AddCors();
 
 var app = builder.Build();

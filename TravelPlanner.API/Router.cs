@@ -8,6 +8,7 @@ public class Router
     public Router(WebApplication app)
     {
         StatusController.Register(app);
+        AuthController.Register(app);
     }
 
 }

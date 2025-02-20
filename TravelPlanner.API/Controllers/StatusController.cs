@@ -1,17 +1,23 @@
-﻿namespace TravelPlanner.API.Controllers;
+﻿using Microsoft.AspNetCore.Identity.Data;
+using Microsoft.AspNetCore.Mvc;
 
-public abstract class StatusController
+namespace TravelPlanner.API.Controllers;
+
+public class StatusController
 {
 
     public static void Register(WebApplication app)
     {
-        app.MapGet("/status", Status)
+        app.MapGet("/status", (
+                HttpContext context,
+                [FromServices] StatusController controller
+            ) => controller.Status(context))
             .WithName("Get Api Status")
             .WithDescription("Get the current status of the API")
             .WithOpenApi();
     }
 
-    private static object Status(HttpContext? context)
+    private object Status(HttpContext? context)
     {
         return new
         {
