@@ -1,5 +1,6 @@
 ﻿using LinqToDB;
-using TravelPlanner.API.Database.MigrationsManager;
+using TravelPlanner.DB;
+using TravelPlanner.DB.MigrationsManager;
 using TravelPlanner.Domain.Models.Entities;
 
 namespace TravelPlanner.API.Database.Migrations;

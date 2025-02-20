@@ -9,9 +9,9 @@ namespace TravelPlanner.API.Controllers;
 public class AuthController
 {
 
-    private readonly DbContext _db;
+    private readonly DbManager _db;
 
-    public AuthController(DbContext db)
+    public AuthController(DbManager db)
     {
         _db = db;
     }

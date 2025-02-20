@@ -6,8 +6,9 @@ using Microsoft.OpenApi.Models;
 using TravelPlanner.API;
 using TravelPlanner.API.Controllers;
 using TravelPlanner.API.Database;
-using TravelPlanner.API.Database.MigrationsManager;
 using TravelPlanner.API.Infrastructure.Middleware;
+using TravelPlanner.DB;
+using TravelPlanner.DB.MigrationsManager;
 using TravelPlanner.Domain.Interfaces;
 using TravelPlanner.Domain.Models;
 
@@ -76,7 +77,7 @@ if (appUrl == null) throw new ArgumentNullException(appUrl);
 if (allowedOrigins == null) throw new ArgumentNullException(allowedOrigins);
 
 DbConfig dbConfig = new();
-builder.Configuration.GetSection("Database").Bind(dbConfig);
+builder.Configuration.GetSection("DbManager").Bind(dbConfig);
 
 // Setup dependency injection
 var config = new AppConfig(appUrl, allowedOrigins, dbConfig);
@@ -89,6 +90,7 @@ migrationManager.Init();
 
 // Register services
 builder.Services.AddTransient<DbContext>();
+builder.Services.AddTransient<DbManager>();
 builder.Services.AddTransient<StatusController>();
 builder.Services.AddTransient<AuthController>();
 

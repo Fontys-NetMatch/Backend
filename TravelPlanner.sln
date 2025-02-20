@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TravelPlanner.BLL", "Travel
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TravelPlanner.Domain", "TravelPlanner.Domain\TravelPlanner.Domain.csproj", "{22F1905D-13E8-4716-9D91-3AF711D1F10E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TravelPlanner.DB", "TravelPlanner.DB\TravelPlanner.DB.csproj", "{1AA3C2A9-3434-46E1-B554-A82E5254CAB9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,5 +31,9 @@ Global
 		{22F1905D-13E8-4716-9D91-3AF711D1F10E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{22F1905D-13E8-4716-9D91-3AF711D1F10E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{22F1905D-13E8-4716-9D91-3AF711D1F10E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1AA3C2A9-3434-46E1-B554-A82E5254CAB9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1AA3C2A9-3434-46E1-B554-A82E5254CAB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1AA3C2A9-3434-46E1-B554-A82E5254CAB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1AA3C2A9-3434-46E1-B554-A82E5254CAB9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

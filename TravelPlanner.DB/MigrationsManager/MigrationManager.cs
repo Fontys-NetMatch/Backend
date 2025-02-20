@@ -1,6 +1,6 @@
 ﻿using LinqToDB;
 
-namespace TravelPlanner.API.Database.MigrationsManager;
+namespace TravelPlanner.DB.MigrationsManager;
 
 public class MigrationManager
 {

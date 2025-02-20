@@ -1,7 +1,6 @@
-﻿using System.ComponentModel;
-using LinqToDB.Mapping;
+﻿using LinqToDB.Mapping;
 
-namespace TravelPlanner.API.Database;
+namespace TravelPlanner.DB.MigrationsManager;
 
 [Table("Migrations")]
 public class MigrationsTable

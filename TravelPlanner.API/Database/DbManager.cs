@@ -1,13 +1,11 @@
 ﻿using LinqToDB;
-using LinqToDB.Data;
+using TravelPlanner.DB;
 using TravelPlanner.Domain.Models.Entities;
 
 namespace TravelPlanner.API.Database;
 
-public class DbContext : DataConnection
+public class DbManager : DbContext
 {
-
-    public DbContext() : base("TravelAppDbConfig") { }
 
     public ITable<User> Users => this.GetTable<User>();
 

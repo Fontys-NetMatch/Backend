@@ -4,11 +4,14 @@
         <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <RootNamespace>TravelPlanner.DAL</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\TravelPlanner.DB\TravelPlanner.DB.csproj" />
+      <PackageReference Include="linq2db" Version="5.4.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\TravelPlanner.Domain\TravelPlanner.Domain.csproj" />
     </ItemGroup>
 
 </Project>

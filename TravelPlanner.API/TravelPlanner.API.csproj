@@ -29,8 +29,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Models\Request\Auth\" />
-      <Folder Include="Models\Request\User\" />
+      <Folder Include="HttpModels\Request\Auth\" />
+      <Folder Include="HttpModels\Request\User\" />
     </ItemGroup>
 
 </Project>
