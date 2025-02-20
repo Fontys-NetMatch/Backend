@@ -11,6 +11,6 @@ public class RequiresTokenAttribute : Attribute, IAllowAnonymous
     /// >
     public override string ToString()
     {
-        return "RequiresToken";
+        return "RequiresJwtToken";
     }
 }

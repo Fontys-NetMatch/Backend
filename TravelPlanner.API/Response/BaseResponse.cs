@@ -2,7 +2,7 @@ using System.Text;
 using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
 
-namespace TravelPlanner.API.Models.Response;
+namespace TravelPlanner.API.Response;
 
 public record BaseResponse
 {

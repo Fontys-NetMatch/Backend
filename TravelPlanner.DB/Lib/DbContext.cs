@@ -1,6 +1,6 @@
 ﻿using LinqToDB.Data;
 
-namespace TravelPlanner.DB;
+namespace TravelPlanner.DB.Lib;
 
 public class DbContext : DataConnection
 {

@@ -11,6 +11,6 @@ public class OptionalTokenAttribute : Attribute, IAllowAnonymous
     /// >
     public override string ToString()
     {
-        return "OptionalToken";
+        return "OptionalJwtToken";
     }
 }

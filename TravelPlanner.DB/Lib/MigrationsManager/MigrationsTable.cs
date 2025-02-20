@@ -1,6 +1,6 @@
 ﻿using LinqToDB.Mapping;
 
-namespace TravelPlanner.DB.MigrationsManager;
+namespace TravelPlanner.DB.Lib.MigrationsManager;
 
 [Table("Migrations")]
 public class MigrationsTable

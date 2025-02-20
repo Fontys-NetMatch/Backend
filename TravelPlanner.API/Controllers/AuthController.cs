@@ -1,88 +1,115 @@
-﻿using LinqToDB;
-using Microsoft.AspNetCore.Identity.Data;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 using Microsoft.AspNetCore.Mvc;
-using TravelPlanner.API.Database;
+using Microsoft.IdentityModel.Tokens;
+using TravelPlanner.API.Response.Error;
+using TravelPlanner.API.Response.Success;
+using TravelPlanner.Domain.Exceptions;
+using TravelPlanner.Domain.Interfaces;
+using TravelPlanner.Domain.Interfaces.BLL;
 using TravelPlanner.Domain.Models.Entities;
+using TravelPlanner.Domain.Models.Request.Auth;
+using InvalidCredentialsException = TravelPlanner.Domain.Exceptions.InvalidCredentialsException;
 
 namespace TravelPlanner.API.Controllers;
 
 public class AuthController
 {
 
-    private readonly DbManager _db;
+    private readonly IAuthContainer _container;
+    private readonly IAppConfig _config;
 
-    public AuthController(DbManager db)
+    public AuthController(IAuthContainer container, IAppConfig config)
     {
-        _db = db;
+        _container = container;
+        _config = config;
     }
 
     public static void Register(WebApplication app)
     {
         app.MapPost("/auth/login", (
                 HttpContext context,
-                [FromBody] LoginRequest request,
+                [FromBody] LoginData data,
                 [FromServices] AuthController controller
-            ) => controller.LoginRequest(context, request))
+            ) => controller.LoginRequest(context, data))
             .WithName("Login")
             .WithDescription("Login using your credentials")
             .WithOpenApi();
         app.MapPost("/auth/register", (
                 HttpContext context,
-                [FromBody] RegisterRequest request,
+                [FromBody] RegisterData data,
                 [FromServices] AuthController controller
-            ) => controller.RegisterRequest(context, request))
+            ) => controller.RegisterRequest(context, data))
             .WithName("Register")
             .WithDescription("Register a new user")
             .WithOpenApi();
     }
 
-    private object LoginRequest(HttpContext? context, LoginRequest request)
+    private object LoginRequest(HttpContext? context, LoginData data)
     {
-        var user = _db.Users.FirstOrDefaultAsync(u => u.Email == request.Email && u.Password == request.Password).Result;
-
-        if (user == null)
+        try
         {
-            return new
+            var user = _container.LoginUser(data);
+
+            var response = new SuccessResponse("User logged in successfully");
+            response.Data.Add("User", new
             {
-                Success = false,
-                Message = "Invalid email or password"
-            };
+                user.Id,
+                user.Firstname,
+                user.Lastname,
+                user.Email,
+                user.Phone
+            });
+            response.Data.Add("JwtToken", GenerateJwtToken(user, data.Remember));
+            return response;
         }
-
-        return new
+        catch (InvalidCredentialsException)
         {
-            Success = true,
-            Message = "Login successful",
-            Token = "",
-        };
+            return new InvalidCredentialsResponse();
+        }
+        catch (BllException e)
+        {
+            return new ErrorResponse(e.Message);
+        }
     }
 
-    private object RegisterRequest(HttpContext? context, RegisterRequest request)
+    private object RegisterRequest(HttpContext? context, RegisterData data)
     {
-        var user = _db.Users.FirstOrDefaultAsync(u => u.Email == request.Email).Result;
-
-        if (user != null)
+        try
         {
-            return new
-            {
-                Success = false,
-                Message = "Email already used by another user"
-            };
+            _container.RegisterUser(data);
+            return new SuccessResponse("User registered successfully");
         }
-
-        _db.Insert(new User
+        catch (BllException e)
         {
-            Firstname = "",
-            Lastname = "",
-            Email = request.Email,
-            Password = request.Password
-        });
+            return new ErrorResponse(e.Message);
+        }
+    }
 
-        return new
+    private string GenerateJwtToken(User user, bool remember = false)
+    {
+        var claims = new[]
         {
-            Success = true,
-            Message = "User registered successfully"
+            new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+            new Claim(JwtRegisteredClaimNames.GivenName, user.Firstname),
+            new Claim(JwtRegisteredClaimNames.FamilyName, user.Lastname),
+            new Claim(JwtRegisteredClaimNames.Email, user.Email),
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };
+
+        var secretBytes = Encoding.UTF8.GetBytes(_config.GetJwtConfig().Secret);
+        var key = new SymmetricSecurityKey(secretBytes);
+        var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+        var token = new JwtSecurityToken(
+            issuer: _config.GetJwtConfig().Issuer,
+            audience: _config.GetJwtConfig().Audience,
+            claims: claims,
+            expires: remember ? DateTime.Now.AddMonths(1) : DateTime.Now.AddHours(1),
+            signingCredentials: credentials);
+
+        return new JwtSecurityTokenHandler().WriteToken(token);
     }
 
 }

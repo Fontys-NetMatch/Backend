@@ -1,4 +1,4 @@
-namespace TravelPlanner.API.Models.Response.Error;
+namespace TravelPlanner.API.Response.Error;
 
 public record UnauthorizedResponse : BaseResponse
 {

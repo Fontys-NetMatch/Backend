@@ -1,8 +1,8 @@
 ﻿using LinqToDB;
-using TravelPlanner.DB;
+using TravelPlanner.DB.Lib;
 using TravelPlanner.Domain.Models.Entities;
 
-namespace TravelPlanner.API.Database;
+namespace TravelPlanner.DB;
 
 public class DbManager : DbContext
 {

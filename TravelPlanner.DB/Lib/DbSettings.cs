@@ -2,7 +2,7 @@
 using LinqToDB.Configuration;
 using TravelPlanner.Domain.Interfaces;
 
-namespace TravelPlanner.DB;
+namespace TravelPlanner.DB.Lib;
 
 public class DbSettings : ILinqToDBSettings
 {

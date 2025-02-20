@@ -1,4 +1,4 @@
-﻿namespace TravelPlanner.DB.MigrationsManager;
+﻿namespace TravelPlanner.DB.Lib.MigrationsManager;
 
 public interface IMigration
 {

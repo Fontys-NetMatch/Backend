@@ -5,18 +5,18 @@ namespace TravelPlanner.API.Infrastructure.Extensions;
 
 public static class CustomRouteAuthExtensions
 {
-    private static readonly IAllowAnonymous _requiresToken = new RequiresTokenAttribute();
-    private static readonly IAllowAnonymous _optionalToken = new OptionalTokenAttribute();
+    private static readonly IAllowAnonymous _requiresJtwToken = new RequiresTokenAttribute();
+    private static readonly IAllowAnonymous _optionalJtwToken = new OptionalTokenAttribute();
 
-    public static TBuilder RequiresToken<TBuilder>(this TBuilder builder) where TBuilder : IEndpointConventionBuilder
+    public static TBuilder RequiresJwtToken<TBuilder>(this TBuilder builder) where TBuilder : IEndpointConventionBuilder
     {
-        builder.Add(endpointBuilder => { endpointBuilder.Metadata.Add(_requiresToken); });
+        builder.Add(endpointBuilder => { endpointBuilder.Metadata.Add(_requiresJtwToken); });
         return builder;
     }
 
-    public static TBuilder OptionalToken<TBuilder>(this TBuilder builder) where TBuilder : IEndpointConventionBuilder
+    public static TBuilder OptionalJwtToken<TBuilder>(this TBuilder builder) where TBuilder : IEndpointConventionBuilder
     {
-        builder.Add(endpointBuilder => { endpointBuilder.Metadata.Add(_optionalToken); });
+        builder.Add(endpointBuilder => { endpointBuilder.Metadata.Add(_optionalJtwToken); });
         return builder;
     }
 }

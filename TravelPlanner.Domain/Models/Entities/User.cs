@@ -1,4 +1,5 @@
-﻿using LinqToDB;
+﻿using System.Text.Json.Serialization;
+using LinqToDB;
 using LinqToDB.Mapping;
 
 namespace TravelPlanner.Domain.Models.Entities;
@@ -22,7 +23,7 @@ public record User
     [Column(Length = 255), Nullable]
     public string? Phone { get; set; }
 
-    [Column(DataType = DataType.Binary), NotNull]
+    [Column(DataType = DataType.Text), NotNull]
     public required string Password { get; set; }
 
 }

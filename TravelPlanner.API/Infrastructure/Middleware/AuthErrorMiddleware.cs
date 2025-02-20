@@ -1,4 +1,4 @@
-using TravelPlanner.API.Models.Response.Error;
+using TravelPlanner.API.Response.Error;
 
 namespace TravelPlanner.API.Infrastructure.Middleware;
 

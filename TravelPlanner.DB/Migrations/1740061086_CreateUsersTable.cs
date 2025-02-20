@@ -1,9 +1,10 @@
 ﻿using LinqToDB;
 using TravelPlanner.DB;
-using TravelPlanner.DB.MigrationsManager;
+using TravelPlanner.DB.Lib;
+using TravelPlanner.DB.Lib.MigrationsManager;
 using TravelPlanner.Domain.Models.Entities;
 
-namespace TravelPlanner.API.Database.Migrations;
+namespace TravelPlanner.DB.Migrations;
 
 public class CreateUsersTable: IMigration
 {

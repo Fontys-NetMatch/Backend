@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity.Data;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using TravelPlanner.API.Infrastructure.Extensions;
 
 namespace TravelPlanner.API.Controllers;
 
