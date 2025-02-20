@@ -1,0 +1,6 @@
+﻿services:
+  travelplanner:
+    image: travelplanner
+    build:
+      context: .
+      dockerfile: TravelPlanner/Dockerfile
