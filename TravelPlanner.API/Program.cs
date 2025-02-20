@@ -1,0 +1,123 @@
+using Microsoft.AspNetCore.Authentication.BearerToken;
+using Microsoft.OpenApi.Models;
+using TravelPlanner;
+using TravelPlanner.API;
+using TravelPlanner.API.Infrastructure;
+using TravelPlanner.API.Infrastructure.Middleware;
+using TravelPlanner.Domain.Interfaces;
+using TravelPlanner.Domain.Models;
+
+var builder = WebApplication.CreateBuilder(args);
+// dev mode is enabled if the appsettings.Development.json file exists
+var devMode = File.Exists("appsettings.Development.json");
+
+if (devMode)
+{
+    Console.ForegroundColor = ConsoleColor.Green;
+    Console.WriteLine("-------------------------------------");
+    Console.WriteLine("   App Running In Development Mode   ");
+    Console.WriteLine("-------------------------------------");
+    Console.ForegroundColor = ConsoleColor.White;
+}
+
+builder.Configuration.Sources.Clear();
+builder.Configuration.AddJsonFile(devMode ? "appsettings.Development.json" : "appsettings.json", false, true);
+
+// Add services to the container.
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Version = "v1",
+        Title = "NetMatch - TravelPlanner API",
+        Description = "The api for the TravelPlanner application",
+    });
+    // TODO: Implement JWT Bearer token security
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Description = @"JWT Authorization header using the Bearer scheme.<br> 
+                      Enter 'Bearer' [space] and then your token in the text input below.<br>
+                      Example: 'Bearer r348h9hdqfd8gfd'",
+        Name = "Authorization",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer"
+    });
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                },
+                Scheme = "oauth2",
+                Name = "Bearer",
+                In = ParameterLocation.Header
+            },
+            new List<string>()
+        }
+    });
+});
+
+// Load Config
+// Load configuration
+var appUrl = builder.Configuration.GetValue<string>("AppUrl");
+var allowedOrigins = builder.Configuration.GetValue<string>("AllowedOrigins");
+
+if (appUrl == null) throw new ArgumentNullException(appUrl);
+if (allowedOrigins == null) throw new ArgumentNullException(allowedOrigins);
+
+DbConfig dalDatabaseConfig = new();
+builder.Configuration.GetSection("Database").Bind(dalDatabaseConfig);
+
+// Setup dependency injection
+var config = new AppConfig(appUrl, allowedOrigins, dalDatabaseConfig);
+builder.Services.Add(new ServiceDescriptor(typeof(IAppConfig), config));
+
+// Auth
+builder.Services.AddAuthorization();
+builder.Services.AddAuthentication(option =>
+{
+    option.DefaultAuthenticateScheme = BearerTokenDefaults.AuthenticationScheme;
+    option.DefaultChallengeScheme = BearerTokenDefaults.AuthenticationScheme;
+}).AddBearerToken(options =>
+{
+    options.Events = new BearerTokenEvents
+    {
+        OnMessageReceived = context =>
+        {
+            JwtTokenValidator picturaApiKeyValidator = new(
+                //context.HttpContext.RequestServices.GetRequiredService<IApiKeyContainer>(),
+                //context.HttpContext.RequestServices.GetRequiredService<IUserContainer>()
+            );
+            return picturaApiKeyValidator.VerifyToken(context);
+        }
+    };
+});
+builder.Services.AddCors();
+
+var app = builder.Build();
+
+// Configure the HTTP request pipeline.
+app.UseSwagger();
+app.UseSwaggerUI();
+
+app.UseCors(policyBuilder => policyBuilder
+    .WithOrigins(config.GetAllowedOrigins())
+    .AllowAnyMethod()
+    .AllowAnyHeader());
+app.UseHttpsRedirection();
+app.UseAuthorization();
+app.UseAuthentication();
+
+app.UseMiddleware<AuthErrorMiddleware>();
+app.UseHttpsRedirection();
+
+_ = new Router(app);
+
+app.Run();

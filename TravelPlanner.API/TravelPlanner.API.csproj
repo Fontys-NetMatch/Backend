@@ -18,4 +18,13 @@
       </Content>
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\TravelPlanner.Domain\TravelPlanner.Domain.csproj" />
+      <ProjectReference Include="..\TravelPlanner.BLL\TravelPlanner.BLL.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Models\Request\" />
+    </ItemGroup>
+
 </Project>
