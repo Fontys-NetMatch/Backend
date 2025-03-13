@@ -18,9 +18,7 @@ public class CreateQuotationsTable : IMigration
             ALTER TABLE Quotations
             ADD CONSTRAINT FK_Quotations_Customers
             FOREIGN KEY (CustomerId)
-            REFERENCES Customers(Id)
-            ON DELETE CASCADE
-            ON UPDATE CASCADE";
+            REFERENCES Customers(Id)";
         command.ExecuteNonQuery();
 
     }
