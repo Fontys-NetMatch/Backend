@@ -95,7 +95,7 @@ public class AuthController
         {
             new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
             new Claim(JwtRegisteredClaimNames.GivenName, user.Firstname),
-            new Claim(JwtRegisteredClaimNames.FamilyName, user.Lastname),
+            new Claim(JwtRegisteredClaimNames.FamilyName, user.Surname),
             new Claim(JwtRegisteredClaimNames.Email, user.Email),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };

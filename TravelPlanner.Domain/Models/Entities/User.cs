@@ -15,7 +15,7 @@ public record User
     public required string Firstname { get; set; }
 
     [Column(Length = 255), NotNull]
-    public required string Lastname { get; set; }
+    public required string Surname { get; set; }
 
     [Column(Length = 255), NotNull]
     public required string Email { get; set; }
@@ -25,5 +25,8 @@ public record User
 
     [Column(DataType = DataType.Text), NotNull]
     public required string Password { get; set; }
+
+    [Column, NotNull]
+    public required bool IsActive { get; set; }
 
 }
