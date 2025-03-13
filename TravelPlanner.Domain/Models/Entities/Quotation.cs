@@ -1,6 +1,4 @@
-﻿using LinqToDB;
-using LinqToDB.Mapping;
-
+﻿using LinqToDB.Mapping;
 
 namespace TravelPlanner.Domain.Models.Entities
 {
@@ -17,6 +15,9 @@ namespace TravelPlanner.Domain.Models.Entities
         public required bool IsActive { get; set; }
 
         [Column, NotNull]
+        public required int CustomerId { get; set; }
+
+        [Association(ThisKey = nameof(CustomerId), OtherKey = nameof(Customer.Id))]
         public required Customer Customer { get; set; }
     }
 }
