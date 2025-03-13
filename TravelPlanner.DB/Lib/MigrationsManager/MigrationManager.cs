@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using LinqToDB;
+using TravelPlanner.Domain.Models;
 
 namespace TravelPlanner.DB.Lib.MigrationsManager;
 
@@ -8,7 +9,7 @@ public class MigrationManager
 
     private readonly DbContext _dbContext = new();
 
-    public void Init()
+    public void Init(AppConfig config)
     {
         Console.WriteLine("Running Migrations");
 
@@ -29,12 +30,13 @@ public class MigrationManager
         {
             // Check if migration is already applied
             var migrationName = migration.Name;
-            var forceMigration = migration.GetCustomAttribute<ForceMigration>() != null;
+            var forceOnDev = migration.GetCustomAttribute<ForceOnDev>() != null;
+            var forceMigration = forceOnDev && config.IsDevMode();
 
             if (!forceMigration)
             {
                 var applied = table.FirstOrDefault(m => m.ClassName == migrationName);
-                if (applied != null && !forceMigration)
+                if (applied != null)
                 {
                     Console.WriteLine($"Migration {migrationName} already applied");
                     continue;

@@ -1,10 +1,10 @@
 ﻿namespace TravelPlanner.DB.Lib.MigrationsManager;
 
 [AttributeUsage(AttributeTargets.Class)]
-public class ForceMigration : Attribute
+public class ForceOnDev : Attribute
 {
 
-    public ForceMigration()
+    public ForceOnDev()
     {
 
     }

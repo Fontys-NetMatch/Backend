@@ -8,7 +8,7 @@ using TravelPlanner.Domain.Models.Entities;
 
 namespace TravelPlanner.DB.Migrations;
 
-[ForceMigration]
+[ForceOnDev]
 public class ClearDb: IMigration
 {
 

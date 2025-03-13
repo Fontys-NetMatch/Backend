@@ -9,13 +9,15 @@ public class AppConfig : IAppConfig
     private readonly string[] _allowedOrigins;
     private readonly DbConfig _dbConfig;
     private readonly JwtConfig _jwtConfig;
+    private readonly bool _isDevMode;
 
-    public AppConfig(string appUrl, string allowedOrigins, DbConfig dbConfig, JwtConfig jwtConfig)
+    public AppConfig(string appUrl, string allowedOrigins, DbConfig dbConfig, JwtConfig jwtConfig, bool devMode)
     {
         _appUrl = appUrl;
         _allowedOrigins = allowedOrigins.Split(",");
         _dbConfig = dbConfig;
         _jwtConfig = jwtConfig;
+        _isDevMode = devMode;
     }
 
     public string GetAppUrl()
@@ -36,6 +38,11 @@ public class AppConfig : IAppConfig
     public JwtConfig GetJwtConfig()
     {
         return _jwtConfig;
+    }
+
+    public bool IsDevMode()
+    {
+        return _isDevMode;
     }
 
 }
