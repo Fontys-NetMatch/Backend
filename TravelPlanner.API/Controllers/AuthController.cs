@@ -11,6 +11,8 @@ using TravelPlanner.Domain.Interfaces.BLL;
 using TravelPlanner.Domain.Models.Entities;
 using TravelPlanner.Domain.Models.Request.Auth;
 using InvalidCredentialsException = TravelPlanner.Domain.Exceptions.InvalidCredentialsException;
+using TravelPlanner.API.Response;
+using TravelPlanner.API.Response.DataObjects;
 
 namespace TravelPlanner.API.Controllers;
 
@@ -35,6 +37,9 @@ public class AuthController
             ) => controller.LoginRequest(context, data))
             .WithName("Login")
             .WithDescription("Login using your credentials")
+            .Produces<LoginResponse>()
+            .Produces<InvalidCredentialsResponse>(StatusCodes.Status400BadRequest)
+            .Produces<ErrorResponse>(StatusCodes.Status500InternalServerError)
             .WithOpenApi();
         app.MapPost("/auth/register", (
                 HttpContext context,
@@ -43,25 +48,22 @@ public class AuthController
             ) => controller.RegisterRequest(context, data))
             .WithName("Register")
             .WithDescription("Register a new user")
+            .Produces<SuccessResponse>()
+            .Produces<ErrorResponse>(StatusCodes.Status500InternalServerError)
             .WithOpenApi();
     }
 
-    private object LoginRequest(HttpContext? context, LoginData data)
+    private BaseResponse LoginRequest(HttpContext? context, LoginData data)
     {
         try
         {
             var user = _container.LoginUser(data);
+            var jwtToken = GenerateJwtToken(user, data.Remember);
 
-            var response = new SuccessResponse("User logged in successfully");
-            response.Data.Add("User", new
-            {
-                user.Id,
-                user.Firstname,
-                user.Lastname,
-                user.Email,
-                user.Phone
-            });
-            response.Data.Add("JwtToken", GenerateJwtToken(user, data.Remember));
+            var response = new LoginResponse(
+                "User logged in successfully",
+                new LoginDataObj(jwtToken, user)
+            );
             return response;
         }
         catch (InvalidCredentialsException)
@@ -74,7 +76,7 @@ public class AuthController
         }
     }
 
-    private object RegisterRequest(HttpContext? context, RegisterData data)
+    private BaseResponse RegisterRequest(HttpContext? context, RegisterData data)
     {
         try
         {
