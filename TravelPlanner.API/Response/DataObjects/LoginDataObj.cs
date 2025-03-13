@@ -9,7 +9,7 @@ public class LoginDataObj
 
     public int Id { get; set; }
     public string Firstname { get; set; }
-    public string Lastname { get; set; }
+    public string Surname { get; set; }
     public string Email { get; set; }
     public string? Phone { get; set; }
 
@@ -19,7 +19,7 @@ public class LoginDataObj
 
         Id = user.Id;
         Firstname = user.Firstname;
-        Lastname = user.Lastname;
+        Surname = user.Surname;
         Email = user.Email;
         Phone = user.Phone;
     }
