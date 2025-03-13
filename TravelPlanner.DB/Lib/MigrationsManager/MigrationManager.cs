@@ -16,7 +16,7 @@ public class MigrationManager
 
         var migrations = typeof(MigrationManager).Assembly.GetTypes()
             .Where(t => t is { Namespace: "TravelPlanner.DB.Migrations", IsClass: true });
-        migrations = migrations.OrderByDescending(t => t.Name.Split('_')[0]).ToList();
+        migrations = migrations.OrderBy(t => t.Name.Split('_')[0]).ToList();
 
         if (!migrations.Any())
         {
