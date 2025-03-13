@@ -1,4 +1,5 @@
-﻿using LinqToDB;
+﻿using System.Reflection;
+using LinqToDB;
 
 namespace TravelPlanner.DB.Lib.MigrationsManager;
 
@@ -28,11 +29,16 @@ public class MigrationManager
         {
             // Check if migration is already applied
             var migrationName = migration.Name;
-            var applied = table.FirstOrDefault(m => m.ClassName == migrationName);
-            if (applied != null)
+            var forceMigration = migration.GetCustomAttribute<ForceMigration>() != null;
+
+            if (!forceMigration)
             {
-                Console.WriteLine($"Migration {migrationName} already applied");
-                continue;
+                var applied = table.FirstOrDefault(m => m.ClassName == migrationName);
+                if (applied != null && !forceMigration)
+                {
+                    Console.WriteLine($"Migration {migrationName} already applied");
+                    continue;
+                }
             }
 
             // Apply migration
@@ -52,7 +58,9 @@ public class MigrationManager
             }
             var instance = tempInstance as IMigration;
 
-            Console.WriteLine($"Applying migration {migrationName}");
+            Console.WriteLine(forceMigration
+                ? $"(Forced)Applying migration {migrationName}"
+                : $"Applying migration {migrationName}");
 
             // Run migration
             instance?.Up(_dbContext);
