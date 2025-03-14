@@ -6,7 +6,7 @@ namespace TravelPlanner.Domain.Models.Entities;
 public record Quotation
 {
     [Column, PrimaryKey, Identity]
-    public int Id { get; set; }
+    public int ID { get; set; }
 
     [Column(Length = 255), NotNull]
     public required string Name { get; set; }
@@ -15,9 +15,9 @@ public record Quotation
     public required bool IsActive { get; set; }
 
     [Column, NotNull]
-    public required int CustomerId { get; set; }
+    public required int Customer_ID { get; set; }
 
-    [Association(ThisKey = nameof(CustomerId), OtherKey = nameof(Customer.Id), CanBeNull = false)]
+    [Association(ThisKey = nameof(Customer_ID), OtherKey = nameof(Customer.ID), CanBeNull = false)]
     public required Customer Customer { get; set; }
 
 }

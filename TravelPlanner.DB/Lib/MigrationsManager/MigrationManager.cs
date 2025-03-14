@@ -17,14 +17,16 @@ public class MigrationManager
         var table = _dbContext.GetTable<MigrationsTable>();
 
         var migrations = typeof(MigrationManager).Assembly.GetTypes()
-            .Where(t => t is { Namespace: "TravelPlanner.DB.Migrations", IsClass: true });
-        migrations = migrations.OrderBy(t => t.Name.Split('_')[0]).ToList();
+            .Where(t => t is { Namespace: "TravelPlanner.DB.Migrations", IsClass: true })
+            .ToList();
 
-        if (!migrations.Any())
+        if (migrations.Count == 0)
         {
             Console.WriteLine("No migrations found");
             return;
         }
+
+        migrations = migrations.OrderBy(t => t.Name.Split('_')[0]).ToList();
 
         foreach (var migration in migrations)
         {

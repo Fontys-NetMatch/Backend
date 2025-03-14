@@ -6,19 +6,19 @@ using TravelPlanner.Domain.Models.Entities;
 
 namespace TravelPlanner.DB.Migrations;
 
-public class CreateQuotationsTable : IMigration
+public class CreateProductTranslationsTable : IMigration
 {
     public void Up(DbContext dbContext)
     {
-        dbContext.CreateTable<Quotation>(tableOptions: TableOptions.CheckExistence);
+        dbContext.CreateTable<ProductTranslation>(tableOptions: TableOptions.CheckExistence);
 
         var command = dbContext.CreateCommand();
-        // create foreign key between Quotations CustomerId and Customers Id
+
         command.CommandText = @"
-            ALTER TABLE Quotations
-            ADD CONSTRAINT FK_Quotations_Customers
-            FOREIGN KEY (Customer_ID)
-            REFERENCES Customers(ID)";
+            ALTER TABLE ProductTranslations
+            ADD CONSTRAINT FK_ProductTranslations_Products
+            FOREIGN KEY (Product_ID)
+            REFERENCES Products(ID)";
         command.ExecuteNonQuery();
 
     }
