@@ -99,8 +99,10 @@ builder.Services.AddTransient<DbManager>();
 
 builder.Services.AddTransient<StatusController>();
 builder.Services.AddTransient<AuthController>();
+builder.Services.AddTransient<ProductController>();
 
 builder.Services.AddSingleton<IAuthContainer, AuthContainer>();
+builder.Services.AddSingleton<IProductContainer, ProductContainer>();
 
 // Setup database
 DataConnection.DefaultSettings = new DbSettings(config);
