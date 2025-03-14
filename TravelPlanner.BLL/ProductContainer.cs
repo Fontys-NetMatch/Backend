@@ -5,6 +5,7 @@ using TravelPlanner.Domain.Interfaces.BLL;
 using System.Linq;
 using System;
 using System.Threading.Tasks;
+using TravelPlanner.Domain.Models.Entities.Products;
 
 namespace TravelPlanner.BLL;
 
@@ -106,4 +107,6 @@ public class ProductContainer : IProductContainer
 
         return products;
     }
+
+  
 }

@@ -28,7 +28,7 @@ public class QuotationContainer
             throw new ArgumentException("Quotation name cannot be null or empty");
         }
 
-        if (quotation.CustomerId <= 0)
+        if (quotation.Customer_ID <= 0)
         {
             throw new ArgumentException("Invalid Customer ID");
         }
@@ -47,7 +47,7 @@ public class QuotationContainer
             throw new ArgumentException("Quotation ID must be positive", nameof(id));
         }
 
-        return await _db.Quotations.LoadWith(q => q.Customer).FirstOrDefaultAsync(q => q.Id == id);
+        return await _db.Quotations.LoadWith(q => q.Customer).FirstOrDefaultAsync(q => q.ID == id);
     }
 
     public async Task UpdateQuotation(Quotation quotation)
@@ -57,12 +57,12 @@ public class QuotationContainer
             throw new ArgumentNullException(nameof(quotation), "Quotation cannot be null");
         }
 
-        if (quotation.Id <= 0)
+        if (quotation.ID <= 0)
         {
             throw new ArgumentException("Quotation must have a valid ID");
         }
 
-        var existingQuotation = await GetQuotationByIdAsync(quotation.Id);
+        var existingQuotation = await GetQuotationByIdAsync(quotation.ID);
         if (existingQuotation == null)
         {
             throw new InvalidOperationException("Quotation does not exist and cannot be updated");

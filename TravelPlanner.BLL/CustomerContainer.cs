@@ -48,7 +48,7 @@ public class CustomerContainer
             throw new ArgumentException("Customer ID must be positive", nameof(id));
         }
 
-        return await _db.Customers.FirstOrDefaultAsync(c => c.Id == id);
+        return await _db.Customers.FirstOrDefaultAsync(c => c.ID == id);
     }
 
     public async Task UpdateCustomer(Customer customer)
@@ -58,12 +58,12 @@ public class CustomerContainer
             throw new ArgumentNullException(nameof(customer), "Customer cannot be null");
         }
 
-        if (customer.Id <= 0)
+        if (customer.ID <= 0)
         {
             throw new ArgumentException("Customer must have a valid ID");
         }
 
-        var existingCustomer = await GetCustomerByIdAsync(customer.Id);
+        var existingCustomer = await GetCustomerByIdAsync(customer.ID);
         if (existingCustomer == null)
         {
             throw new InvalidOperationException("Customer does not exist and cannot be updated");

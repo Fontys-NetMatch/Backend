@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TravelPlanner.Domain.Models.Entities;
+using TravelPlanner.Domain.Models.Entities.Products;
 
 namespace TravelPlanner.Domain.Interfaces.BLL
 {
