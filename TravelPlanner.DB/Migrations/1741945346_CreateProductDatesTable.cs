@@ -3,22 +3,23 @@ using TravelPlanner.DB;
 using TravelPlanner.DB.Lib;
 using TravelPlanner.DB.Lib.MigrationsManager;
 using TravelPlanner.Domain.Models.Entities;
+using TravelPlanner.Domain.Models.Entities.Products;
 
 namespace TravelPlanner.DB.Migrations;
 
-public class CreateQuotationsTable : IMigration
+public class CreateProductDatesTable : IMigration
 {
     public void Up(DbContext dbContext)
     {
-        dbContext.CreateTable<Quotation>(tableOptions: TableOptions.CheckExistence);
+        dbContext.CreateTable<ProductDate>(tableOptions: TableOptions.CheckExistence);
 
         var command = dbContext.CreateCommand();
-        // create foreign key between Quotations CustomerId and Customers Id
+
         command.CommandText = @"
-            ALTER TABLE Quotations
-            ADD CONSTRAINT FK_Quotations_Customers
-            FOREIGN KEY (Customer_ID)
-            REFERENCES Customers(ID)";
+            ALTER TABLE ProductDates
+            ADD CONSTRAINT FK_ProductDates_Products
+            FOREIGN KEY (Product_ID)
+            REFERENCES ProductDates(ID)";
         command.ExecuteNonQuery();
 
     }
