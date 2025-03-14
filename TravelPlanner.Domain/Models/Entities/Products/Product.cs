@@ -1,7 +1,7 @@
 ﻿using LinqToDB;
 using LinqToDB.Mapping;
 
-namespace TravelPlanner.Domain.Models.Entities;
+namespace TravelPlanner.Domain.Models.Entities.Products;
 
 [Table("Products")]
 public record Product
@@ -11,7 +11,7 @@ public record Product
     public int ID { get; set; }
 
     [Column(Length = 100), NotNull]
-    public string? Location { get; set; }
+    public string Location { get; set; }
 
     [Column, NotNull]
     public decimal Taxes { get; set; }
