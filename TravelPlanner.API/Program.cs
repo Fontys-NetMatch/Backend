@@ -19,11 +19,17 @@ var devMode = File.Exists("appsettings.Development.json");
 
 if (devMode)
 {
+    builder.Environment.EnvironmentName = "Development";
+
     Console.ForegroundColor = ConsoleColor.Green;
     Console.WriteLine("-------------------------------------");
     Console.WriteLine("   App Running In Development Mode   ");
     Console.WriteLine("-------------------------------------");
     Console.ForegroundColor = ConsoleColor.White;
+}
+else
+{
+    builder.Environment.EnvironmentName = "Production";
 }
 
 builder.Configuration.Sources.Clear();
@@ -90,7 +96,7 @@ JwtConfig jwtConfig = new()
 };
 
 // Setup dependency injection
-var config = new AppConfig(appUrl, allowedOrigins, dbConfig, jwtConfig);
+var config = new AppConfig(appUrl, allowedOrigins, dbConfig, jwtConfig, devMode);
 builder.Services.Add(new ServiceDescriptor(typeof(IAppConfig), config));
 
 // Register services
@@ -107,7 +113,7 @@ builder.Services.AddSingleton<IProductContainer, ProductContainer>();
 // Setup database
 DataConnection.DefaultSettings = new DbSettings(config);
 var migrationManager = new MigrationManager();
-migrationManager.Init();
+migrationManager.Init(config);
 
 // Auth
 builder.Services.AddAuthorization();
