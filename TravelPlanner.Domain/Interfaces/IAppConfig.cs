@@ -9,5 +9,6 @@ public interface IAppConfig
     public string[] GetAllowedOrigins();
     public DbConfig GetDbConfig();
     public JwtConfig GetJwtConfig();
+    public bool IsDevMode();
 
 }

@@ -44,8 +44,9 @@ public class AuthContainer: IAuthContainer
         _db.Insert(new User
         {
             Firstname = data.Firstname,
-            Lastname = data.Lastname,
+            Surname = data.Surname,
             Email = data.Email,
+            IsActive = data.IsActive,
             Password = hashPassword
         });
     }

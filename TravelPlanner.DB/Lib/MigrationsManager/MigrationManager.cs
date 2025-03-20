@@ -1,4 +1,6 @@
-﻿using LinqToDB;
+﻿using System.Reflection;
+using LinqToDB;
+using TravelPlanner.Domain.Models;
 
 namespace TravelPlanner.DB.Lib.MigrationsManager;
 
@@ -7,7 +9,7 @@ public class MigrationManager
 
     private readonly DbContext _dbContext = new();
 
-    public void Init()
+    public void Init(AppConfig config)
     {
         Console.WriteLine("Running Migrations");
 
@@ -15,24 +17,34 @@ public class MigrationManager
         var table = _dbContext.GetTable<MigrationsTable>();
 
         var migrations = typeof(MigrationManager).Assembly.GetTypes()
-            .Where(t => t is { Namespace: "TravelPlanner.DB.Migrations", IsClass: true });
-        migrations = migrations.OrderByDescending(t => t.Name.Split('_')[0]).ToList();
+            .Where(t => t is { Namespace: "TravelPlanner.DB.Migrations", IsClass: true })
+            .ToList();
 
-        if (!migrations.Any())
+        if (migrations.Count == 0)
         {
             Console.WriteLine("No migrations found");
             return;
         }
 
+        migrations = migrations.OrderBy(t => long.TryParse(t.Name.Split('_')[0], out var timestamp) ? timestamp : long.MaxValue).ToList();
+
+
+
         foreach (var migration in migrations)
         {
             // Check if migration is already applied
             var migrationName = migration.Name;
-            var applied = table.FirstOrDefault(m => m.ClassName == migrationName);
-            if (applied != null)
+            var forceOnDev = migration.GetCustomAttribute<ForceOnDev>() != null;
+            var forceMigration = forceOnDev && config.IsDevMode();
+
+            if (!forceMigration)
             {
-                Console.WriteLine($"Migration {migrationName} already applied");
-                continue;
+                var applied = table.FirstOrDefault(m => m.ClassName == migrationName);
+                if (applied != null)
+                {
+                    Console.WriteLine($"Migration {migrationName} already applied");
+                    continue;
+                }
             }
 
             // Apply migration
@@ -52,7 +64,9 @@ public class MigrationManager
             }
             var instance = tempInstance as IMigration;
 
-            Console.WriteLine($"Applying migration {migrationName}");
+            Console.WriteLine(forceMigration
+                ? $"(Forced)Applying migration {migrationName}"
+                : $"Applying migration {migrationName}");
 
             // Run migration
             instance?.Up(_dbContext);
