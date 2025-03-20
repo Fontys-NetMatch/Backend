@@ -17,23 +17,18 @@ namespace TravelPlanner.DB.Migrations
         {
             dbContext.CreateTable<AddonDate>(tableOptions: TableOptions.CheckExistence);
 
-            var command = dbContext.CreateCommand();
-
-            command.CommandText = @"
-            ALTER TABLE AddonDates
-            ADD CONSTRAINT FK_AddonDates_ProductDates
-            FOREIGN KEY (ProductDate_ID)
-            REFERENCES ProductDates(ID)";
-            command.ExecuteNonQuery();
-
-            var command1 = dbContext.CreateCommand();
-
-            command1.CommandText = @"
-            ALTER TABLE AddonDates
-            ADD CONSTRAINT FK_AddonDates_ProductAddons
-            FOREIGN KEY (ProductAddon_ID)
-            REFERENCES ProductAddons(ID)";
-            command1.ExecuteNonQuery();
+            DbUtils.GenerateForeignKey(
+                dbContext,
+                "AddonDates",
+                "ProductDates",
+                "ID"
+            );
+            DbUtils.GenerateForeignKey(
+                dbContext,
+                "AddonDates",
+                "ProductAddons",
+                "ID"
+            );
 
         }
     }

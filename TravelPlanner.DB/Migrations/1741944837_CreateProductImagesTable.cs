@@ -13,14 +13,10 @@ public class ProductImagesTable : IMigration
     {
         dbContext.CreateTable<ProductImage>(tableOptions: TableOptions.CheckExistence);
 
-        var command = dbContext.CreateCommand();
-
-        command.CommandText = @"
-            ALTER TABLE ProductImages
-            ADD CONSTRAINT FK_ProductImages_Products
-            FOREIGN KEY (Product_ID)
-            REFERENCES Products(ID)";
-        command.ExecuteNonQuery();
+        DbUtils.GenerateForeignKey(
+            dbContext,
+            "ProductImages", "Products", "ID"
+        );
 
     }
 }

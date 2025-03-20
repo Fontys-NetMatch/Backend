@@ -12,14 +12,10 @@ public class CreateQuotationsTable : IMigration
     {
         dbContext.CreateTable<Quotation>(tableOptions: TableOptions.CheckExistence);
 
-        var command = dbContext.CreateCommand();
-        // create foreign key between Quotations CustomerId and Customers Id
-        command.CommandText = @"
-            ALTER TABLE Quotations
-            ADD CONSTRAINT FK_Quotations_Customers
-            FOREIGN KEY (Customer_ID)
-            REFERENCES Customers(ID)";
-        command.ExecuteNonQuery();
+        DbUtils.GenerateForeignKey(
+            dbContext,
+            "Quotations", "Customers", "ID"
+        );
 
     }
 }

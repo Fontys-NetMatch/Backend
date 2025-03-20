@@ -13,14 +13,10 @@ public class CreateProductDatesTable : IMigration
     {
         dbContext.CreateTable<ProductDate>(tableOptions: TableOptions.CheckExistence);
 
-        var command = dbContext.CreateCommand();
-
-        command.CommandText = @"
-            ALTER TABLE ProductDates
-            ADD CONSTRAINT FK_ProductDates_Products
-            FOREIGN KEY (Product_ID)
-            REFERENCES ProductDates(ID)";
-        command.ExecuteNonQuery();
+        DbUtils.GenerateForeignKey(
+            dbContext,
+            "ProductDates", "Products", "ID"
+        );
 
     }
 }
