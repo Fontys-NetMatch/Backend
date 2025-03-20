@@ -21,5 +21,6 @@ public class DbManager : DbContext
     public ITable<ProductDate> ProductDates => this.GetTable<ProductDate>();
     public ITable<ProductAddon> ProductAddons => this.GetTable<ProductAddon>();
     public ITable<AddonDate> AddonDates => this.GetTable<AddonDate>();
+    public ITable<ProductAddonTranslation> ProductAddonTranslations => this.GetTable<ProductAddonTranslation>();
 
 }
