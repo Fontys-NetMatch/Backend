@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
+using TravelPlanner.API.Infrastructure.Extensions;
 using TravelPlanner.API.Response;
 using TravelPlanner.API.Response.Error;
 using TravelPlanner.API.Response.Success;
@@ -30,7 +31,9 @@ namespace TravelPlanner.API.Controllers
                 .WithDescription("Create a new product")
                 .Produces<SuccessResponse>()
                 .Produces<ErrorResponse>(StatusCodes.Status500InternalServerError)
+                .RequiresJwtToken()
                 .WithOpenApi();
+                
 
             // Get product by ID endpoint
             app.MapGet("/product/{id}", (
@@ -42,6 +45,7 @@ namespace TravelPlanner.API.Controllers
                 .WithDescription("Get a product by ID")
                 .Produces<ProductResponse>()
                 .Produces<ErrorResponse>(StatusCodes.Status500InternalServerError)
+                .RequiresJwtToken()
                 .WithOpenApi();
 
             // Update product endpoint
@@ -54,6 +58,7 @@ namespace TravelPlanner.API.Controllers
                 .WithDescription("Update an existing product")
                 .Produces<SuccessResponse>()
                 .Produces<ErrorResponse>(StatusCodes.Status500InternalServerError)
+                .RequiresJwtToken()
                 .WithOpenApi();
 
             // Soft delete product endpoint
@@ -66,6 +71,7 @@ namespace TravelPlanner.API.Controllers
                 .WithDescription("Soft delete a product by ID")
                 .Produces<SuccessResponse>()
                 .Produces<ErrorResponse>(StatusCodes.Status500InternalServerError)
+                .RequiresJwtToken()
                 .WithOpenApi();
 
             // Get all active products endpoint
@@ -77,6 +83,7 @@ namespace TravelPlanner.API.Controllers
                 .WithDescription("Get all active products")
                 .Produces<ProductsResponse>()
                 .Produces<ErrorResponse>(StatusCodes.Status500InternalServerError)
+                .RequiresJwtToken()
                 .WithOpenApi();
         }
 

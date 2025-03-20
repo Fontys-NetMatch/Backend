@@ -46,7 +46,7 @@ public class AuthContainer: IAuthContainer
             Firstname = data.Firstname,
             Surname = data.Surname,
             Email = data.Email,
-            IsActive = data.IsActive,
+            IsActive = true,
             Password = hashPassword
         });
     }
