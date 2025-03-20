@@ -6,6 +6,7 @@ using System.Linq;
 using System;
 using System.Threading.Tasks;
 using TravelPlanner.Domain.Models.Entities.Products;
+using TravelPlanner.Domain.Models.Request.Product;
 
 namespace TravelPlanner.BLL;
 
@@ -18,22 +19,23 @@ public class ProductContainer : IProductContainer
         _db = db;
     }
 
-    public void CreateProduct(Product product)
+    public void CreateProduct(ProductData data)
     {
-        if (product == null)
-        {
-            throw new ArgumentNullException(nameof(product), "Product cannot be null");
-        }
-
-        if (string.IsNullOrEmpty(product.Location) || product.Taxes <= 0)
+        if (string.IsNullOrEmpty(data.Location) || data.Taxes <= 0|| data.ProductType_ID <= 0)
         {
             throw new ArgumentException("Invalid product data");
         }
 
-        var result = _db.InsertWithInt32Identity(product);
+        var result = _db.Insert(new Product
+        {
+            Location = data.Location,
+            Taxes = data.Taxes,
+            IsActive = true,
+            ProductType_ID = data.ProductType_ID
+        });
         if (result <= 0)
         {
-            throw new InvalidOperationException("Failed to create product in the database");
+            throw new InvalidOperationException("Failed to create product");
         }
     }
 
@@ -41,31 +43,35 @@ public class ProductContainer : IProductContainer
     {
         if (id <= 0)
         {
-            throw new ArgumentException("Product ID must be positive", nameof(id));
+            throw new ArgumentException("Invalid product ID", nameof(id));
         }
 
         return await _db.Products.FirstOrDefaultAsync(p => p.ID == id);
     }
 
-    public async Task UpdateProduct(Product product)
+    public async Task UpdateProduct(ProductUpdateData data)
     {
-        if (product == null)
+        if (data.ID <= 0)
         {
-            throw new ArgumentNullException(nameof(product), "Product cannot be null");
+            throw new ArgumentException("Invalid product ID");
         }
 
-        if (product.ID <= 0)
+        if (string.IsNullOrEmpty(data.Location) || data.Taxes <= 0|| data.ProductType_ID <= 0)
         {
-            throw new ArgumentException("Product must have a valid ID");
+            throw new ArgumentException("Invalid product data");
         }
 
-        var existingProduct = await GetProductByIdAsync(product.ID);
+        var existingProduct = await GetProductByIdAsync(data.ID);
         if (existingProduct == null)
         {
-            throw new InvalidOperationException("Product does not exist and cannot be updated");
+            throw new InvalidOperationException("Product does not exist");
         }
 
-        var result = await _db.UpdateAsync(product);
+        existingProduct.Location = data.Location;
+        existingProduct.Taxes = data.Taxes;
+        existingProduct.ProductType_ID = data.ProductType_ID;
+
+        var result = await _db.UpdateAsync(existingProduct);
         if (result == 0)
         {
             throw new InvalidOperationException("Failed to update product");
@@ -76,37 +82,41 @@ public class ProductContainer : IProductContainer
     {
         if (id <= 0)
         {
-            throw new ArgumentException("Product ID must be positive", nameof(id));
+            throw new ArgumentException("Invalid product ID", nameof(id));
         }
 
         var product = await GetProductByIdAsync(id);
         if (product == null)
         {
-            throw new InvalidOperationException("Product does not exist and cannot be SoftDeleted");
+            throw new InvalidOperationException("Product does not exist");
         }
 
-        if (!product.IsActive)
+        if (product.DeletedAt != null)
         {
-            throw new InvalidOperationException("Product is already inactive");
+            throw new InvalidOperationException("Product is already deleted");
         }
 
         product.IsActive = false;
-        await UpdateProduct(product);
+        product.DeletedAt = DateTime.Now;
 
+        var result = await _db.UpdateAsync(product);
+        if (result == 0)
+        {
+            throw new InvalidOperationException("Failed to update product");
+        }
     }
 
-    public async Task<IEnumerable<Product>> GetAllActiveProductsAsync()
+    public async Task<List<Product>> GetAllActiveProductsAsync()
     {
         var products = await _db.Products
                                 .Where(p => p.IsActive)
                                 .ToListAsync();
-        if (products == null || !products.Any())
+        if (products == null)
         {
-            throw new InvalidOperationException("No active products found");
+            throw new InvalidOperationException("No products found");
         }
 
         return products;
     }
 
-  
 }

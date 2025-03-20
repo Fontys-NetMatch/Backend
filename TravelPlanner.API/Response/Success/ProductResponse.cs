@@ -13,13 +13,13 @@ public record ProductResponse : BaseResponse
 
     public decimal Taxes { get; set; }
 
-    public DateTime DeletedAt { get; set; }
+    public DateTime? DeletedAt { get; set; }
 
     public bool IsActive { get; set; }
 
     public int ProductType_ID { get; set; }
 
-    public ProductResponse(int id, string location, decimal taxes, DateTime deletedAt, bool isActive, int productType_ID, string message) : base(message)
+    public ProductResponse(int id, string location, decimal taxes, DateTime? deletedAt, bool isActive, int productType_ID) : base("Product found")
     {
         ID = id;
         Location = location;

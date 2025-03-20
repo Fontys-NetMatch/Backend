@@ -1,12 +1,11 @@
-﻿using System.Text.Json;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using TravelPlanner.API.Infrastructure.Extensions;
 using TravelPlanner.API.Response;
 using TravelPlanner.API.Response.Error;
 using TravelPlanner.API.Response.Success;
 using TravelPlanner.Domain.Interfaces.BLL;
-using TravelPlanner.Domain.Models.Entities;
 using TravelPlanner.Domain.Models.Entities.Products;
+using TravelPlanner.Domain.Models.Request.Product;
 
 namespace TravelPlanner.API.Controllers
 {
@@ -24,9 +23,9 @@ namespace TravelPlanner.API.Controllers
             // Create product endpoint
             app.MapPost("/product/", (
                 HttpContext context,
-                [FromBody] Product product,
+                [FromBody] ProductData data,
                 [FromServices] ProductController controller
-            ) => controller.CreateProduct(context, product))
+            ) => controller.CreateProduct(context, data))
                 .WithName("CreateProduct")
                 .WithDescription("Create a new product")
                 .Produces<SuccessResponse>()
@@ -51,9 +50,9 @@ namespace TravelPlanner.API.Controllers
             // Update product endpoint
             app.MapPut("/product/", (
                 HttpContext context,
-                [FromBody] Product product,
+                [FromBody] ProductUpdateData data,
                 [FromServices] ProductController controller
-            ) => controller.UpdateProduct(context, product))
+            ) => controller.UpdateProduct(context, data))
                 .WithName("UpdateProduct")
                 .WithDescription("Update an existing product")
                 .Produces<SuccessResponse>()
@@ -87,11 +86,11 @@ namespace TravelPlanner.API.Controllers
                 .WithOpenApi();
         }
 
-        private BaseResponse CreateProduct(HttpContext? context, Product product)
+        private BaseResponse CreateProduct(HttpContext? context, ProductData data)
         {
             try
             {
-                _container.CreateProduct(product);
+                _container.CreateProduct(data);
                 return new SuccessResponse("Product created successfully");
             }
             catch (Exception e)
@@ -116,8 +115,7 @@ namespace TravelPlanner.API.Controllers
                     product.Taxes,
                     product.DeletedAt,
                     product.IsActive,
-                    product.ProductType_ID,
-                    "Product found"
+                    product.ProductType_ID
                 );
 
                 return response;
@@ -128,11 +126,11 @@ namespace TravelPlanner.API.Controllers
             }
         }
 
-        private BaseResponse UpdateProduct(HttpContext? context, Product product)
+        private BaseResponse UpdateProduct(HttpContext? context, ProductUpdateData data)
         {
             try
             {
-                _container.UpdateProduct(product).Wait();
+                _container.UpdateProduct(data).Wait();
                 return new SuccessResponse("Product updated successfully");
             }
             catch (Exception e)
@@ -159,7 +157,7 @@ namespace TravelPlanner.API.Controllers
             try
             {
                 var products = _container.GetAllActiveProductsAsync().Result;
-                if (products == null || !products.Any())
+                if (products.Count == 0)
                 {
                     return new ErrorResponse("No active products found");
                 }
@@ -171,8 +169,7 @@ namespace TravelPlanner.API.Controllers
                     taxes: product.Taxes,
                     deletedAt: product.DeletedAt,
                     isActive: product.IsActive,
-                    productType_ID: product.ProductType_ID,
-                    message: "Product found" // Assuming you want a message per product
+                    productType_ID: product.ProductType_ID
                 )).ToList();
 
                 // Wrap the list of ProductResponse objects in a ProductsResponse
