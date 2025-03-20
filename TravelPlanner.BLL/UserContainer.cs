@@ -48,7 +48,7 @@ public class UserContainer
             throw new ArgumentException("User ID must be positive", nameof(id));
         }
 
-        return await _db.Users.FirstOrDefaultAsync(u => u.Id == id);
+        return await _db.Users.FirstOrDefaultAsync(u => u.ID == id);
     }
 
     public async Task UpdateUser(User user)
@@ -58,12 +58,12 @@ public class UserContainer
             throw new ArgumentNullException(nameof(user), "User cannot be null");
         }
 
-        if (user.Id <= 0)
+        if (user.ID <= 0)
         {
             throw new ArgumentException("User must have a valid ID");
         }
 
-        var existingUser = await GetUserByIdAsync(user.Id);
+        var existingUser = await GetUserByIdAsync(user.ID);
         if (existingUser == null)
         {
             throw new InvalidOperationException("User does not exist and cannot be updated");

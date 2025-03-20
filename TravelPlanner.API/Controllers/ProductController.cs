@@ -5,6 +5,7 @@ using TravelPlanner.API.Response.Error;
 using TravelPlanner.API.Response.Success;
 using TravelPlanner.Domain.Interfaces.BLL;
 using TravelPlanner.Domain.Models.Entities;
+using TravelPlanner.Domain.Models.Entities.Products;
 
 namespace TravelPlanner.API.Controllers
 {
