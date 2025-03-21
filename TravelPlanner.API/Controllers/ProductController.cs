@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Diagnostics;
+using Microsoft.AspNetCore.Mvc;
 using TravelPlanner.API.Infrastructure.Extensions;
 using TravelPlanner.API.Response;
 using TravelPlanner.API.Response.Error;
@@ -31,6 +32,7 @@ namespace TravelPlanner.API.Controllers
                 .Produces<SuccessResponse>()
                 .Produces<ErrorResponse>(StatusCodes.Status500InternalServerError)
                 .RequiresJwtToken()
+                .WithTags("Product")
                 .WithOpenApi();
                 
 
@@ -45,6 +47,7 @@ namespace TravelPlanner.API.Controllers
                 .Produces<ProductResponse>()
                 .Produces<ErrorResponse>(StatusCodes.Status500InternalServerError)
                 .RequiresJwtToken()
+                .WithTags("Product")
                 .WithOpenApi();
 
             // Update product endpoint
@@ -58,6 +61,7 @@ namespace TravelPlanner.API.Controllers
                 .Produces<SuccessResponse>()
                 .Produces<ErrorResponse>(StatusCodes.Status500InternalServerError)
                 .RequiresJwtToken()
+                .WithTags("Product")
                 .WithOpenApi();
 
             // Soft delete product endpoint
@@ -71,6 +75,7 @@ namespace TravelPlanner.API.Controllers
                 .Produces<SuccessResponse>()
                 .Produces<ErrorResponse>(StatusCodes.Status500InternalServerError)
                 .RequiresJwtToken()
+                .WithTags("Product")
                 .WithOpenApi();
 
             // Get all active products endpoint
@@ -83,6 +88,7 @@ namespace TravelPlanner.API.Controllers
                 .Produces<ProductsResponse>()
                 .Produces<ErrorResponse>(StatusCodes.Status500InternalServerError)
                 .RequiresJwtToken()
+                .WithTags("Product")
                 .WithOpenApi();
         }
 
@@ -90,7 +96,7 @@ namespace TravelPlanner.API.Controllers
         {
             try
             {
-                _container.CreateProduct(data);
+                _container.CreateProduct(data).Wait();
                 return new SuccessResponse("Product created successfully");
             }
             catch (Exception e)

@@ -40,6 +40,7 @@ public class AuthController
             .Produces<LoginResponse>()
             .Produces<InvalidCredentialsResponse>(StatusCodes.Status400BadRequest)
             .Produces<ErrorResponse>(StatusCodes.Status500InternalServerError)
+            .WithTags("Auth")
             .WithOpenApi();
         app.MapPost("/auth/register", (
                 HttpContext context,
@@ -50,6 +51,7 @@ public class AuthController
             .WithDescription("Register a new user")
             .Produces<SuccessResponse>()
             .Produces<ErrorResponse>(StatusCodes.Status500InternalServerError)
+            .WithTags("Auth")
             .WithOpenApi();
     }
 

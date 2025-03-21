@@ -2,7 +2,7 @@
 
 public class ProductData
 {
-
+    
     public Dictionary<string, string> NameTranslations { get; set; }
     public string Location { get; set; }
     public decimal Taxes { get; set; }

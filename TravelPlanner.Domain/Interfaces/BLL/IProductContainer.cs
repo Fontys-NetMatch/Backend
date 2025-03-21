@@ -11,7 +11,7 @@ namespace TravelPlanner.Domain.Interfaces.BLL
 {
     public interface IProductContainer
     {
-        void CreateProduct(ProductData product);
+        Task CreateProduct(ProductData product);
         Task<List<Product>> GetAllActiveProductsAsync();
         Task<Product?> GetProductByIdAsync(int id);
         Task SoftDeleteProduct(int id);

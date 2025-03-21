@@ -14,6 +14,7 @@ public class StatusController
             ) => controller.Status(context))
             .WithName("Get Api Status")
             .WithDescription("Get the current status of the API")
+            .WithTags("Status")
             .WithOpenApi();
     }
 

@@ -4,8 +4,6 @@ using TravelPlanner.API.Response.Error;
 using TravelPlanner.API.Response.Success;
 using TravelPlanner.Domain.Interfaces.BLL;
 using TravelPlanner.Domain.Models.Entities;
-using System.Linq;
-using TravelPlanner.BLL;
 using TravelPlanner.API.Infrastructure.Extensions;
 
 namespace TravelPlanner.API.Controllers
@@ -32,6 +30,7 @@ namespace TravelPlanner.API.Controllers
                 .Produces<SuccessResponse>()
                 .Produces<ErrorResponse>(StatusCodes.Status500InternalServerError)
                 .RequiresJwtToken()
+                .WithTags("Quotation")
                 .WithOpenApi();
 
             // Get Quotation by ID
@@ -45,6 +44,7 @@ namespace TravelPlanner.API.Controllers
                 .Produces<QuotationResponse>()
                 .Produces<ErrorResponse>(StatusCodes.Status500InternalServerError)
                 .RequiresJwtToken()
+                .WithTags("Quotation")
                 .WithOpenApi();
 
             // Update Quotation
@@ -58,6 +58,7 @@ namespace TravelPlanner.API.Controllers
                 .Produces<SuccessResponse>()
                 .Produces<ErrorResponse>(StatusCodes.Status500InternalServerError)
                 .RequiresJwtToken()
+                .WithTags("Quotation")
                 .WithOpenApi();
 
             // Soft Delete Quotation
@@ -71,6 +72,7 @@ namespace TravelPlanner.API.Controllers
                 .Produces<SuccessResponse>()
                 .Produces<ErrorResponse>(StatusCodes.Status500InternalServerError)
                 .RequiresJwtToken()
+                .WithTags("Quotation")
                 .WithOpenApi();
 
             // Get all Active Quotations
@@ -83,6 +85,7 @@ namespace TravelPlanner.API.Controllers
                 .Produces<QuotationsResponse>()
                 .Produces<ErrorResponse>(StatusCodes.Status500InternalServerError)
                 .RequiresJwtToken()
+                .WithTags("Quotation")
                 .WithOpenApi();
         }
 

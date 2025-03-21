@@ -19,14 +19,16 @@ public class ProductContainer : IProductContainer
         _db = db;
     }
 
-    public void CreateProduct(ProductData data)
+    public async Task CreateProduct(ProductData data)
     {
         if (string.IsNullOrEmpty(data.Location) || data.Taxes <= 0|| data.ProductType_ID <= 0)
         {
             throw new ArgumentException("Invalid product data");
         }
 
-        var result = _db.Insert(new Product
+        await _db.BeginTransactionAsync();
+
+        var result = await _db.InsertAsync(new Product
         {
             Location = data.Location,
             Taxes = data.Taxes,
@@ -35,8 +37,11 @@ public class ProductContainer : IProductContainer
         });
         if (result <= 0)
         {
+            await _db.RollbackTransactionAsync();
             throw new InvalidOperationException("Failed to create product");
         }
+
+        await _db.CommitTransactionAsync();
     }
 
     public async Task<Product?> GetProductByIdAsync(int id)
