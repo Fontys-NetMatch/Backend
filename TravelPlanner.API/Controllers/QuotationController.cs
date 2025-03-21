@@ -5,6 +5,7 @@ using TravelPlanner.API.Response.Success;
 using TravelPlanner.Domain.Interfaces.BLL;
 using TravelPlanner.Domain.Models.Entities;
 using TravelPlanner.API.Infrastructure.Extensions;
+using TravelPlanner.Domain.Models.Request.Quotation;
 
 namespace TravelPlanner.API.Controllers
 {
@@ -22,7 +23,7 @@ namespace TravelPlanner.API.Controllers
             // Create Quotation
             app.MapPost("/quotation/", (
                 HttpContext context,
-                [FromBody] Quotation quotation,
+                [FromBody] QuotationData quotation,
                 [FromServices] QuotationController controller
             ) => controller.CreateQuotation(context, quotation))
                 .WithName("CreateQuotation")
@@ -50,7 +51,7 @@ namespace TravelPlanner.API.Controllers
             // Update Quotation
             app.MapPut("/quotation/", (
                 HttpContext context,
-                [FromBody] Quotation quotation,
+                [FromBody] QuotationUpdateData quotation,
                 [FromServices] QuotationController controller
             ) => controller.UpdateQuotation(context, quotation))
                 .WithName("UpdateQuotation")
@@ -89,7 +90,7 @@ namespace TravelPlanner.API.Controllers
                 .WithOpenApi();
         }
 
-        private BaseResponse CreateQuotation(HttpContext? context, Quotation quotation)
+        private BaseResponse CreateQuotation(HttpContext? context, QuotationData quotation)
         {
             try
             {
@@ -127,7 +128,7 @@ namespace TravelPlanner.API.Controllers
             }
         }
 
-        private BaseResponse UpdateQuotation(HttpContext? context, Quotation quotation)
+        private BaseResponse UpdateQuotation(HttpContext? context, QuotationUpdateData quotation)
         {
             try
             {

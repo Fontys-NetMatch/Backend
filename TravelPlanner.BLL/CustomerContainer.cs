@@ -1,13 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using LinqToDB;
 using TravelPlanner.DB;
+using TravelPlanner.Domain.Interfaces.BLL;
 using TravelPlanner.Domain.Models.Entities;
 
 namespace TravelPlanner.BLL;
 
-public class CustomerContainer
+public class CustomerContainer : ICustomerContainer
 {
     private readonly DbManager _db;
 
@@ -99,7 +101,7 @@ public class CustomerContainer
         
     }
 
-    public async Task<IEnumerable<Customer>> GetAllActiveCustomersAsync()
+    public async Task<List<Customer>> GetAllActiveCustomersAsync()
     {
         var customers = await _db.Customers
                         .Where(c => c.IsActive)

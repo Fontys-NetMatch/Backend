@@ -4,6 +4,7 @@ using TravelPlanner.Domain.Models.Entities;
 using TravelPlanner.Domain.Interfaces.BLL;
 using System.Linq;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using TravelPlanner.Domain.Models.Entities.Products;
 using TravelPlanner.Domain.Models.Request.Product;

@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using LinqToDB;
 using TravelPlanner.DB;
 using TravelPlanner.Domain.Models.Entities;
 using TravelPlanner.Domain.Interfaces.BLL;
+using TravelPlanner.Domain.Models.Request.Quotation;
 
 namespace TravelPlanner.BLL;
 
@@ -17,7 +19,7 @@ public class QuotationContainer : IQuotationContainer
         _db = db;
     }
 
-    public void CreateQuotation(Quotation quotation)
+    public void CreateQuotation(QuotationData quotation)
     {
         if (quotation == null)
         {
@@ -51,7 +53,7 @@ public class QuotationContainer : IQuotationContainer
         return await _db.Quotations.LoadWith(q => q.Customer).FirstOrDefaultAsync(q => q.ID == id);
     }
 
-    public async Task UpdateQuotation(Quotation quotation)
+    public async Task UpdateQuotation(QuotationUpdateData quotation)
     {
         if (quotation == null)
         {
@@ -95,11 +97,10 @@ public class QuotationContainer : IQuotationContainer
         }
 
         quotation.IsActive = false;
-        await UpdateQuotation(quotation);
-
+        await _db.UpdateAsync(quotation);
     }
 
-    public async Task<IEnumerable<Quotation>> GetAllActiveQuotationsAsync()
+    public async Task<List<Quotation>> GetAllActiveQuotationsAsync()
     {
         var quotations = await _db.Quotations
                                   .LoadWith(q => q.Customer)

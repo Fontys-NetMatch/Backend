@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using LinqToDB;
@@ -99,7 +100,7 @@ public class UserContainer
         
     }
 
-    public async Task<IEnumerable<User>> GetAllActiveUsersAsync()
+    public async Task<List<User>> GetAllActiveUsersAsync()
     {
         var users = await _db.Users
                         .Where(u => u.IsActive)
