@@ -105,8 +105,12 @@ builder.Services.AddTransient<DbManager>();
 
 builder.Services.AddTransient<StatusController>();
 builder.Services.AddTransient<AuthController>();
+
 builder.Services.AddTransient<ProductController>();
 builder.Services.AddTransient<ProductTranslationController>();
+
+builder.Services.AddTransient<ProductTypeController>();
+
 builder.Services.AddTransient<QuotationController>();
 
 builder.Services.AddSingleton<IAuthContainer, AuthContainer>();

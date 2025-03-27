@@ -9,8 +9,12 @@ public class Router
     {
         StatusController.Register(app);
         AuthController.Register(app);
+
         ProductController.Register(app);
         ProductTranslationController.Register(app);
+
+        ProductTypeController.Register(app);
+
         QuotationController.Register(app);
     }
 

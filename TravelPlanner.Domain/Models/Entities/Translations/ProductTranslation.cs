@@ -10,11 +10,11 @@ public record ProductTranslation
     [Column, PrimaryKey, Identity]
     public int ID { get; set; }
 
-    [Column(Length = 100), NotNull]
-    public string Name { get; set; }
-
     [Column(Length = 10), NotNull]
     public string LangIsoCode { get; set; }
+
+    [Column(Length = 100), NotNull]
+    public string Name { get; set; }
 
     [Column(DataType = DataType.Text, Length = 1000)]
     public string? Description { get; set; }
