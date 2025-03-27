@@ -27,8 +27,6 @@ public class ProductContainer : IProductContainer
             throw new ArgumentException("Invalid product data");
         }
 
-        await _db.BeginTransactionAsync();
-
         var result = await _db.InsertAsync(new Product
         {
             Location = data.Location,
@@ -38,11 +36,9 @@ public class ProductContainer : IProductContainer
         });
         if (result <= 0)
         {
-            await _db.RollbackTransactionAsync();
             throw new InvalidOperationException("Failed to create product");
         }
 
-        await _db.CommitTransactionAsync();
     }
 
     public async Task<Product?> GetProductByIdAsync(int id)

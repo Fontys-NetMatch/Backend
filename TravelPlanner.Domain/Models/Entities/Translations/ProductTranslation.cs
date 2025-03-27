@@ -28,7 +28,7 @@ public record ProductTranslation
     public required int Product_ID { get; set; }
 
     [Association(ThisKey = nameof(Product_ID), OtherKey = nameof(TravelPlanner.Domain.Models.Entities.Products.Product.ID), CanBeNull = false)]
-    public required TravelPlanner.Domain.Models.Entities.Products.Product Product { get; set; }
+    public TravelPlanner.Domain.Models.Entities.Products.Product? Product { get; set; }
 
 
 }
