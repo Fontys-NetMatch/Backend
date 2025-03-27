@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using TravelPlanner.Domain.Models.Entities.Products;
+using TravelPlanner.Domain.Models.Entities.Translations;
 using TravelPlanner.Domain.Models.Request.Product;
 
 namespace TravelPlanner.BLL;
@@ -20,50 +21,64 @@ public class ProductContainer : IProductContainer
         _db = db;
     }
 
-    public async Task CreateProduct(ProductData data)
-    {
-        if (string.IsNullOrEmpty(data.Location) || data.Taxes <= 0|| data.ProductType_ID <= 0)
-        {
-            throw new ArgumentException("Invalid product data");
-        }
-
-        var result = await _db.InsertAsync(new Product
-        {
-            Location = data.Location,
-            Taxes = data.Taxes,
-            IsActive = true,
-            ProductType_ID = data.ProductType_ID
-        });
-        if (result <= 0)
-        {
-            throw new InvalidOperationException("Failed to create product");
-        }
-
-    }
-
-    public async Task<Product?> GetProductByIdAsync(int id)
+    public async Task<Product?> GetById(int id)
     {
         if (id <= 0)
         {
             throw new ArgumentException("Invalid product ID", nameof(id));
         }
 
-        return await _db.Products.FirstOrDefaultAsync(p => p.ID == id);
+        return await _db.Products
+            .LoadWith(p => p.Translations)
+            .FirstOrDefaultAsync(p => p.ID == id);
     }
 
-    public async Task UpdateProduct(ProductUpdateData data)
+    public async Task<List<Product>> GetAllActive()
     {
-        if (data.ID <= 0)
+        var products = await _db.Products
+            .Where(p => p.IsActive)
+            .LoadWith(p => p.Translations)
+            .ToListAsync();
+        if (products == null)
         {
-            throw new ArgumentException("Invalid product ID");
+            throw new InvalidOperationException("No products found");
         }
 
+        return products;
+    }
+
+    public async Task Create(ProductData data)
+    {
         if (string.IsNullOrEmpty(data.Location) || data.Taxes <= 0|| data.ProductType_ID <= 0)
         {
             throw new ArgumentException("Invalid product data");
         }
 
-        var existingProduct = await GetProductByIdAsync(data.ID);
+        var productId = await _db.InsertWithInt32IdentityAsync(new Product
+        {
+            Location = data.Location,
+            Taxes = data.Taxes,
+            IsActive = data.IsActive,
+            ProductType_ID = data.ProductType_ID
+        });
+        if (productId <= 0)
+        {
+            throw new InvalidOperationException("Failed to create product");
+        }
+    }
+
+    public async Task Update(int id, ProductData data)
+    {
+        if (id <= 0)
+        {
+            throw new ArgumentException("Invalid product ID");
+        }
+        if (string.IsNullOrEmpty(data.Location) || data.Taxes <= 0|| data.ProductType_ID <= 0)
+        {
+            throw new ArgumentException("Invalid product data");
+        }
+
+        var existingProduct = await GetById(id);
         if (existingProduct == null)
         {
             throw new InvalidOperationException("Product does not exist");
@@ -71,6 +86,7 @@ public class ProductContainer : IProductContainer
 
         existingProduct.Location = data.Location;
         existingProduct.Taxes = data.Taxes;
+        existingProduct.IsActive = data.IsActive;
         existingProduct.ProductType_ID = data.ProductType_ID;
 
         var result = await _db.UpdateAsync(existingProduct);
@@ -80,14 +96,14 @@ public class ProductContainer : IProductContainer
         }
     }
 
-    public async Task SoftDeleteProduct(int id)
+    public async Task SoftDelete(int id)
     {
         if (id <= 0)
         {
             throw new ArgumentException("Invalid product ID", nameof(id));
         }
 
-        var product = await GetProductByIdAsync(id);
+        var product = await GetById(id);
         if (product == null)
         {
             throw new InvalidOperationException("Product does not exist");
@@ -104,21 +120,8 @@ public class ProductContainer : IProductContainer
         var result = await _db.UpdateAsync(product);
         if (result == 0)
         {
-            throw new InvalidOperationException("Failed to update product");
+            throw new InvalidOperationException("Failed to delete product");
         }
-    }
-
-    public async Task<List<Product>> GetAllActiveProductsAsync()
-    {
-        var products = await _db.Products
-                                .Where(p => p.IsActive)
-                                .ToListAsync();
-        if (products == null)
-        {
-            throw new InvalidOperationException("No products found");
-        }
-
-        return products;
     }
 
 }

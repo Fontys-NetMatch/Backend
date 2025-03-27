@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using TravelPlanner.API.Response;
-
-namespace TravelPlanner.API.Response.Success;
+﻿namespace TravelPlanner.API.Response.Success.Product;
 
 public record ProductsResponse : BaseResponse
 {

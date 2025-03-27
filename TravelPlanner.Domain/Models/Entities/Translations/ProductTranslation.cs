@@ -1,9 +1,7 @@
 ﻿using LinqToDB;
 using LinqToDB.Mapping;
-using TravelPlanner.Domain.Models.Entities.Products;
 
-
-namespace TravelPlanner.Domain.Models.Entities;
+namespace TravelPlanner.Domain.Models.Entities.Translations;
 
 [Table("ProductTranslations")]
 public record ProductTranslation
@@ -18,8 +16,8 @@ public record ProductTranslation
     [Column(Length = 10), NotNull]
     public string LangIsoCode { get; set; }
 
-    [Column(DataType = DataType.Text, Length = 1000), NotNull]
-    public string Description { get; set; }
+    [Column(DataType = DataType.Text, Length = 1000)]
+    public string? Description { get; set; }
 
     [Column, NotNull]
     public bool IsActive { get; set; }

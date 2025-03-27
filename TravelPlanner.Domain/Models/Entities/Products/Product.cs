@@ -1,5 +1,6 @@
 ﻿using LinqToDB;
 using LinqToDB.Mapping;
+using TravelPlanner.Domain.Models.Entities.Translations;
 
 namespace TravelPlanner.Domain.Models.Entities.Products;
 
@@ -24,5 +25,11 @@ public record Product
 
     [Column, NotNull]
     public int ProductType_ID { get; set; }
+
+    [Association(ThisKey = nameof(ProductType_ID), OtherKey = nameof(ProductType.ID))]
+    public ProductType ProductType { get; set; } = null!;
+
+    [Association(ThisKey = nameof(ID), OtherKey = nameof(ProductTranslation.Product_ID))]
+    public List<ProductTranslation> Translations { get; set; } = null!;
 
 }

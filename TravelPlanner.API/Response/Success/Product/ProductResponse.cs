@@ -1,8 +1,6 @@
-﻿using LinqToDB;
-using LinqToDB.Mapping;
-using TravelPlanner.API.Response;
+﻿using TravelPlanner.API.Response.Success.ProductTranslation;
 
-namespace TravelPlanner.API.Response.Success;
+namespace TravelPlanner.API.Response.Success.Product;
 
 public record ProductResponse : BaseResponse
 {
@@ -19,7 +17,9 @@ public record ProductResponse : BaseResponse
 
     public int ProductType_ID { get; set; }
 
-    public ProductResponse(int id, string location, decimal taxes, DateTime? deletedAt, bool isActive, int productType_ID) : base("Product found")
+    public ProductTranslationsResponse Translations { get; set; }
+
+    public ProductResponse(int id, string location, decimal taxes, DateTime? deletedAt, bool isActive, int productType_ID, ProductTranslationsResponse translations) : base("Product found")
     {
         ID = id;
         Location = location;
@@ -27,6 +27,7 @@ public record ProductResponse : BaseResponse
         DeletedAt = deletedAt;
         IsActive = isActive;
         ProductType_ID = productType_ID;
+        Translations = translations;
     }
 
 }

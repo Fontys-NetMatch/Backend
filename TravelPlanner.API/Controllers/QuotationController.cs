@@ -5,6 +5,7 @@ using TravelPlanner.API.Response.Success;
 using TravelPlanner.Domain.Interfaces.BLL;
 using TravelPlanner.Domain.Models.Entities;
 using TravelPlanner.API.Infrastructure.Extensions;
+using TravelPlanner.API.Response.Success.Quotation;
 using TravelPlanner.Domain.Models.Request.Quotation;
 
 namespace TravelPlanner.API.Controllers
