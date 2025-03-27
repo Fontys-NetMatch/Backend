@@ -28,6 +28,7 @@ public class ClearDb: IMigration
         query.AppendLine("DROP TABLE IF EXISTS ProductDates;");
         query.AppendLine("DROP TABLE IF EXISTS ProductAddons;");        
         query.AppendLine("DROP TABLE IF EXISTS AddonDates;");
+        query.AppendLine("DROP TABLE IF EXISTS ProductAddonTranslations;");
         query.AppendLine("DELETE FROM Migrations WHERE ClassName != 'ClearDb';");
         query.AppendLine("SET FOREIGN_KEY_CHECKS = 1;");
 

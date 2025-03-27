@@ -1,98 +1,191 @@
-﻿using System.Text.Json;
+﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using TravelPlanner.API.Infrastructure.Extensions;
 using TravelPlanner.API.Response;
 using TravelPlanner.API.Response.Error;
 using TravelPlanner.API.Response.Success;
 using TravelPlanner.Domain.Interfaces.BLL;
-using TravelPlanner.Domain.Models.Entities;
 using TravelPlanner.Domain.Models.Entities.Products;
+using TravelPlanner.Domain.Models.Request.Product;
 
 namespace TravelPlanner.API.Controllers
 {
     public class ProductController : Controller
     {
-        // Container for handling product-related logic
         private readonly IProductContainer _container;
 
-        // Constructor to get the product container
         public ProductController(IProductContainer container)
         {
-            _container = container; // Setting up the product container
+            _container = container;
         }
 
-        // Method to register routes for product operations
         public static void Register(WebApplication app)
         {
-            // POST method to create a new product
+            // Create product endpoint
             app.MapPost("/product/", (
-                HttpContext context,  // Handles the HTTP request
-                [FromBody] Product product,  // Gets the product data from the request body
-                [FromServices] ProductController controller  // Dependency injection for the controller
-            ) => controller.CreateProduct(context, product))  // Calls the method to create a product
-                .WithName("CreateProduct")  // Endpoint name for reference
-                .WithDescription("Create a new product")  // Description of the endpoint
-                .Produces<SuccessResponse>()  // Success response if product is created
-                .Produces<InvalidCredentialsResponse>(StatusCodes.Status400BadRequest)  // Error handling for bad request
-                .Produces<ErrorResponse>(StatusCodes.Status500InternalServerError)  // Error handling for server errors
-                .WithOpenApi();  // Adds to Swagger documentation
+                HttpContext context,
+                [FromBody] ProductData data,
+                [FromServices] ProductController controller
+            ) => controller.CreateProduct(context, data))
+                .WithName("CreateProduct")
+                .WithDescription("Create a new product")
+                .Produces<SuccessResponse>()
+                .Produces<ErrorResponse>(StatusCodes.Status500InternalServerError)
+                .RequiresJwtToken()
+                .WithTags("Product")
+                .WithOpenApi();
+                
 
-            // GET method to fetch a product by its ID
+            // Get product by ID endpoint
             app.MapGet("/product/{id}", (
-                HttpContext context,  // Handles the HTTP request
-                [FromRoute] int id,  // Gets the product ID from the route
-                [FromServices] ProductController controller  // Dependency injection for the controller
-            ) => controller.GetProduct(context, id))  // Calls the method to get the product by ID
-                .WithName("GetProduct")  // Endpoint name for reference
-                .WithDescription("Get a product by ID")  // Description of the endpoint
-                .Produces<Product>()  // Returns the product data
-                .Produces<InvalidCredentialsResponse>(StatusCodes.Status400BadRequest)  // Error handling for bad request
-                .Produces<ErrorResponse>(StatusCodes.Status500InternalServerError)  // Error handling for server errors
-                .WithOpenApi();  // Adds to Swagger documentation
+                HttpContext context,
+                [FromRoute] int id,
+                [FromServices] ProductController controller
+            ) => controller.GetProduct(context, id))
+                .WithName("GetProduct")
+                .WithDescription("Get a product by ID")
+                .Produces<ProductResponse>()
+                .Produces<ErrorResponse>(StatusCodes.Status500InternalServerError)
+                .RequiresJwtToken()
+                .WithTags("Product")
+                .WithOpenApi();
+
+            // Update product endpoint
+            app.MapPut("/product/", (
+                HttpContext context,
+                [FromBody] ProductUpdateData data,
+                [FromServices] ProductController controller
+            ) => controller.UpdateProduct(context, data))
+                .WithName("UpdateProduct")
+                .WithDescription("Update an existing product")
+                .Produces<SuccessResponse>()
+                .Produces<ErrorResponse>(StatusCodes.Status500InternalServerError)
+                .RequiresJwtToken()
+                .WithTags("Product")
+                .WithOpenApi();
+
+            // Soft delete product endpoint
+            app.MapDelete("/product/{id}", (
+                HttpContext context,
+                [FromRoute] int id,
+                [FromServices] ProductController controller
+            ) => controller.SoftDeleteProduct(context, id))
+                .WithName("SoftDeleteProduct")
+                .WithDescription("Soft delete a product by ID")
+                .Produces<SuccessResponse>()
+                .Produces<ErrorResponse>(StatusCodes.Status500InternalServerError)
+                .RequiresJwtToken()
+                .WithTags("Product")
+                .WithOpenApi();
+
+            // Get all active products endpoint
+            app.MapGet("/products/active", (
+                HttpContext context,
+                [FromServices] ProductController controller
+            ) => controller.GetAllActiveProducts(context))
+                .WithName("GetAllActiveProducts")
+                .WithDescription("Get all active products")
+                .Produces<ProductsResponse>()
+                .Produces<ErrorResponse>(StatusCodes.Status500InternalServerError)
+                .RequiresJwtToken()
+                .WithTags("Product")
+                .WithOpenApi();
         }
 
-        // Method to create a product
-        private BaseResponse CreateProduct(HttpContext? context, Product product)
+        private BaseResponse CreateProduct(HttpContext? context, ProductData data)
         {
             try
             {
-                _container.CreateProduct(product);  // Calls the container to create the product
-                return new SuccessResponse("Product created successfully");  // Returns a success message
+                _container.CreateProduct(data).Wait();
+                return new SuccessResponse("Product created successfully");
             }
-            catch (Exception e)  // If an error occurs
+            catch (Exception e)
             {
-                return new ErrorResponse(e.Message);  // Returns an error message
+                return new ErrorResponse(e.Message);
             }
         }
 
-        // Method to get a product by ID
         private BaseResponse GetProduct(HttpContext? context, int id)
         {
             try
             {
-                Product? product = _container.GetProductByIdAsync(id).Result;  // Gets the product by ID from the container
-
-                if (product == null)  // If no product found
+                Product? product = _container.GetProductByIdAsync(id).Result;
+                if (product == null)
                 {
-                    return new ErrorResponse("Product not found");  // Return error if product is not found
+                    return new ErrorResponse("Product not found");
                 }
 
-                // Create a response with the product details
-                ProductResponse response = new ProductResponse(
+                var response = new ProductResponse(
                     product.ID,
                     product.Location,
                     product.Taxes,
                     product.DeletedAt,
                     product.IsActive,
-                    product.ProductType_ID,
-                    "Product found"  // Return message when the product is found
+                    product.ProductType_ID
                 );
 
-                return response;  // Return product details
+                return response;
             }
-            catch (Exception e)  // If an error occurs
+            catch (Exception e)
             {
-                return new ErrorResponse(e.Message);  // Return error message
+                return new ErrorResponse(e.Message);
             }
         }
+
+        private BaseResponse UpdateProduct(HttpContext? context, ProductUpdateData data)
+        {
+            try
+            {
+                _container.UpdateProduct(data).Wait();
+                return new SuccessResponse("Product updated successfully");
+            }
+            catch (Exception e)
+            {
+                return new ErrorResponse(e.Message);
+            }
+        }
+
+        private BaseResponse SoftDeleteProduct(HttpContext? context, int id)
+        {
+            try
+            {
+                _container.SoftDeleteProduct(id).Wait();
+                return new SuccessResponse("Product soft-deleted successfully");
+            }
+            catch (Exception e)
+            {
+                return new ErrorResponse(e.Message);
+            }
+        }
+
+        private BaseResponse GetAllActiveProducts(HttpContext? context)
+        {
+            try
+            {
+                var products = _container.GetAllActiveProductsAsync().Result;
+                if (products.Count == 0)
+                {
+                    return new ErrorResponse("No active products found");
+                }
+
+                // Transform the IEnumerable<Product> to List<ProductResponse>
+                var productResponses = products.Select(product => new ProductResponse(
+                    id: product.ID,
+                    location: product.Location,
+                    taxes: product.Taxes,
+                    deletedAt: product.DeletedAt,
+                    isActive: product.IsActive,
+                    productType_ID: product.ProductType_ID
+                )).ToList();
+
+                // Wrap the list of ProductResponse objects in a ProductsResponse
+                return new ProductsResponse(productResponses, "Active products retrieved successfully");
+            }
+            catch (Exception e)
+            {
+                return new ErrorResponse(e.Message);
+            }
+        }
+
     }
 }

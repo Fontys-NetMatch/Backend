@@ -26,7 +26,9 @@ public class MigrationManager
             return;
         }
 
-        migrations = migrations.OrderBy(t => t.Name.Split('_')[0]).ToList();
+        migrations = migrations.OrderBy(t => long.TryParse(t.Name.Split('_')[0], out var timestamp) ? timestamp : long.MaxValue).ToList();
+
+
 
         foreach (var migration in migrations)
         {

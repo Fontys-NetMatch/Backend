@@ -12,14 +12,10 @@ public class CreateProductTranslationsTable : IMigration
     {
         dbContext.CreateTable<ProductTranslation>(tableOptions: TableOptions.CheckExistence);
 
-        var command = dbContext.CreateCommand();
-
-        command.CommandText = @"
-            ALTER TABLE ProductTranslations
-            ADD CONSTRAINT FK_ProductTranslations_Products
-            FOREIGN KEY (Product_ID)
-            REFERENCES Products(ID)";
-        command.ExecuteNonQuery();
+        DbUtils.GenerateForeignKey(
+            dbContext,
+            "ProductTranslations", "Products", "ID"
+        );
 
     }
 }

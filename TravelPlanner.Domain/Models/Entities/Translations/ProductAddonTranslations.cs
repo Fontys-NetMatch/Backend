@@ -1,12 +1,13 @@
 ﻿using LinqToDB;
 using LinqToDB.Mapping;
+using TravelPlanner.Domain.Models.Entities.Product;
 using TravelPlanner.Domain.Models.Entities.Products;
 
 
 namespace TravelPlanner.Domain.Models.Entities;
 
-[Table("ProductTranslations")]
-public record ProductTranslation
+[Table("ProductAddonTranslations")]
+public record ProductAddonTranslation
 {
 
     [Column, PrimaryKey, Identity]
@@ -25,10 +26,10 @@ public record ProductTranslation
     public bool IsActive { get; set; }
 
     [Column, NotNull]
-    public required int Product_ID { get; set; }
+    public required int ProductAddon_ID { get; set; }
 
-    [Association(ThisKey = nameof(Product_ID), OtherKey = nameof(TravelPlanner.Domain.Models.Entities.Products.Product.ID), CanBeNull = false)]
-    public TravelPlanner.Domain.Models.Entities.Products.Product? Product { get; set; }
+    [Association(ThisKey = nameof(ProductAddon_ID), OtherKey = nameof(ProductAddon.ID), CanBeNull = false)]
+    public required ProductAddon Product { get; set; } 
 
 
 }

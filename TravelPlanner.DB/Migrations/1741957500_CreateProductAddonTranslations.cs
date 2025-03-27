@@ -1,4 +1,5 @@
-﻿using LinqToDB;
+﻿using System.Text;
+using LinqToDB;
 using TravelPlanner.DB;
 using TravelPlanner.DB.Lib;
 using TravelPlanner.DB.Lib.MigrationsManager;
@@ -7,16 +8,19 @@ using TravelPlanner.Domain.Models.Entities.Products;
 
 namespace TravelPlanner.DB.Migrations;
 
-public class ProductImagesTable : IMigration
+public class CreateProductAddonTranslations : IMigration
 {
+
     public void Up(DbContext dbContext)
     {
-        dbContext.CreateTable<ProductImage>(tableOptions: TableOptions.CheckExistence);
+        dbContext.CreateTable<ProductAddonTranslation>(tableOptions: TableOptions.CheckExistence);
 
         DbUtils.GenerateForeignKey(
             dbContext,
-            "ProductImages", "Products", "ID"
+            "ProductAddonTranslations",
+            "ProductAddons",
+            "ID"
         );
-
     }
+
 }

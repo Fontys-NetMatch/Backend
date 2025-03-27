@@ -18,61 +18,61 @@ namespace TravelPlanner.API.Controllers;
 
 public class AuthController
 {
-    // Declare container to interact with the auth logic layer & IAppconfig interface
+
     private readonly IAuthContainer _container;
     private readonly IAppConfig _config;
 
-    // Constructor to initialize the controller with the Auth container & IAppconfig interface
     public AuthController(IAuthContainer container, IAppConfig config)
     {
         _container = container;
         _config = config;
     }
 
-    //Registration of a user
     public static void Register(WebApplication app)
     {
         app.MapPost("/auth/login", (
-                HttpContext context, //HTTP context, handels data return and how it is sent back
-                [FromBody] LoginData data, //Gets data from api request, moves data to LoginData object
-                [FromServices] AuthController controller //Regelt dependancy injection voor controller
-            ) => controller.LoginRequest(context, data)) //Setsup LoginRequest method while spreading out Data
-            .WithName("Login")// Name the endpoint for reference
+                HttpContext context,
+                [FromBody] LoginData data,
+                [FromServices] AuthController controller
+            ) => controller.LoginRequest(context, data))
+            .WithName("Login")
             .WithDescription("Login using your credentials")
-            .Produces<LoginResponse>() //Return of succesfull Data
-            .Produces<InvalidCredentialsResponse>(StatusCodes.Status400BadRequest) //Error handeling, for invalid data
-            .Produces<ErrorResponse>(StatusCodes.Status500InternalServerError) //Error handeling, for internal server problems
-            .WithOpenApi(); //Adds documentation to Swagger
+            .Produces<LoginResponse>()
+            .Produces<InvalidCredentialsResponse>(StatusCodes.Status400BadRequest)
+            .Produces<ErrorResponse>(StatusCodes.Status500InternalServerError)
+            .WithTags("Auth")
+            .WithOpenApi();
         app.MapPost("/auth/register", (
-                HttpContext context, //HTTP context, handels data return and how it is sent back
-                [FromBody] RegisterData data, //Gets data from api request, moves data to LoginData object
-                [FromServices] AuthController controller //Regelt dependancy injection voor controller
-            ) => controller.RegisterRequest(context, data)) //Setup Registerrequest method while spreading out Data
-            .WithName("Register")// Name the endpoint for reference
+                HttpContext context,
+                [FromBody] RegisterData data,
+                [FromServices] AuthController controller
+            ) => controller.RegisterRequest(context, data))
+            .WithName("Register")
             .WithDescription("Register a new user")
-            .Produces<SuccessResponse>() //Return of succesfull Data
-            .Produces<ErrorResponse>(StatusCodes.Status500InternalServerError) //Error handeling, for internal server problems
-            .WithOpenApi(); //Adds documentation to Swagger
+            .Produces<SuccessResponse>()
+            .Produces<ErrorResponse>(StatusCodes.Status500InternalServerError)
+            .WithTags("Auth")
+            .WithOpenApi();
     }
 
     private BaseResponse LoginRequest(HttpContext? context, LoginData data)
     {
         try
         {
-            var user = _container.LoginUser(data); // Call loginUser from IAuthContainer
-            var jwtToken = GenerateJwtToken(user, data.Remember); //Generate JWT Autehtication Token
+            var user = _container.LoginUser(data);
+            var jwtToken = GenerateJwtToken(user, data.Remember);
 
-            var response = new LoginResponse( //Generate response
+            var response = new LoginResponse(
                 "User logged in successfully",
                 new LoginDataObj(jwtToken, user)
             );
             return response;
         }
-        catch (InvalidCredentialsException) // Error handeling, Autethication token
+        catch (InvalidCredentialsException)
         {
             return new InvalidCredentialsResponse();
         }
-        catch (BllException e) // Error handeling from BLL
+        catch (BllException e)
         {
             return new ErrorResponse(e.Message);
         }
@@ -82,10 +82,10 @@ public class AuthController
     {
         try
         {
-            _container.RegisterUser(data); // Call RegisterUser form IAuthContainer
-            return new SuccessResponse("User registered successfully"); // Return SuccesResponse to api caller
+            _container.RegisterUser(data);
+            return new SuccessResponse("User registered successfully");
         }
-        catch (BllException e) //Error handeling form BLL
+        catch (BllException e)
         {
             return new ErrorResponse(e.Message);
         }
@@ -93,7 +93,7 @@ public class AuthController
 
     private string GenerateJwtToken(User user, bool remember = false)
     {
-        var claims = new[] //Generatie van een unieke gebruiker
+        var claims = new[]
         {
             new Claim(JwtRegisteredClaimNames.Sub, user.ID.ToString()),
             new Claim(JwtRegisteredClaimNames.GivenName, user.Firstname),
@@ -102,18 +102,18 @@ public class AuthController
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };
 
-        var secretBytes = Encoding.UTF8.GetBytes(_config.GetJwtConfig().Secret); //Genereerd Bytes voor key
-        var key = new SymmetricSecurityKey(secretBytes); //Generates Key with bytes
-        var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256); //Hashed key
+        var secretBytes = Encoding.UTF8.GetBytes(_config.GetJwtConfig().Secret);
+        var key = new SymmetricSecurityKey(secretBytes);
+        var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-        var token = new JwtSecurityToken( //Generates JwtToken
-            issuer: _config.GetJwtConfig().Issuer, //Backend used as sender
-            audience: _config.GetJwtConfig().Audience, //API caller as audience
-            claims: claims, //Jwttoken user information insert
-            expires: remember ? DateTime.Now.AddMonths(1) : DateTime.Now.AddHours(1), //JWtToken duration
-            signingCredentials: credentials); //JwtToken key insert
+        var token = new JwtSecurityToken(
+            issuer: _config.GetJwtConfig().Issuer,
+            audience: _config.GetJwtConfig().Audience,
+            claims: claims,
+            expires: remember ? DateTime.Now.AddMonths(1) : DateTime.Now.AddHours(1),
+            signingCredentials: credentials);
 
-        return new JwtSecurityTokenHandler().WriteToken(token); //Return Token
+        return new JwtSecurityTokenHandler().WriteToken(token);
     }
 
 }

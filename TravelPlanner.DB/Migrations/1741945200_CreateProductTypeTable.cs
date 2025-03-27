@@ -3,19 +3,15 @@ using TravelPlanner.DB;
 using TravelPlanner.DB.Lib;
 using TravelPlanner.DB.Lib.MigrationsManager;
 using TravelPlanner.Domain.Models.Entities;
+using TravelPlanner.Domain.Models.Entities.Products;
+using TravelPlanner.Domain.Models.Entities.Translations;
 
 namespace TravelPlanner.DB.Migrations;
 
-public class CreateQuotationsTable : IMigration
+public class CreateProductType : IMigration
 {
     public void Up(DbContext dbContext)
     {
-        dbContext.CreateTable<Quotation>(tableOptions: TableOptions.CheckExistence);
-
-        DbUtils.GenerateForeignKey(
-            dbContext,
-            "Quotations", "Customers", "ID"
-        );
-
+        dbContext.CreateTable<ProductType>(tableOptions: TableOptions.CheckExistence);
     }
 }
