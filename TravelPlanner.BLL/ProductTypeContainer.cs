@@ -34,6 +34,19 @@ public class ProductTypeContainer : IProductTypeContainer
             .FirstOrDefaultAsync(p => p.ID == id);
     }
 
+    public async Task<List<ProductType>> GetAll()
+    {
+        var products = await _db.ProductTypes
+            .LoadWith(p => p.Translations)
+            .ToListAsync();
+        if (products == null)
+        {
+            throw new InvalidOperationException("No products found");
+        }
+
+        return products;
+    }
+
     public async Task<List<ProductType>> GetAllActive()
     {
         var products = await _db.ProductTypes

@@ -11,6 +11,7 @@ namespace TravelPlanner.Domain.Interfaces.BLL
 {
     public interface IProductContainer
     {
+        Task<List<Product>> GetAll();
         Task<List<Product>> GetAllActive();
         Task<Product?> GetById(int id);
         Task Create(ProductData product);

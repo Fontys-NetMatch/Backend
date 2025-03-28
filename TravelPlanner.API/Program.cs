@@ -116,6 +116,7 @@ builder.Services.AddTransient<QuotationController>();
 builder.Services.AddSingleton<IAuthContainer, AuthContainer>();
 builder.Services.AddSingleton<IProductContainer, ProductContainer>();
 builder.Services.AddSingleton<IProductTranslationContainer, ProductTranslationContainer>();
+builder.Services.AddSingleton<IProductTypeContainer, ProductTypeContainer>();
 builder.Services.AddSingleton<IQuotationContainer, QuotationContainer>();
 
 // Setup database

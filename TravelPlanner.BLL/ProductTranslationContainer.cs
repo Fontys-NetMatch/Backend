@@ -32,6 +32,19 @@ public class ProductTranslationContainer : IProductTranslationContainer
         return await _db.ProductTranslations.FirstOrDefaultAsync(p => p.ID == id);
     }
 
+    public async Task<List<ProductTranslation>> GetAll()
+    {
+        var translations = await _db.ProductTranslations
+            .Where(p => p.IsActive)
+            .ToListAsync();
+        if (translations == null)
+        {
+            throw new InvalidOperationException("No product translations found");
+        }
+
+        return translations;
+    }
+
     public async Task<List<ProductTranslation>> GetAllActive()
     {
         var translations = await _db.ProductTranslations

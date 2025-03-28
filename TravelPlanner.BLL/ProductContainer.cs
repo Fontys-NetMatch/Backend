@@ -33,6 +33,19 @@ public class ProductContainer : IProductContainer
             .FirstOrDefaultAsync(p => p.ID == id);
     }
 
+    public async Task<List<Product>> GetAll()
+    {
+        var products = await _db.Products
+            .LoadWith(p => p.Translations)
+            .ToListAsync();
+        if (products == null)
+        {
+            throw new InvalidOperationException("No products found");
+        }
+
+        return products;
+    }
+
     public async Task<List<Product>> GetAllActive()
     {
         var products = await _db.Products

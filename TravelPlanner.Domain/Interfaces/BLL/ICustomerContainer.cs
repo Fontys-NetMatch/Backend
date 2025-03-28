@@ -10,9 +10,8 @@ namespace TravelPlanner.Domain.Interfaces.BLL
     public interface ICustomerContainer
     {
         void CreateCustomer(Customer customer);
-        Task<Customer?> GetCustomerByIdAsync(int id);
+        Task<Customer?> GetCustomerById(int id);
         Task UpdateCustomer(Customer customer);
-        Task SoftDeleteCustomer(int id);
-        Task<List<Customer>> GetAllActiveCustomersAsync();
+        Task<List<Customer>> GetAllCustomers();
     }
 }
