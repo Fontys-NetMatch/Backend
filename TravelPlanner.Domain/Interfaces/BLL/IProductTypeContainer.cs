@@ -6,16 +6,19 @@ using System.Threading.Tasks;
 using TravelPlanner.Domain.Models.Entities;
 using TravelPlanner.Domain.Models.Entities.Products;
 using TravelPlanner.Domain.Models.Request.Product;
+using TravelPlanner.Domain.Models.Request.ProductType;
 
 namespace TravelPlanner.Domain.Interfaces.BLL
 {
-    public interface IProductContainer
+    public interface IProductTypeContainer
     {
-        Task<List<Product>> GetAll();
-        Task<List<Product>> GetAllActive();
-        Task<Product?> GetById(int id);
-        Task Create(ProductData product);
-        Task Update(int id, ProductData product);
+
+        Task<List<ProductType>> GetAll();
+        Task<List<ProductType>> GetAllActive();
+        Task<ProductType?> GetById(int id);
+        Task Create(ProductTypeData product);
+        Task Update(int id, ProductTypeData product);
         Task SoftDelete(int id);
+
     }
 }

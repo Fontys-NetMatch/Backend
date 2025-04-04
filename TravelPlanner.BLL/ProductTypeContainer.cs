@@ -9,33 +9,34 @@ using System.Threading.Tasks;
 using TravelPlanner.Domain.Models.Entities.Products;
 using TravelPlanner.Domain.Models.Entities.Translations;
 using TravelPlanner.Domain.Models.Request.Product;
+using TravelPlanner.Domain.Models.Request.ProductType;
 
 namespace TravelPlanner.BLL;
 
-public class ProductContainer : IProductContainer
+public class ProductTypeContainer : IProductTypeContainer
 {
     private readonly DbManager _db;
 
-    public ProductContainer(DbManager db)
+    public ProductTypeContainer(DbManager db)
     {
         _db = db;
     }
 
-    public async Task<Product?> GetById(int id)
+    public async Task<ProductType?> GetById(int id)
     {
         if (id <= 0)
         {
             throw new ArgumentException("Invalid product ID", nameof(id));
         }
 
-        return await _db.Products
+        return await _db.ProductTypes
             .LoadWith(p => p.Translations)
             .FirstOrDefaultAsync(p => p.ID == id);
     }
 
-    public async Task<List<Product>> GetAll()
+    public async Task<List<ProductType>> GetAll()
     {
-        var products = await _db.Products
+        var products = await _db.ProductTypes
             .LoadWith(p => p.Translations)
             .ToListAsync();
         if (products == null)
@@ -46,9 +47,9 @@ public class ProductContainer : IProductContainer
         return products;
     }
 
-    public async Task<List<Product>> GetAllActive()
+    public async Task<List<ProductType>> GetAllActive()
     {
-        var products = await _db.Products
+        var products = await _db.ProductTypes
             .Where(p => p.IsActive)
             .LoadWith(p => p.Translations)
             .ToListAsync();
@@ -60,19 +61,11 @@ public class ProductContainer : IProductContainer
         return products;
     }
 
-    public async Task Create(ProductData data)
+    public async Task Create(ProductTypeData data)
     {
-        if (string.IsNullOrEmpty(data.Location) || data.Taxes <= 0|| data.ProductType_ID <= 0)
+        var productId = await _db.InsertWithInt32IdentityAsync(new ProductType
         {
-            throw new ArgumentException("Invalid product data");
-        }
-
-        var productId = await _db.InsertWithInt32IdentityAsync(new Product
-        {
-            Location = data.Location,
-            Taxes = data.Taxes,
-            IsActive = data.IsActive,
-            ProductType_ID = data.ProductType_ID
+            IsActive = data.IsActive
         });
         if (productId <= 0)
         {
@@ -80,15 +73,11 @@ public class ProductContainer : IProductContainer
         }
     }
 
-    public async Task Update(int id, ProductData data)
+    public async Task Update(int id, ProductTypeData data)
     {
         if (id <= 0)
         {
             throw new ArgumentException("Invalid product ID");
-        }
-        if (string.IsNullOrEmpty(data.Location) || data.Taxes <= 0|| data.ProductType_ID <= 0)
-        {
-            throw new ArgumentException("Invalid product data");
         }
 
         var existingProduct = await GetById(id);
@@ -97,10 +86,7 @@ public class ProductContainer : IProductContainer
             throw new InvalidOperationException("Product does not exist");
         }
 
-        existingProduct.Location = data.Location;
-        existingProduct.Taxes = data.Taxes;
         existingProduct.IsActive = data.IsActive;
-        existingProduct.ProductType_ID = data.ProductType_ID;
 
         var result = await _db.UpdateAsync(existingProduct);
         if (result == 0)

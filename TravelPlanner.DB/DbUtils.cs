@@ -37,4 +37,31 @@ public class DbUtils
         alterCmd.ExecuteNonQuery();
     }
 
+    public static void GenerateUniqueConstraint(
+        DbContext dbContext,
+        string tableName,
+        string colName
+    ){
+        var constraintName = $"UC_{tableName}_{colName}";
+
+        using var checkCmd = dbContext.CreateCommand();
+        checkCmd.CommandText = $@"
+        SELECT COUNT(*)
+        FROM information_schema.TABLE_CONSTRAINTS
+        WHERE CONSTRAINT_NAME = '{constraintName}'
+        AND TABLE_NAME = '{tableName}'";
+
+        var exists = Convert.ToInt32(checkCmd.ExecuteScalar()) > 0;
+
+        if (exists) return;
+
+        using var alterCmd = dbContext.CreateCommand();
+        alterCmd.CommandText = $@"
+            ALTER TABLE {tableName}
+            ADD CONSTRAINT {constraintName}
+            UNIQUE ({colName})";
+
+        alterCmd.ExecuteNonQuery();
+    }
+
 }

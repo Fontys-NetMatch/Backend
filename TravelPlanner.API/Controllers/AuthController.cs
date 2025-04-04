@@ -13,6 +13,7 @@ using TravelPlanner.Domain.Models.Request.Auth;
 using InvalidCredentialsException = TravelPlanner.Domain.Exceptions.InvalidCredentialsException;
 using TravelPlanner.API.Response;
 using TravelPlanner.API.Response.DataObjects;
+using TravelPlanner.API.Response.Success.Auth;
 
 namespace TravelPlanner.API.Controllers;
 

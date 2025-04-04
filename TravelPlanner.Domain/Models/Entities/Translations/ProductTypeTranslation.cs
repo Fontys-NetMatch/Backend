@@ -22,6 +22,9 @@ namespace TravelPlanner.Domain.Models.Entities.Translations
         public string LangIsoCode { get; set; }
 
         [Column, NotNull]
+        public bool IsActive { get; set; }
+
+        [Column, NotNull]
         public required int ProductType_ID { get; set; }
 
         [Association(ThisKey = nameof(ProductType_ID), OtherKey = nameof(ProductType.ID), CanBeNull = false)]

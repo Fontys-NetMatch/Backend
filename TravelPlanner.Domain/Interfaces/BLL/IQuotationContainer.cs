@@ -11,8 +11,9 @@ namespace TravelPlanner.Domain.Interfaces.BLL
     public interface IQuotationContainer
     {
         void CreateQuotation(QuotationData quotation);
-        Task<List<Quotation>> GetAllActiveQuotationsAsync();
-        Task<Quotation?> GetQuotationByIdAsync(int id);
+        Task<List<Quotation>> GetAllQuotations();
+        Task<List<Quotation>> GetAllActiveQuotations();
+        Task<Quotation?> GetQuotationById(int id);
         Task SoftDeleteQuotation(int id);
         Task UpdateQuotation(QuotationUpdateData quotation);
     }

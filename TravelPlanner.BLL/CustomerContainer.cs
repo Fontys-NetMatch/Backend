@@ -43,7 +43,7 @@ public class CustomerContainer : ICustomerContainer
         }
     }
 
-    public async Task<Customer?> GetCustomerByIdAsync(int id)
+    public async Task<Customer?> GetCustomerById(int id)
     {
         if (id <= 0)
         {
@@ -65,7 +65,7 @@ public class CustomerContainer : ICustomerContainer
             throw new ArgumentException("Customer must have a valid ID");
         }
 
-        var existingCustomer = await GetCustomerByIdAsync(customer.ID);
+        var existingCustomer = await GetCustomerById(customer.ID);
         if (existingCustomer == null)
         {
             throw new InvalidOperationException("Customer does not exist and cannot be updated");
@@ -78,37 +78,13 @@ public class CustomerContainer : ICustomerContainer
         }
     }
 
-    public async Task SoftDeleteCustomer(int id)
-    {
-        if (id <= 0)
-        {
-            throw new ArgumentException("Customer ID must be positive", nameof(id));
-        }
-
-        var customer = await GetCustomerByIdAsync(id);
-        if (customer == null)
-        {
-            throw new InvalidOperationException("Customer does not exist and cannot be soft-deleted");
-        }
-
-        if (!customer.IsActive)
-        {
-            throw new InvalidOperationException("Customer is already inactive");
-        }
-
-        customer.IsActive = false;
-        await UpdateCustomer(customer);
-        
-    }
-
-    public async Task<List<Customer>> GetAllActiveCustomersAsync()
+    public async Task<List<Customer>> GetAllCustomers()
     {
         var customers = await _db.Customers
-                        .Where(c => c.IsActive)
                         .ToListAsync();
         if (customers == null || !customers.Any())
         {
-            throw new InvalidOperationException("No active customers found");
+            throw new InvalidOperationException("No customers found");
         }
         return customers;
     }

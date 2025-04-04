@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="2992d869-c680-4c02-a714-9674c7b8f00e" name="TravelPlanner" url="https://api.travelplanner.faab007.nl">
+        <fileTransfer rootFolder="/var/apps/TravelPlanner" accessType="SFTP" host="194.163.180.83" port="6545" sshConfigId="9a88bc64-cc6c-4c64-8064-13b930f9f191" sshConfig="root@194.163.180.83:6545 password">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" keepAliveTimeout="0" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>

@@ -12,7 +12,6 @@ public record BaseResponse
     // ReSharper disable once MemberCanBeProtected.Global
     public int StatusCode { get; init; } = 200;
     public string StatusDescription => GetStatusDescription();
-    public Dictionary<string, object?> Data { get; init; } = new();
 
     protected BaseResponse(string message)
     {
@@ -22,7 +21,6 @@ public record BaseResponse
     public IResult GetResults()
     {
         var json = JsonSerializer.Serialize(this);
-        if (Data.Count == 0) json = json.Replace(""","Data":{}""", "");
 
         return TypedResults.Content(
             json,
