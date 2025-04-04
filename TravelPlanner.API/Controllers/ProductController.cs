@@ -117,8 +117,8 @@ namespace TravelPlanner.API.Controllers
 
                 var response = new ProductResponse(
                     product.ID,
-                    product.Location,
-                    product.Taxes,
+                    product.Departure,
+                    product.Arrival,
                     product.DeletedAt,
                     product.IsActive,
                     product.ProductType_ID,
@@ -157,12 +157,12 @@ namespace TravelPlanner.API.Controllers
                         )).ToList();
 
                     return new ProductResponse(
-                        id: product.ID,
-                        location: product.Location,
-                        taxes: product.Taxes,
-                        deletedAt: product.DeletedAt,
-                        isActive: product.IsActive,
-                        productType_ID: product.ProductType_ID,
+                        product.ID,
+                        product.Departure,
+                        product.Arrival,
+                        product.DeletedAt,
+                        product.IsActive,
+                        product.ProductType_ID,
                         new ProductTranslationsResponse(translations, "Product translations retrieved successfully")
                     );
                 }).ToList();

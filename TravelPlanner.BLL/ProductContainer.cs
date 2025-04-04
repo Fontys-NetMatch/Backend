@@ -62,15 +62,15 @@ public class ProductContainer : IProductContainer
 
     public async Task Create(ProductData data)
     {
-        if (string.IsNullOrEmpty(data.Location) || data.Taxes <= 0|| data.ProductType_ID <= 0)
+        if (data.ProductType_ID <= 0)
         {
-            throw new ArgumentException("Invalid product data");
+            throw new ArgumentException("Invalid product type Id");
         }
 
         var productId = await _db.InsertWithInt32IdentityAsync(new Product
         {
-            Location = data.Location,
-            Taxes = data.Taxes,
+            Departure = data.Departure,
+            Arrival = data.Arrival,
             IsActive = data.IsActive,
             ProductType_ID = data.ProductType_ID
         });
@@ -86,9 +86,9 @@ public class ProductContainer : IProductContainer
         {
             throw new ArgumentException("Invalid product ID");
         }
-        if (string.IsNullOrEmpty(data.Location) || data.Taxes <= 0|| data.ProductType_ID <= 0)
+        if (data.ProductType_ID <= 0)
         {
-            throw new ArgumentException("Invalid product data");
+            throw new ArgumentException("Invalid product type Id");
         }
 
         var existingProduct = await GetById(id);
@@ -97,8 +97,8 @@ public class ProductContainer : IProductContainer
             throw new InvalidOperationException("Product does not exist");
         }
 
-        existingProduct.Location = data.Location;
-        existingProduct.Taxes = data.Taxes;
+        existingProduct.Departure = data.Departure;
+        existingProduct.Arrival = data.Arrival;
         existingProduct.IsActive = data.IsActive;
         existingProduct.ProductType_ID = data.ProductType_ID;
 
