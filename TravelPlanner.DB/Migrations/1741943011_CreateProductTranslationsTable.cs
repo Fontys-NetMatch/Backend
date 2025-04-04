@@ -24,6 +24,12 @@ public class CreateProductTranslationsTable : IMigration
             "ProductTranslations",
             "LangIsoCode"
         );
+        DbUtils.AssignDefaultValue(
+            dbContext,
+            "ProductTranslations",
+            "IsActive",
+            true
+        );
 
     }
 }

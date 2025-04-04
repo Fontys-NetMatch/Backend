@@ -15,7 +15,15 @@ public class CreateProductDatesTable : IMigration
 
         DbUtils.GenerateForeignKey(
             dbContext,
-            "ProductDates", "Products", "ID"
+            "ProductDates",
+            "Products",
+            "ID"
+        );
+        DbUtils.AssignDefaultValue(
+            dbContext,
+            "ProductDates",
+            "IsActive",
+            true
         );
 
     }

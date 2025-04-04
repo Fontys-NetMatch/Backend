@@ -1,4 +1,5 @@
-﻿using LinqToDB;
+﻿using System.ComponentModel;
+using LinqToDB;
 using LinqToDB.Mapping;
 
 namespace TravelPlanner.Domain.Models.Entities;
