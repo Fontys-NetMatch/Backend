@@ -1,5 +1,4 @@
-﻿using LinqToDB;
-using LinqToDB.Mapping;
+﻿using LinqToDB.Mapping;
 
 namespace TravelPlanner.Domain.Models.Entities
 {
@@ -20,8 +19,5 @@ namespace TravelPlanner.Domain.Models.Entities
 
         [Column(Length = 255), Nullable]
         public string? Phone { get; set; }
-
-        [Column, NotNull]
-        public required bool IsActive { get; set; }
     }
 }

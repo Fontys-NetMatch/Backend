@@ -1,6 +1,7 @@
 ﻿using LinqToDB.Mapping;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,6 +21,9 @@ namespace TravelPlanner.Domain.Models.Entities.Translations
 
         [Column(Length = 10), NotNull]
         public string LangIsoCode { get; set; }
+
+        [Column, NotNull]
+        public bool IsActive { get; set; }
 
         [Column, NotNull]
         public required int ProductType_ID { get; set; }

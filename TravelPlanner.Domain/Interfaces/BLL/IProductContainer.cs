@@ -11,10 +11,11 @@ namespace TravelPlanner.Domain.Interfaces.BLL
 {
     public interface IProductContainer
     {
-        Task CreateProduct(ProductData product);
-        Task<List<Product>> GetAllActiveProductsAsync();
-        Task<Product?> GetProductByIdAsync(int id);
-        Task SoftDeleteProduct(int id);
-        Task UpdateProduct(ProductUpdateData product);
+        Task<List<Product>> GetAll();
+        Task<List<Product>> GetAllActive();
+        Task<Product?> GetById(int id);
+        Task Create(ProductData product);
+        Task Update(int id, ProductData product);
+        Task SoftDelete(int id);
     }
 }

@@ -1,4 +1,7 @@
-﻿using LinqToDB.Mapping;
+﻿using System.ComponentModel;
+using LinqToDB;
+using LinqToDB.Mapping;
+using TravelPlanner.Domain.Enums;
 
 namespace TravelPlanner.Domain.Models.Entities;
 
@@ -12,7 +15,7 @@ public record Quotation
     public required string Name { get; set; }
 
     [Column, NotNull]
-    public required bool IsActive { get; set; }
+    public required QuotationStatus Status { get; set; }
 
     [Column, NotNull]
     public required int Customer_ID { get; set; }

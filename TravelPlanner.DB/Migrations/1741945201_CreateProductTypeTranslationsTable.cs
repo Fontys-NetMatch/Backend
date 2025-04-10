@@ -20,6 +20,12 @@ public class CreateProductTypesTranslations : IMigration
             "ProductTypes",
             "ID"
         );
+        DbUtils.AssignDefaultValue(
+            dbContext,
+            "ProductTypeTranslations",
+            "IsActive",
+            true
+        );
 
     }
 }

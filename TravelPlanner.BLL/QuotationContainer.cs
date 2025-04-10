@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using LinqToDB;
 using TravelPlanner.DB;
+using TravelPlanner.Domain.Enums;
 using TravelPlanner.Domain.Models.Entities;
 using TravelPlanner.Domain.Interfaces.BLL;
 using TravelPlanner.Domain.Models.Request.Quotation;
@@ -43,7 +44,7 @@ public class QuotationContainer : IQuotationContainer
         }
     }
 
-    public async Task<Quotation?> GetQuotationByIdAsync(int id)
+    public async Task<Quotation?> GetQuotationById(int id)
     {
         if (id <= 0)
         {
@@ -65,7 +66,7 @@ public class QuotationContainer : IQuotationContainer
             throw new ArgumentException("Quotation must have a valid ID");
         }
 
-        var existingQuotation = await GetQuotationByIdAsync(quotation.ID);
+        var existingQuotation = await GetQuotationById(quotation.ID);
         if (existingQuotation == null)
         {
             throw new InvalidOperationException("Quotation does not exist and cannot be updated");
@@ -85,27 +86,39 @@ public class QuotationContainer : IQuotationContainer
             throw new ArgumentException("Quotation ID must be positive", nameof(id));
         }
 
-        var quotation = await GetQuotationByIdAsync(id);
+        var quotation = await GetQuotationById(id);
         if (quotation == null)
         {
             throw new InvalidOperationException("Quotation does not exist and cannot be soft-deleted");
         }
 
-        if (!quotation.IsActive)
+        if (quotation.Status == QuotationStatus.Archived)
         {
             throw new InvalidOperationException("Quotation is already inactive");
         }
 
-        quotation.IsActive = false;
+        quotation.Status = QuotationStatus.Archived;
         await _db.UpdateAsync(quotation);
     }
 
-    public async Task<List<Quotation>> GetAllActiveQuotationsAsync()
+    public async Task<List<Quotation>> GetAllQuotations()
     {
         var quotations = await _db.Quotations
                                   .LoadWith(q => q.Customer)
-                                  .Where(q => q.IsActive)
                                   .ToListAsync();
+        if (!quotations.Any())
+        {
+            throw new InvalidOperationException("No active quotations found.");
+        }
+        return quotations;
+    }
+
+    public async Task<List<Quotation>> GetAllActiveQuotations()
+    {
+        var quotations = await _db.Quotations
+            .LoadWith(q => q.Customer)
+            .Where(q => q.Status != QuotationStatus.Archived)
+            .ToListAsync();
 
         if (!quotations.Any())
         {
@@ -113,4 +126,5 @@ public class QuotationContainer : IQuotationContainer
         }
         return quotations;
     }
+
 }

@@ -2,10 +2,10 @@
 
 public class ProductData
 {
-    
-    public Dictionary<string, string> NameTranslations { get; set; }
-    public string Location { get; set; }
-    public decimal Taxes { get; set; }
-    public int ProductType_ID { get; set; }
+
+    public required string Departure { get; set; }
+    public required string Arrival { get; set; }
+    public required int ProductType_ID { get; set; }
+    public required bool IsActive { get; set; }
 
 }

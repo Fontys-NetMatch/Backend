@@ -5,6 +5,7 @@ using TravelPlanner.API.Response.Success;
 using TravelPlanner.Domain.Interfaces.BLL;
 using TravelPlanner.Domain.Models.Entities;
 using TravelPlanner.API.Infrastructure.Extensions;
+using TravelPlanner.API.Response.Success.Quotation;
 using TravelPlanner.Domain.Models.Request.Quotation;
 
 namespace TravelPlanner.API.Controllers
@@ -107,7 +108,7 @@ namespace TravelPlanner.API.Controllers
         {
             try
             {
-                Quotation? quotation = _container.GetQuotationByIdAsync(id).Result;
+                Quotation? quotation = _container.GetQuotationById(id).Result;
                 if (quotation == null)
                 {
                     return new ErrorResponse("Quotation not found");
@@ -116,7 +117,7 @@ namespace TravelPlanner.API.Controllers
                 var response = new QuotationResponse(
                     id: quotation.ID,
                     name: quotation.Name,
-                    isActive: quotation.IsActive,
+                    status: quotation.Status,
                     customerId: quotation.Customer_ID,
                     message: "Quotation retrieved successfully"
                 );
@@ -158,18 +159,18 @@ namespace TravelPlanner.API.Controllers
         {
             try
             {
-                var quotations = _container.GetAllActiveQuotationsAsync().Result;
+                var quotations = _container.GetAllActiveQuotations().Result;
                 if (quotations == null || !quotations.Any())
                 {
                     return new ErrorResponse("No active quotations found");
                 }
 
                 // Convert each Quotation to a QuotationResponse
-                var quotationResponses = quotations.Select(q => new QuotationResponse(
-                    id: q.ID,
-                    name: q.Name,
-                    isActive: q.IsActive,
-                    customerId: q.Customer_ID,
+                var quotationResponses = quotations.Select(quotation => new QuotationResponse(
+                    id: quotation.ID,
+                    name: quotation.Name,
+                    status: quotation.Status,
+                    customerId: quotation.Customer_ID,
                     message: "Quotation retrieved successfully"
                 )).ToList();
 

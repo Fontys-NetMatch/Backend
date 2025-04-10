@@ -11,5 +11,18 @@ public class CreateProductsTable: IMigration
     public void Up(DbContext dbContext)
     {
         dbContext.CreateTable<Product>(tableOptions: TableOptions.CheckExistence);
+
+        DbUtils.GenerateForeignKey(
+            dbContext,
+            "Products",
+            "ProductTypes",
+            "ID"
+        );
+        DbUtils.AssignDefaultValue(
+            dbContext,
+            "Products",
+            "IsActive",
+            true
+        );
     }
 }

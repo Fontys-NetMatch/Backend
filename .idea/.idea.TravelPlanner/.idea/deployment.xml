@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="PublishConfigData" serverName="TravelPlanner" remoteFilesAllowedToDisappearOnAutoupload="false">
+    <serverData>
+      <paths name="TravelPlanner">
+        <serverdata>
+          <mappings>
+            <mapping local="$PROJECT_DIR$" web="/" />
+          </mappings>
+          <excludedPaths>
+            <excludedPath local="true" path="$PROJECT_DIR$/.git" />
+            <excludedPath local="true" path="$PROJECT_DIR$/.idea" />
+            <excludedPath local="true" path="$PROJECT_DIR$/TravelPlanner.API/appsettings.Development.json" />
+            <excludedPath local="true" path="$PROJECT_DIR$/TravelPlanner.API/bin" />
+            <excludedPath local="true" path="$PROJECT_DIR$/TravelPlanner.API/obj" />
+            <excludedPath local="true" path="$PROJECT_DIR$/TravelPlanner.BLL/bin" />
+            <excludedPath local="true" path="$PROJECT_DIR$/TravelPlanner.BLL/obj" />
+            <excludedPath local="true" path="$PROJECT_DIR$/TravelPlanner.DB/bin" />
+            <excludedPath local="true" path="$PROJECT_DIR$/TravelPlanner.DB/obj" />
+            <excludedPath local="true" path="$PROJECT_DIR$/TravelPlanner.Domain/bin" />
+            <excludedPath local="true" path="$PROJECT_DIR$/TravelPlanner.Domain/obj" />
+          </excludedPaths>
+        </serverdata>
+      </paths>
+    </serverData>
+  </component>
+</project>

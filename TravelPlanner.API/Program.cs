@@ -105,11 +105,18 @@ builder.Services.AddTransient<DbManager>();
 
 builder.Services.AddTransient<StatusController>();
 builder.Services.AddTransient<AuthController>();
+
 builder.Services.AddTransient<ProductController>();
+builder.Services.AddTransient<ProductTranslationController>();
+
+builder.Services.AddTransient<ProductTypeController>();
+
 builder.Services.AddTransient<QuotationController>();
 
 builder.Services.AddSingleton<IAuthContainer, AuthContainer>();
 builder.Services.AddSingleton<IProductContainer, ProductContainer>();
+builder.Services.AddSingleton<IProductTranslationContainer, ProductTranslationContainer>();
+builder.Services.AddSingleton<IProductTypeContainer, ProductTypeContainer>();
 builder.Services.AddSingleton<IQuotationContainer, QuotationContainer>();
 
 // Setup database

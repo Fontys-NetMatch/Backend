@@ -1,4 +1,4 @@
-﻿namespace TravelPlanner.API.Response.Success
+﻿namespace TravelPlanner.API.Response.Success.Quotation
 {
     public record QuotationsResponse : BaseResponse
     {

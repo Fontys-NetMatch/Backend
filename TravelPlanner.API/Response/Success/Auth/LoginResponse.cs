@@ -1,6 +1,6 @@
 using TravelPlanner.API.Response.DataObjects;
 
-namespace TravelPlanner.API.Response.Success;
+namespace TravelPlanner.API.Response.Success.Auth;
 
 public record LoginResponse : BaseResponse
 {
