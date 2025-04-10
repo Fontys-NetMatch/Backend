@@ -33,22 +33,39 @@ public class AuthContainer: IAuthContainer
 
     public void RegisterUser(RegisterData data)
     {
+        
         var user = _db.Users.FirstOrDefaultAsync(u => u.Email == data.Email).Result;
+
+        if(data.Firstname == "" || data.Surname == "" || data.Email == "" || data.Password == "")
+        {
+            throw new BllException("Please fill in the required fields");
+        }
+
+        if (!data.Email.Contains("@") || !data.Email.Contains("."))
+        {
+            throw new BllException("Invalid email");
+        }
+    
+        
 
         if (user != null)
         {
             throw new BllException("Email already in use");
         }
 
+
+
         var hashPassword = BCrypt.Net.BCrypt.EnhancedHashPassword(data.Password);
-        _db.Insert(new User
-        {
-            Firstname = data.Firstname,
-            Surname = data.Surname,
-            Email = data.Email,
-            IsActive = true,
-            Password = hashPassword
-        });
+     
+            _db.Insert(new User
+            {
+                Firstname = data.Firstname,
+                Surname = data.Surname,
+                Email = data.Email,
+                IsActive = true,
+                Password = hashPassword
+            });
+        
     }
 
 }
