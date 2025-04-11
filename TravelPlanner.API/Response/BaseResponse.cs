@@ -14,7 +14,7 @@ public record BaseResponse
     public string StatusDescription => GetStatusDescription();
     public Dictionary<string, object?> Data { get; init; } = new();
 
-    protected BaseResponse(string message)
+    public BaseResponse(string message)
     {
         Message = message;
     }
