@@ -35,7 +35,7 @@ namespace TravelPlanner.API.Controllers
                 .Produces<ErrorResponse>(StatusCodes.Status500InternalServerError)
                 .RequiresJwtToken()
                 .WithTags("Product")
-                .WithOrder(3)
+                .WithOrder(4)
                 .WithOpenApi();
 
             // GetProduct all active products endpoint
@@ -51,6 +51,19 @@ namespace TravelPlanner.API.Controllers
                 .WithOrder(1)
                 .WithOpenApi();
 
+            // GetProduct all inactive products endpoint
+            app.MapGet("/product/inactive", (
+                    [FromServices] ProductController controller
+                ) => controller.GetAllInactiveProducts())
+                .WithName("GetAllDeletedProducts")
+                .WithDescription("GetProduct all inactive products")
+                .Produces<ProductsResponse>()
+                .Produces<ErrorResponse>(StatusCodes.Status500InternalServerError)
+                .RequiresJwtToken()
+                .WithTags("Product")
+                .WithOrder(2)
+                .WithOpenApi();
+
             // Create product endpoint
             app.MapPost("/product", (
                 [FromBody] ProductData data,
@@ -62,7 +75,7 @@ namespace TravelPlanner.API.Controllers
                 .Produces<ErrorResponse>(StatusCodes.Status500InternalServerError)
                 .RequiresJwtToken()
                 .WithTags("Product")
-                .WithOrder(2)
+                .WithOrder(3)
                 .WithOpenApi();
 
             // Update product endpoint
@@ -77,7 +90,7 @@ namespace TravelPlanner.API.Controllers
                 .Produces<ErrorResponse>(StatusCodes.Status500InternalServerError)
                 .RequiresJwtToken()
                 .WithTags("Product")
-                .WithOrder(4)
+                .WithOrder(5)
                 .WithOpenApi();
 
             // Soft delete product endpoint
@@ -91,7 +104,21 @@ namespace TravelPlanner.API.Controllers
                 .Produces<ErrorResponse>(StatusCodes.Status500InternalServerError)
                 .RequiresJwtToken()
                 .WithTags("Product")
-                .WithOrder(5)
+                .WithOrder(6)
+                .WithOpenApi();
+
+            //Restore product endpoint
+            app.MapPut("/product/restore/{productId:int}", (
+                [FromRoute] int productId,
+                [FromServices] ProductController controller
+           ) => controller.RestoreProduct(productId))
+                .WithName("RestoreProduct")
+                .WithDescription("Restore a product by ID")
+                .Produces<SuccessResponse>()
+                .Produces<ErrorResponse>(StatusCodes.Status500InternalServerError)
+                .RequiresJwtToken()
+                .WithTags("Product")
+                .WithOrder(7)
                 .WithOpenApi();
         }
 
@@ -177,6 +204,50 @@ namespace TravelPlanner.API.Controllers
             }
         }
 
+        private BaseResponse GetAllInactiveProducts()
+        {
+            try
+            {
+                var products = _container.GetAllInactive().Result;
+                if (products.Count == 0)
+                {
+                    return new ErrorResponse("No inactive products found");
+                }
+
+                // Transform the IEnumerable<Product> to List<ProductTypeResponse>
+                var productResponses = products.Select(product =>
+                {
+                    var translations = product.Translations
+                        .Select(translation => new ProductTranslationResponse(
+                            translation.ID,
+                            translation.Product_ID,
+                            translation.LangIsoCode,
+                            translation.Name,
+                            translation.Description,
+                            translation.IsActive
+                        )).ToList();
+
+                    return new ProductResponse(
+                        product.ID,
+                        product.Departure,
+                        product.Arrival,
+                        product.DeletedAt,
+                        product.IsActive,
+                        product.ProductType_ID,
+                        new ProductTranslationsResponse(translations, "Product translations retrieved successfully")
+                    );
+                }).ToList();
+
+                // Wrap the list of ProductTypeResponse objects in a ProductsTypeResponse
+                return new ProductsResponse(productResponses, "Inactive products retrieved successfully");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return new ErrorResponse(e.Message);
+            }
+        }
+
         private BaseResponse CreateProduct(ProductData data)
         {
             try
@@ -209,6 +280,19 @@ namespace TravelPlanner.API.Controllers
             {
                 _container.SoftDelete(id).Wait();
                 return new SuccessResponse("Product soft-deleted successfully");
+            }
+            catch (Exception e)
+            {
+                return new ErrorResponse(e.Message);
+            }
+        }
+
+        private BaseResponse RestoreProduct(int id)
+        {
+            try
+            {
+                _container.Restore(id).Wait();
+                return new SuccessResponse("Product is restored succesfully");
             }
             catch (Exception e)
             {
