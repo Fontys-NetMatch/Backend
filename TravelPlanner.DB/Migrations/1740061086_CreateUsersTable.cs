@@ -13,6 +13,13 @@ public class CreateUsersTable: IMigration
     public void Up(DbContext dbContext)
     {
         dbContext.CreateTable<User>(tableOptions: TableOptions.CheckExistence);
+
+        DbUtils.AssignDefaultValue(
+            dbContext,
+            "Users",
+            "IsActive",
+            true
+        );
     }
 
 }

@@ -1,4 +1,5 @@
-﻿using LinqToDB;
+﻿using System.ComponentModel;
+using LinqToDB;
 using LinqToDB.Mapping;
 
 namespace TravelPlanner.Domain.Models.Entities.Translations;
@@ -18,6 +19,9 @@ public record ProductTranslation
 
     [Column(DataType = DataType.Text, Length = 1000)]
     public string? Description { get; set; }
+
+    [Column(DataType = DataType.Json)]
+    public string[]? Tags { get; set; }
 
     [Column, NotNull]
     public bool IsActive { get; set; }

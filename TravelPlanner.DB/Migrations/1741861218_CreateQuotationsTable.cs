@@ -14,7 +14,9 @@ public class CreateQuotationsTable : IMigration
 
         DbUtils.GenerateForeignKey(
             dbContext,
-            "Quotations", "Customers", "ID"
+            "Quotations",
+            "Customers",
+            "ID"
         );
 
     }

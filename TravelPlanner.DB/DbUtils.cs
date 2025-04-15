@@ -10,6 +10,17 @@ public class DbUtils
         string sourceTableName,
         string targetTableName,
         string targetTableColName
+    )
+    {
+        GenerateForeignKey(dbContext, sourceTableName, targetTableColName, targetTableName, targetTableColName);
+    }
+
+    public static void GenerateForeignKey(
+        DbContext dbContext,
+        string sourceTableName,
+        string sourceTableColName,
+        string targetTableName,
+        string targetTableColName
     ) {
         var constraintName = $"FK_{sourceTableName}_{targetTableName}";
 
@@ -62,6 +73,33 @@ public class DbUtils
             UNIQUE ({colName})";
 
         alterCmd.ExecuteNonQuery();
+    }
+
+    public static void AssignDefaultValue(
+        DbContext dbContext,
+        string tableName,
+        string colNames,
+        object defaultValue
+    )
+    {
+        AssignDefaultValues(dbContext, tableName, [colNames], defaultValue);
+    }
+
+    public static void AssignDefaultValues(
+        DbContext dbContext,
+        string tableName,
+        string[] colNames,
+        object defaultValue
+    ) {
+        foreach (var colName in colNames)
+        {
+            using var cmd = dbContext.CreateCommand();
+            cmd.CommandText = $@"
+                ALTER TABLE {tableName}
+                ALTER COLUMN {colName}
+                SET DEFAULT {defaultValue}";
+            cmd.ExecuteNonQuery();
+        }
     }
 
 }

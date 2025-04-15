@@ -13,5 +13,12 @@ public class CreateProductType : IMigration
     public void Up(DbContext dbContext)
     {
         dbContext.CreateTable<ProductType>(tableOptions: TableOptions.CheckExistence);
+
+        DbUtils.AssignDefaultValue(
+            dbContext,
+            "ProductTypes",
+            "IsActive",
+            true
+        );
     }
 }

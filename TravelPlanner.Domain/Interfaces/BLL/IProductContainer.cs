@@ -13,9 +13,11 @@ namespace TravelPlanner.Domain.Interfaces.BLL
     {
         Task<List<Product>> GetAll();
         Task<List<Product>> GetAllActive();
+        Task<List<Product>> GetAllInactive();
         Task<Product?> GetById(int id);
         Task Create(ProductData product);
         Task Update(int id, ProductData product);
         Task SoftDelete(int id);
+        Task Restore(int id);
     }
 }

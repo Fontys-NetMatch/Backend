@@ -1,4 +1,5 @@
-﻿using LinqToDB;
+﻿using System.ComponentModel;
+using LinqToDB;
 using LinqToDB.Mapping;
 using TravelPlanner.Domain.Models.Entities.Translations;
 
@@ -11,11 +12,11 @@ public record Product
     [Column, PrimaryKey, Identity]
     public int ID { get; set; }
 
-    [Column(Length = 100), NotNull]
-    public string Location { get; set; }
+    [Column(DataType = DataType.Json)]
+    public string? Departure { get; set; }
 
-    [Column, NotNull]
-    public decimal Taxes { get; set; }
+    [Column(DataType = DataType.Json)]
+    public string? Arrival { get; set; }
 
     [Column(DataType = DataType.Int32)]
     public DateTime? DeletedAt { get; set; }

@@ -21,6 +21,13 @@ public class CreateProductAddonTranslations : IMigration
             "ProductAddons",
             "ID"
         );
+        DbUtils.AssignDefaultValue(
+            dbContext,
+            "ProductAddonTranslations",
+            "IsActive",
+            true
+        );
+
     }
 
 }

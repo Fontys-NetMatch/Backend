@@ -15,7 +15,15 @@ public class ProductImagesTable : IMigration
 
         DbUtils.GenerateForeignKey(
             dbContext,
-            "ProductImages", "Products", "ID"
+            "ProductImages",
+            "Products",
+            "ID"
+        );
+        DbUtils.AssignDefaultValue(
+            dbContext,
+            "ProductImages",
+            "IsActive",
+            true
         );
 
     }

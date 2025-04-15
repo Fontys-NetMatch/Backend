@@ -32,10 +32,26 @@ public class ProductTranslationContainer : IProductTranslationContainer
         return await _db.ProductTranslations.FirstOrDefaultAsync(p => p.ID == id);
     }
 
-    public async Task<List<ProductTranslation>> GetAll()
+    public async Task<ProductTranslation?> GetByIdAndIso(int id, string isoCode)
+    {
+        if (id <= 0)
+        {
+            throw new ArgumentException("Invalid product translation ID", nameof(id));
+        }
+        if (isoCode == null)
+        {
+            throw new ArgumentException("Ïnvalid IsoCode", nameof (isoCode));
+        }
+        return await _db.ProductTranslations
+            .Where(p => p.ID == id && p.LangIsoCode == isoCode)
+            .FirstOrDefaultAsync();
+
+    }
+
+    public async Task<List<ProductTranslation>> GetAll(string isoCode)
     {
         var translations = await _db.ProductTranslations
-            .Where(p => p.IsActive)
+            .Where(p => p.LangIsoCode == isoCode)
             .ToListAsync();
         if (translations == null)
         {
@@ -45,10 +61,10 @@ public class ProductTranslationContainer : IProductTranslationContainer
         return translations;
     }
 
-    public async Task<List<ProductTranslation>> GetAllActive()
+    public async Task<List<ProductTranslation>> GetAllActive(string isoCode)
     {
         var translations = await _db.ProductTranslations
-            .Where(p => p.IsActive)
+            .Where(p => p.IsActive && p.LangIsoCode == isoCode)
             .ToListAsync();
         if (translations == null)
         {

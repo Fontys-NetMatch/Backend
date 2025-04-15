@@ -3,8 +3,8 @@
 public class ProductData
 {
 
-    public required string Location { get; set; }
-    public required decimal Taxes { get; set; }
+    public required string Departure { get; set; }
+    public required string Arrival { get; set; }
     public required int ProductType_ID { get; set; }
     public required bool IsActive { get; set; }
 
