@@ -136,6 +136,20 @@ namespace TravelPlanner.API.Controllers
                 .Produces<ErrorResponse>(StatusCodes.Status500InternalServerError)
                 .WithOpenApi();
 
+            // ✅ PUT /product/{id}
+            app.MapPut("/product/{id}", (
+                HttpContext context,
+                [FromRoute] int id,
+                [FromBody] Product product,
+                [FromServices] ProductController controller
+            ) => controller.UpdateProduct(context, id, product))
+                .WithName("UpdateProduct")
+                .WithDescription("Update an existing product")
+                .Produces<SuccessResponse>()
+                .Produces<ErrorResponse>(StatusCodes.Status500InternalServerError)
+                .WithOpenApi();
+
+
             // ✅ GET /product/{id}
             app.MapGet("/product/{id}", (
                 HttpContext context,
@@ -225,6 +239,28 @@ namespace TravelPlanner.API.Controllers
                 return new ErrorResponse(e.Message);
             }
         }
+
+        private BaseResponse UpdateProduct(HttpContext? context, int id, Product updatedProduct)
+        {
+            try
+            {
+                var existing = _container.GetProductByIdAsync(id).Result;
+                if (existing == null)
+                {
+                    return new ErrorResponse("Product not found");
+                }
+
+                updatedProduct.ID = id; // Zorg dat ID correct blijft
+
+                _container.UpdateProduct(updatedProduct);
+                return new SuccessResponse("Product updated successfully");
+            }
+            catch (Exception e)
+            {
+                return new ErrorResponse(e.Message);
+            }
+        }
+
 
     }
 }
