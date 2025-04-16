@@ -1,6 +1,5 @@
 ﻿using TravelPlanner.API.Response.Success.ProductDate;
 using TravelPlanner.API.Response.Success.ProductTranslation;
-using TravelPlanner.Domain.Models.Entities.Products;
 
 namespace TravelPlanner.API.Response.Success.Product;
 
@@ -15,6 +14,7 @@ public record ProductResponseWithDates : ProductResponse
         string? endLocation,
         DateTime? deletedAt,
         int productTypeId,
+        Domain.Models.Entities.Products.ProductType productType,
         List<ProductTranslationResponse> translations,
         List<ProductDateResponse> dates
     ){
@@ -23,6 +23,7 @@ public record ProductResponseWithDates : ProductResponse
         EndLocation = endLocation;
         DeletedAt = deletedAt;
         ProductTypeId = productTypeId;
+        ProductType = productType;
         Translations = translations;
         Dates = dates;
     }

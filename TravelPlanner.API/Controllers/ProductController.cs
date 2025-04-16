@@ -168,6 +168,7 @@ namespace TravelPlanner.API.Controllers
                     product.EndLocation,
                     product.DeletedAt,
                     product.ProductType_ID,
+                    product.ProductType,
                     translations,
                     dates
                 );
@@ -221,6 +222,7 @@ namespace TravelPlanner.API.Controllers
                         product.EndLocation,
                         product.DeletedAt,
                         product.ProductType_ID,
+                        product.ProductType,
                         translations,
                         dates
                     );

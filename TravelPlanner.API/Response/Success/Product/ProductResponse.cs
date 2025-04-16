@@ -13,10 +13,9 @@ public record ProductResponse : BaseResponse
 
     public DateTime? DeletedAt { get; set; }
 
-    public bool IsActive { get; set; }
-
     public int ProductTypeId { get; set; }
-    public int ProductType_ID { get; set; }
+
+    public Domain.Models.Entities.Products.ProductType ProductType { get; set; }
 
     public List<ProductTranslationResponse> Translations { get; set; } = null!;
 
@@ -29,17 +28,16 @@ public record ProductResponse : BaseResponse
         string startLocation,
         string? endLocation,
         DateTime? deletedAt,
-        bool isActive,
         int productTypeId,
+        Domain.Models.Entities.Products.ProductType productType,
         List<ProductTranslationResponse> translations
     ){
         ID = id;
         StartLocation = startLocation;
         EndLocation = endLocation;
         DeletedAt = deletedAt;
-        ProductType_ID = productTypeId;
-        IsActive = isActive;
         ProductTypeId = productTypeId;
+        ProductType = productType;
         Translations = translations;
     }
 
