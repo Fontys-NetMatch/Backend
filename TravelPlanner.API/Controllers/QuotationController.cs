@@ -89,6 +89,30 @@ namespace TravelPlanner.API.Controllers
                 .RequiresJwtToken()
                 .WithTags("Quotation")
                 .WithOpenApi();
+
+            // Download Quotation as PDF
+            app.MapGet("/quotations/{id}/pdf", async (
+                int id,
+                HttpContext context,
+                [FromServices] QuotationController controller
+            ) =>
+            {
+                var pdfBytes = await controller.GetQuotationPdf(id); // This should return byte[]
+                return Results.File(pdfBytes, "application/pdf", $"quotation-{id}.pdf");
+            })
+            .WithName("DownloadQuotationPdf")
+            .WithDescription("Download the quotation as a PDF")
+            .Produces(StatusCodes.Status200OK, contentType: "application/pdf")
+            .Produces<ErrorResponse>(StatusCodes.Status500InternalServerError)
+            .RequiresJwtToken()
+            .WithTags("Quotation")
+            .WithOpenApi();
+        }
+
+        private async Task<byte[]> GetQuotationPdf(int id)
+        {
+            return await _quotationService.GenerateQuotationPdfAsync(id);
+            throw new NotImplementedException();
         }
 
         private BaseResponse CreateQuotation(HttpContext? context, QuotationData quotation)
