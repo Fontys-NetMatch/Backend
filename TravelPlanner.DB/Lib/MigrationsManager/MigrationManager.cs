@@ -1,5 +1,8 @@
 ﻿using System.Reflection;
 using LinqToDB;
+using LinqToDB.Data;
+using LinqToDB.Mapping;
+using Newtonsoft.Json;
 using TravelPlanner.Domain.Models;
 
 namespace TravelPlanner.DB.Lib.MigrationsManager;
@@ -8,6 +11,21 @@ public class MigrationManager
 {
 
     private readonly DbContext _dbContext = new();
+
+    public void RegisterCustomSchemas()
+    {
+        // Register custom schema for List<string> to string conversion
+        MappingSchema.Default.SetConverter<string, List<string>>(
+            str => JsonConvert.DeserializeObject<List<string>>(str) ?? []);
+        MappingSchema.Default.SetConverter<List<string>, DataParameter>(
+            list => new DataParameter("", JsonConvert.SerializeObject(list)));
+
+        // Convert DateTime to unix timestamp
+        MappingSchema.Default.SetConverter<int, DateTime>(
+            unix => DateTimeOffset.FromUnixTimeSeconds(unix).DateTime);
+        MappingSchema.Default.SetConverter<DateTime, DataParameter>(
+            dt => new DataParameter("", new DateTimeOffset(dt).ToUnixTimeSeconds()));
+    }
 
     public void Init(AppConfig config)
     {
@@ -36,6 +54,13 @@ public class MigrationManager
             var migrationName = migration.Name;
             var forceOnDev = migration.GetCustomAttribute<ForceOnDev>() != null;
             var forceMigration = forceOnDev && config.IsDevMode();
+            var devOnly = migration.GetCustomAttribute<DevOnly>() != null;
+
+            if (devOnly && !config.IsDevMode())
+            {
+                Console.WriteLine($"Migration {migrationName} is dev only and will not be applied");
+                continue;
+            }
 
             if (!forceMigration)
             {
