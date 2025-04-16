@@ -1,12 +1,11 @@
-using System.Text.Json.Serialization;
 using LinqToDB.Data;
-using LinqToDB.Mapping;
 using Microsoft.AspNetCore.Authentication.BearerToken;
 using Microsoft.OpenApi.Models;
 using TravelPlanner.API;
 using TravelPlanner.API.Controllers;
 using TravelPlanner.API.Infrastructure;
 using TravelPlanner.API.Infrastructure.Middleware;
+using TravelPlanner.BLL;
 using TravelPlanner.BLL.Container;
 using TravelPlanner.DB;
 using TravelPlanner.DB.Lib;
@@ -114,17 +113,18 @@ builder.Services.AddTransient<ProductTranslationController>();
 builder.Services.AddTransient<ProductTypeController>();
 
 builder.Services.AddTransient<QuotationController>();
+builder.Services.AddTransient<CustomerController>();
 
 builder.Services.AddSingleton<IAuthContainer, AuthContainer>();
 builder.Services.AddSingleton<IProductContainer, ProductContainer>();
 builder.Services.AddSingleton<IProductTranslationContainer, ProductTranslationContainer>();
 builder.Services.AddSingleton<IProductTypeContainer, ProductTypeContainer>();
 builder.Services.AddSingleton<IQuotationContainer, QuotationContainer>();
+builder.Services.AddSingleton<ICustomerContainer, CustomerContainer>();
 
 // Setup database
 DataConnection.DefaultSettings = new DbSettings(config);
 var migrationManager = new MigrationManager();
-migrationManager.RegisterCustomSchemas();
 migrationManager.Init(config);
 
 // Auth
