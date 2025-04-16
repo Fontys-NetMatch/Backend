@@ -6,23 +6,23 @@ using TravelPlanner.Domain.Models.Entities;
 
 namespace TravelPlanner.DB.Migrations;
 
-public class CreateQuotationsTable : IMigration
+public class CreateQuotationProductDates : IMigration
 {
     public void Up(DbContext dbContext)
     {
-        dbContext.CreateTable<Quotation>(tableOptions: TableOptions.CheckExistence);
+        dbContext.CreateTable<QuotationProductDate>(tableOptions: TableOptions.CheckExistence);
 
         DbUtils.GenerateForeignKey(
             dbContext,
-            "Quotations",
-            "Customers",
+            "QuotationProductDates",
+            "ProductDates",
             "ID"
         );
 
         DbUtils.GenerateForeignKey(
             dbContext,
+            "QuotationProductDates",
             "Quotations",
-            "Users",
             "ID"
         );
 

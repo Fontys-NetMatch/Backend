@@ -23,4 +23,10 @@ public record Quotation
     [Association(ThisKey = nameof(Customer_ID), OtherKey = nameof(Customer.ID), CanBeNull = false)]
     public required Customer Customer { get; set; }
 
+    [Column, NotNull]
+    public required int User_ID { get; set; }
+
+    [Association(ThisKey = nameof(User_ID), OtherKey = nameof(User.ID), CanBeNull = false)]
+    public required User User { get; set; }
+
 }
