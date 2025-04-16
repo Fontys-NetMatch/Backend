@@ -92,26 +92,26 @@ namespace TravelPlanner.API.Controllers
 
             // Download Quotation as PDF
             app.MapGet("/quotations/{id}/pdf", async (
-                int id,
-                HttpContext context,
-                [FromServices] QuotationController controller
-            ) =>
+    int id,
+    HttpContext context,
+    [FromServices] QuotationController controller
+) =>
             {
-                var pdfBytes = await controller.GetQuotationPdf(id); // This should return byte[]
-                return Results.File(pdfBytes, "application/pdf", $"quotation-{id}.pdf");
+                var fileContentResult = await controller.GetQuotationPdf(id); // This now returns FileContentResult
+                return Results.File(fileContentResult.FileContents, fileContentResult.ContentType, fileContentResult.FileDownloadName);
             })
-            .WithName("DownloadQuotationPdf")
-            .WithDescription("Download the quotation as a PDF")
-            .Produces(StatusCodes.Status200OK, contentType: "application/pdf")
-            .Produces<ErrorResponse>(StatusCodes.Status500InternalServerError)
-            .RequiresJwtToken()
-            .WithTags("Quotation")
-            .WithOpenApi();
+.WithName("DownloadQuotationPdf")
+.WithDescription("Download the quotation as a PDF")
+.Produces(StatusCodes.Status200OK, contentType: "application/pdf")
+.Produces<ErrorResponse>(StatusCodes.Status500InternalServerError)
+.RequiresJwtToken()
+.WithTags("Quotation")
+.WithOpenApi();
         }
 
-        private async Task<byte[]> GetQuotationPdf(int id)
+        private async Task<FileContentResult> GetQuotationPdf(int id)
         {
-            return await _quotationService.GenerateQuotationPdfAsync(id);
+            return await _container.GeneratePdfAsync(id);
             throw new NotImplementedException();
         }
 

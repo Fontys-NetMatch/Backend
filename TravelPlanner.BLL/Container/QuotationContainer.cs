@@ -1,7 +1,9 @@
 ﻿using LinqToDB;
+using Microsoft.AspNetCore.Mvc;
 using TravelPlanner.DB;
 using TravelPlanner.Domain.Enums;
 using TravelPlanner.Domain.Interfaces.BLL;
+using TravelPlanner.Domain.Interfaces.PDF;
 using TravelPlanner.Domain.Models.Entities;
 using TravelPlanner.Domain.Models.Entities.Products;
 using TravelPlanner.Domain.Models.Request.Quotation;
@@ -11,10 +13,12 @@ namespace TravelPlanner.BLL.Container;
 public class QuotationContainer : IQuotationContainer
 {
     private readonly DbManager _db;
+    private readonly IPDFService pdf;
 
-    public QuotationContainer(DbManager db)
+    public QuotationContainer(DbManager db, IPDFService pdf)
     {
         _db = db;
+        this.pdf = pdf;
     }
 
     public void CreateQuotation(QuotationData quotation)
@@ -127,6 +131,14 @@ public class QuotationContainer : IQuotationContainer
             throw new InvalidOperationException("No active quotations found.");
         }
         return quotations;
+    }
+    public async Task<FileContentResult> GeneratePdfAsync(int id)
+    {
+        var quotation = await GetQuotationById(id);
+        if (quotation == null)
+            throw new InvalidOperationException("Quotation not found");
+
+        return await pdf.GenerateQuotation(quotation);
     }
 
 }

@@ -8,7 +8,7 @@ using TravelPlanner.Domain.Models.Entities.Products;
 
 namespace TravelPlanner.BLL.Service
 {
-    public class QuotationService
+    public class QuotationService : IQuotationService
     {
         private readonly IQuotationContainer _service;
 
