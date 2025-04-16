@@ -52,8 +52,14 @@ namespace TravelPlanner.API.Controllers
                 .WithOpenApi();
 
             // Create product endpoint
+<<<<<<< Updated upstream
             app.MapPost("/product", (
                 [FromBody] ProductData data,
+=======
+            app.MapPost("/product/", (
+                HttpContext context,
+                [FromBody] ProductCreateData data,
+>>>>>>> Stashed changes
                 [FromServices] ProductController controller
             ) => controller.CreateProduct(data))
                 .WithName("CreateProduct")
@@ -95,7 +101,11 @@ namespace TravelPlanner.API.Controllers
                 .WithOpenApi();
         }
 
+<<<<<<< Updated upstream
         private BaseResponse GetProduct(int id)
+=======
+        private BaseResponse CreateProduct(HttpContext? context, ProductCreateData data)
+>>>>>>> Stashed changes
         {
             try
             {
