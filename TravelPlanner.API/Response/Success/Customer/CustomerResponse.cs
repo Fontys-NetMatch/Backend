@@ -1,7 +1,4 @@
-﻿using TravelPlanner.API.Response;
-using TravelPlanner.Domain.Models.Entities;
-
-namespace TravelPlanner.API.Response.Success
+﻿namespace TravelPlanner.API.Response.Success.Customer
 {
     public record CustomerResponse : BaseResponse
     {
@@ -11,7 +8,7 @@ namespace TravelPlanner.API.Response.Success
         public string Email { get; init; }
         public string? Phone { get; init; }
 
-        public CustomerResponse(Customer customer, string message) : base(message)
+        public CustomerResponse(Domain.Models.Entities.Customer customer)
         {
             Id = customer.ID;
             Firstname = customer.Firstname;
