@@ -5,7 +5,7 @@ using TravelPlanner.API;
 using TravelPlanner.API.Controllers;
 using TravelPlanner.API.Infrastructure;
 using TravelPlanner.API.Infrastructure.Middleware;
-using TravelPlanner.BLL;
+using TravelPlanner.BLL.Container;
 using TravelPlanner.DB;
 using TravelPlanner.DB.Lib;
 using TravelPlanner.DB.Lib.MigrationsManager;

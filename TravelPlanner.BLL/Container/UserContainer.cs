@@ -6,7 +6,7 @@ using LinqToDB;
 using TravelPlanner.DB;
 using TravelPlanner.Domain.Models.Entities;
 
-namespace TravelPlanner.BLL;
+namespace TravelPlanner.BLL.Container;
 
 public class UserContainer
 {
@@ -97,7 +97,7 @@ public class UserContainer
 
         user.IsActive = false;
         await UpdateUser(user);
-        
+
     }
 
     public async Task<List<User>> GetAllActiveUsersAsync()

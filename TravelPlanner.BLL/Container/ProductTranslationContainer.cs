@@ -11,7 +11,7 @@ using TravelPlanner.Domain.Models.Entities.Translations;
 using TravelPlanner.Domain.Models.Request.Product;
 using TravelPlanner.Domain.Models.Request.ProductTranslation;
 
-namespace TravelPlanner.BLL;
+namespace TravelPlanner.BLL.Container;
 
 public class ProductTranslationContainer : IProductTranslationContainer
 {
@@ -21,7 +21,7 @@ public class ProductTranslationContainer : IProductTranslationContainer
     {
         _db = db;
     }
-    
+
     public async Task<ProductTranslation?> GetById(int id)
     {
         if (id <= 0)
@@ -40,7 +40,7 @@ public class ProductTranslationContainer : IProductTranslationContainer
         }
         if (isoCode == null)
         {
-            throw new ArgumentException("Ïnvalid IsoCode", nameof (isoCode));
+            throw new ArgumentException("Ïnvalid IsoCode", nameof(isoCode));
         }
         return await _db.ProductTranslations
             .Where(p => p.ID == id && p.LangIsoCode == isoCode)
@@ -101,7 +101,7 @@ public class ProductTranslationContainer : IProductTranslationContainer
         {
             throw new ArgumentException("Invalid product translation ID");
         }
-        if (string.IsNullOrEmpty(data.Name) || string.IsNullOrEmpty(data.Description) )
+        if (string.IsNullOrEmpty(data.Name) || string.IsNullOrEmpty(data.Description))
         {
             throw new ArgumentException("Invalid product translation data");
         }

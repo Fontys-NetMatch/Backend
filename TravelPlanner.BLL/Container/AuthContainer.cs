@@ -5,9 +5,9 @@ using TravelPlanner.Domain.Interfaces.BLL;
 using TravelPlanner.Domain.Models.Entities;
 using TravelPlanner.Domain.Models.Request.Auth;
 
-namespace TravelPlanner.BLL;
+namespace TravelPlanner.BLL.Container;
 
-public class AuthContainer: IAuthContainer
+public class AuthContainer : IAuthContainer
 {
 
     private readonly DbManager _db;
@@ -33,10 +33,10 @@ public class AuthContainer: IAuthContainer
 
     public void RegisterUser(RegisterData data)
     {
-        
+
         var user = _db.Users.FirstOrDefaultAsync(u => u.Email == data.Email).Result;
 
-        if(data.Firstname == "" || data.Surname == "" || data.Email == "" || data.Password == "")
+        if (data.Firstname == "" || data.Surname == "" || data.Email == "" || data.Password == "")
         {
             throw new BllException("Please fill in the required fields");
         }
@@ -45,8 +45,8 @@ public class AuthContainer: IAuthContainer
         {
             throw new BllException("Invalid email");
         }
-    
-        
+
+
 
         if (user != null)
         {
@@ -56,16 +56,16 @@ public class AuthContainer: IAuthContainer
 
 
         var hashPassword = BCrypt.Net.BCrypt.EnhancedHashPassword(data.Password);
-     
-            _db.Insert(new User
-            {
-                Firstname = data.Firstname,
-                Surname = data.Surname,
-                Email = data.Email,
-                IsActive = true,
-                Password = hashPassword
-            });
-        
+
+        _db.Insert(new User
+        {
+            Firstname = data.Firstname,
+            Surname = data.Surname,
+            Email = data.Email,
+            IsActive = true,
+            Password = hashPassword
+        });
+
     }
 
 }
