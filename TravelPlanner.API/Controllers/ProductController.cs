@@ -91,7 +91,7 @@ namespace TravelPlanner.API.Controllers
             // Create product endpoint
             app.MapPost("/product/", (
                 HttpContext context,
-                [FromBody] ProductCreateData data,
+                [FromBody] ProductData data,
                 [FromServices] ProductController controller
             ) => controller.CreateProduct(data))
                 .WithName("CreateProduct")
@@ -258,7 +258,7 @@ namespace TravelPlanner.API.Controllers
         {
             try
             {
-                var products = _container.GetAllInactive().Result;
+                var products = _container.GetAll(new ProductFiltersData()).Result;
                 if (products.Count == 0)
                 {
                     return new ErrorResponse("No inactive products found");
@@ -274,22 +274,23 @@ namespace TravelPlanner.API.Controllers
                             translation.LangIsoCode,
                             translation.Name,
                             translation.Description,
+                            translation.Tags,
                             translation.IsActive
                         )).ToList();
 
                     return new ProductResponse(
                         product.ID,
-                        product.Departure,
-                        product.Arrival,
+                        product.StartLocation,
+                        product.EndLocation,
                         product.DeletedAt,
                         product.IsActive,
                         product.ProductType_ID,
-                        new ProductTranslationsResponse(translations, "Product translations retrieved successfully")
+                        translations
                     );
                 }).ToList();
 
                 // Wrap the list of ProductTypeResponse objects in a ProductsTypeResponse
-                return new ProductsResponse(productResponses, "Inactive products retrieved successfully");
+                return new ProductsResponse(productResponses);
             }
             catch (Exception e)
             {
