@@ -1,16 +1,12 @@
-﻿using System.Diagnostics;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using TravelPlanner.API.Infrastructure.Extensions;
 using TravelPlanner.API.Response;
 using TravelPlanner.API.Response.Error;
 using TravelPlanner.API.Response.Success;
 using TravelPlanner.API.Response.Success.Product;
-using TravelPlanner.API.Response.Success.ProductTranslation;
 using TravelPlanner.API.Response.Success.ProductType;
 using TravelPlanner.API.Response.Success.ProductTypeTranslation;
 using TravelPlanner.Domain.Interfaces.BLL;
-using TravelPlanner.Domain.Models.Entities.Products;
-using TravelPlanner.Domain.Models.Request.Product;
 using TravelPlanner.Domain.Models.Request.ProductType;
 
 namespace TravelPlanner.API.Controllers
@@ -104,7 +100,7 @@ namespace TravelPlanner.API.Controllers
                 var product = _container.GetById(id).Result;
                 if (product == null)
                 {
-                    return new ErrorResponse("ProductType not found");
+                    return new NotFoundResponse("ProductType not found");
                 }
 
                 var translations = product.Translations
@@ -137,7 +133,7 @@ namespace TravelPlanner.API.Controllers
                 var products = _container.GetAllActive().Result;
                 if (products.Count == 0)
                 {
-                    return new ErrorResponse("No active ProductTypes found");
+                    return new NoContentResponse("No active ProductTypes found");
                 }
 
                 // Transform the IEnumerable<Product> to List<ProductTypeResponse>

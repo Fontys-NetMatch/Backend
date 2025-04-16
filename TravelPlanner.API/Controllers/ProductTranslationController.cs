@@ -3,12 +3,7 @@ using TravelPlanner.API.Infrastructure.Extensions;
 using TravelPlanner.API.Response;
 using TravelPlanner.API.Response.Error;
 using TravelPlanner.API.Response.Success;
-using TravelPlanner.API.Response.Success.Product;
-using TravelPlanner.API.Response.Success.ProductTranslation;
 using TravelPlanner.Domain.Interfaces.BLL;
-using TravelPlanner.Domain.Models.Entities.Products;
-using TravelPlanner.Domain.Models.Entities.Translations;
-using TravelPlanner.Domain.Models.Request.Product;
 using TravelPlanner.Domain.Models.Request.ProductTranslation;
 
 namespace TravelPlanner.API.Controllers

@@ -19,10 +19,11 @@ public class CreateProductTranslationsTable : IMigration
             "Products",
             "ID"
         );
+        // TODO: Make this unique key use langisocode and productid
         DbUtils.GenerateUniqueConstraint(
             dbContext,
             "ProductTranslations",
-            "LangIsoCode"
+            ["Product_ID", "LangIsoCode"]
         );
         DbUtils.AssignDefaultValue(
             dbContext,

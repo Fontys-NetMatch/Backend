@@ -29,7 +29,7 @@ namespace TravelPlanner.Domain.Models.Entities.Translations
         public required int ProductType_ID { get; set; }
 
         [Association(ThisKey = nameof(ProductType_ID), OtherKey = nameof(ProductType.ID), CanBeNull = false)]
-        public required ProductType ProductType { get; set; }
+        public ProductType ProductType { get; set; }
 
     }
 }

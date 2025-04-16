@@ -1,4 +1,6 @@
+using System.Text.Json.Serialization;
 using LinqToDB.Data;
+using LinqToDB.Mapping;
 using Microsoft.AspNetCore.Authentication.BearerToken;
 using Microsoft.OpenApi.Models;
 using TravelPlanner.API;
@@ -122,6 +124,7 @@ builder.Services.AddSingleton<IQuotationContainer, QuotationContainer>();
 // Setup database
 DataConnection.DefaultSettings = new DbSettings(config);
 var migrationManager = new MigrationManager();
+migrationManager.RegisterCustomSchemas();
 migrationManager.Init(config);
 
 // Auth
