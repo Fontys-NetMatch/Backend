@@ -33,23 +33,48 @@ public class ProductContainer : IProductContainer
             .FirstOrDefaultAsync(p => p.ID == id);
     }
 
-    public async Task<List<Product>> GetAll()
+    public async Task<List<Product>> GetAll(ProductFiltersData filters)
     {
-        var products = await _db.Products
-            .LoadWith(p => p.Translations)
-            .ToListAsync();
-        if (products == null)
+        var query = _db.Products.AsQueryable();
+
+        if (filters.IsActive != null)
         {
-            throw new InvalidOperationException("No products found");
+            query = query.Where(p => p.IsActive == filters.IsActive);
+        }
+        if(filters.TypeId != null)
+        {
+            query = query.Where(p => p.ProductType_ID == filters.TypeId);
+        }
+        if (filters.StartLocation != null)
+        {
+            query = query.Where(p => p.StartLocation == filters.StartLocation);
+        }
+        if (filters.EndLocation != null)
+        {
+            query = query.Where(p => p.EndLocation != null && p.EndLocation == filters.EndLocation);
+        }
+        if (filters.StartDateTime != null)
+        {
+            query = query.Where(p => p.Dates.Any(d => d.StartDate == filters.StartDateTime));
+        }
+        if (filters.EndDateTime != null)
+        {
+            query = query.Where(p => p.Dates.Any(d => d.EndDate == filters.EndDateTime));
+        }
+        if (filters.MinPrice != null)
+        {
+            query = query.Where(p => p.Dates.Any(d => d.Price >= filters.MinPrice));
+        }
+        if (filters.MaxPrice != null)
+        {
+            query = query.Where(p => p.Dates.Any(d => d.Price <= filters.MaxPrice));
+        }
+        if (filters.MinPeople != null)
+        {
+            query = query.Where(p => p.Dates.Any(d => d.Slots >= filters.MinPeople));
         }
 
-        return products;
-    }
-
-    public async Task<List<Product>> GetAllActive()
-    {
-        var products = await _db.Products
-            .Where(p => p.IsActive)
+        var products = await query
             .LoadWith(p => p.Translations)
             .ToListAsync();
         if (products == null)
@@ -69,8 +94,8 @@ public class ProductContainer : IProductContainer
 
         var productId = await _db.InsertWithInt32IdentityAsync(new Product
         {
-            Departure = data.Departure,
-            Arrival = data.Arrival,
+            StartLocation = data.StartLocation,
+            EndLocation = data.EndLocation,
             IsActive = data.IsActive,
             ProductType_ID = data.ProductType_ID
         });
@@ -97,8 +122,8 @@ public class ProductContainer : IProductContainer
             throw new InvalidOperationException("Product does not exist");
         }
 
-        existingProduct.Departure = data.Departure;
-        existingProduct.Arrival = data.Arrival;
+        existingProduct.StartLocation = data.StartLocation;
+        existingProduct.EndLocation = data.EndLocation;
         existingProduct.IsActive = data.IsActive;
         existingProduct.ProductType_ID = data.ProductType_ID;
 

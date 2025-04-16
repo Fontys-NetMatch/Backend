@@ -111,7 +111,7 @@ namespace TravelPlanner.API.Controllers
                 Quotation? quotation = _container.GetQuotationById(id).Result;
                 if (quotation == null)
                 {
-                    return new ErrorResponse("Quotation not found");
+                    return new NoContentResponse("Quotation not found");
                 }
 
                 var response = new QuotationResponse(
@@ -162,7 +162,7 @@ namespace TravelPlanner.API.Controllers
                 var quotations = _container.GetAllActiveQuotations().Result;
                 if (quotations == null || !quotations.Any())
                 {
-                    return new ErrorResponse("No active quotations found");
+                    return new NoContentResponse("No active quotations found");
                 }
 
                 // Convert each Quotation to a QuotationResponse

@@ -3,8 +3,8 @@
 public class ProductData
 {
 
-    public required string Departure { get; set; }
-    public required string Arrival { get; set; }
+    public required string StartLocation { get; set; }
+    public required string? EndLocation { get; set; }
     public required int ProductType_ID { get; set; }
     public required bool IsActive { get; set; }
 
