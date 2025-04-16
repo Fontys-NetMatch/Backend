@@ -14,7 +14,6 @@ public record ProductResponseWithDates : ProductResponse
         string startLocation,
         string? endLocation,
         DateTime? deletedAt,
-        bool isActive,
         int productTypeId,
         List<ProductTranslationResponse> translations,
         List<ProductDateResponse> dates
@@ -23,7 +22,6 @@ public record ProductResponseWithDates : ProductResponse
         StartLocation = startLocation;
         EndLocation = endLocation;
         DeletedAt = deletedAt;
-        IsActive = isActive;
         ProductTypeId = productTypeId;
         Translations = translations;
         Dates = dates;

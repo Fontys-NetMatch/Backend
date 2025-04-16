@@ -29,7 +29,6 @@ namespace TravelPlanner.Test
                 new Product 
                 { 
                     ID = 1,
-                    IsActive = true,
                     Translations = new List<ProductTranslation>
                     {
                         new ProductTranslation

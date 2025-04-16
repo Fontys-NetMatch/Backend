@@ -37,7 +37,7 @@ public record ProductResponse : BaseResponse
         StartLocation = startLocation;
         EndLocation = endLocation;
         DeletedAt = deletedAt;
-        ProductType_ID = productType_ID;
+        ProductType_ID = productTypeId;
         IsActive = isActive;
         ProductTypeId = productTypeId;
         Translations = translations;
