@@ -30,6 +30,7 @@ public class ProductContainer : IProductContainer
 
         return await _db.Products
             .LoadWith(p => p.ProductType)
+            .LoadWith(p => p.ProductType.Translations)
             .LoadWith(p => p.Translations)
             .LoadWith(p => p.Dates)
             .FirstOrDefaultAsync(p => p.ID == id);
@@ -86,6 +87,7 @@ public class ProductContainer : IProductContainer
 
         var products = await query
             .LoadWith(p => p.ProductType)
+            .LoadWith(p => p.ProductType.Translations)
             .LoadWith(p => p.Translations)
             .LoadWith(p => p.Dates)
             .ToListAsync();
