@@ -172,6 +172,19 @@ namespace TravelPlanner.API.Controllers
                 .WithDescription("Get all active products")
                 .Produces<BaseResponse>()
                 .WithOpenApi();
+
+            // ✅ DELETE (Soft) /product/{id}
+            app.MapDelete("/product/{id}", (
+                HttpContext context,
+                [FromRoute] int id,
+                [FromServices] ProductController controller
+            ) => controller.SoftDeleteProduct(context, id))
+            .WithName("SoftDeleteProduct")
+            .WithDescription("Soft delete a product")
+            .Produces<SuccessResponse>()
+            .Produces<ErrorResponse>(StatusCodes.Status500InternalServerError)
+            .WithOpenApi();
+
         }
 
         // ✅ POST: Create product
@@ -239,6 +252,27 @@ namespace TravelPlanner.API.Controllers
                 return new ErrorResponse(e.Message);
             }
         }
+
+        private BaseResponse SoftDeleteProduct(HttpContext? context, int id)
+        {
+            try
+            {
+                var product = _container.GetProductByIdAsync(id).Result;
+
+                if (product == null)
+                {
+                    return new ErrorResponse("Product niet gevonden");
+                }
+
+                _container.SoftDeleteProduct(id);
+                return new SuccessResponse("Product succesvol verwijderd");
+            }
+            catch (Exception e)
+            {
+                return new ErrorResponse(e.Message);
+            }
+        }
+
 
         private BaseResponse UpdateProduct(HttpContext? context, int id, Product updatedProduct)
         {
