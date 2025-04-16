@@ -324,10 +324,10 @@ public class CreateFakeProducts : IMigration
                 new ProductTranslation { LangIsoCode = "nl", Name = "Kunsttentoonstelling in Stockholm", Description = "Ontdek moderne kunst in Scandinavië.", Tags = new List<string>(){ "tentoonstelling", "kunst", "zweden" }, IsActive = true, Product_ID = 0 }
             },
             ProductDates = [
-                new ProductDate { Price = 9.99, StartDate = DateTime.Now, EndDate = DateTime.Now.AddDays(7), Slots = 100, Product_ID = 0 },
-                new ProductDate { Price = 19.99, StartDate = DateTime.Now.AddDays(10), EndDate = DateTime.Now.AddDays(20), Slots = 80, Product_ID = 0 },
-                new ProductDate { Price = 29.99, StartDate = DateTime.Now.AddDays(30), EndDate = DateTime.Now.AddDays(40), Slots = 60, Product_ID = 0 },
-                new ProductDate { Price = 39.99, StartDate = DateTime.Now.AddDays(50), EndDate = DateTime.Now.AddDays(60), Slots = 40, Product_ID = 0 }
+                new ProductDate { Price = 49.99, StartDate = DateTime.Now, EndDate = DateTime.Now.AddDays(7), Slots = 100, Product_ID = 0 },
+                new ProductDate { Price = 49.99, StartDate = DateTime.Now.AddDays(10), EndDate = DateTime.Now.AddDays(20), Slots = 80, Product_ID = 0 },
+                new ProductDate { Price = 49.99, StartDate = DateTime.Now.AddDays(30), EndDate = DateTime.Now.AddDays(40), Slots = 60, Product_ID = 0 },
+                new ProductDate { Price = 49.99, StartDate = DateTime.Now.AddDays(50), EndDate = DateTime.Now.AddDays(60), Slots = 40, Product_ID = 0 }
             ]
         },
         new FakeProduct
@@ -443,10 +443,10 @@ public class CreateFakeProducts : IMigration
                 new ProductTranslation { LangIsoCode = "nl", Name = "Poolse Expressbus", Description = "Efficiënt reizen tussen Warschau en Krakau.", Tags = new List<string>(){ "bus", "polen", "snel" }, IsActive = true, Product_ID = 0 }
             },
             ProductDates = [
-                new ProductDate { Price = 9.99, StartDate = DateTime.Now, EndDate = DateTime.Now.AddDays(7), Slots = 100, Product_ID = 0 },
-                new ProductDate { Price = 19.99, StartDate = DateTime.Now.AddDays(10), EndDate = DateTime.Now.AddDays(20), Slots = 80, Product_ID = 0 },
+                new ProductDate { Price = 29.99, StartDate = DateTime.Now, EndDate = DateTime.Now.AddDays(7), Slots = 100, Product_ID = 0 },
+                new ProductDate { Price = 29.99, StartDate = DateTime.Now.AddDays(10), EndDate = DateTime.Now.AddDays(20), Slots = 80, Product_ID = 0 },
                 new ProductDate { Price = 29.99, StartDate = DateTime.Now.AddDays(30), EndDate = DateTime.Now.AddDays(40), Slots = 60, Product_ID = 0 },
-                new ProductDate { Price = 39.99, StartDate = DateTime.Now.AddDays(50), EndDate = DateTime.Now.AddDays(60), Slots = 40, Product_ID = 0 }
+                new ProductDate { Price = 29.99, StartDate = DateTime.Now.AddDays(50), EndDate = DateTime.Now.AddDays(60), Slots = 40, Product_ID = 0 }
             ]
         },
         new FakeProduct
