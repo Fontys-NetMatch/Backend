@@ -1,4 +1,5 @@
 ﻿using TravelPlanner.API.Response.Success.ProductTranslation;
+using TravelPlanner.Domain.Models.Entities.Products;
 
 namespace TravelPlanner.API.Response.Success.Product;
 
@@ -7,9 +8,9 @@ public record ProductResponse : BaseResponse
 
     public int ID { get; set; }
 
-    public string? Departure { get; set; }
+    public string StartLocation { get; set; }
 
-    public string? Arrival { get; set; }
+    public string? EndLocation { get; set; }
 
     public DateTime? DeletedAt { get; set; }
 
@@ -19,11 +20,11 @@ public record ProductResponse : BaseResponse
 
     public ProductTranslationsResponse Translations { get; set; }
 
-    public ProductResponse(int id, string? departure, string? arrival, DateTime? deletedAt, bool isActive, int productType_ID, ProductTranslationsResponse translations) : base("Product found")
+    public ProductResponse(int id, string startLocation, string? endLocation, DateTime? deletedAt, bool isActive, int productType_ID, ProductTranslationsResponse translations) : base("Product found")
     {
         ID = id;
-        Departure = departure;
-        Arrival = arrival;
+        StartLocation = startLocation;
+        EndLocation = endLocation;
         DeletedAt = deletedAt;
         IsActive = isActive;
         ProductType_ID = productType_ID;

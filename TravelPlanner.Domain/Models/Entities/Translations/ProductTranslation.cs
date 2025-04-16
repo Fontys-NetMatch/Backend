@@ -21,7 +21,7 @@ public record ProductTranslation
     public string? Description { get; set; }
 
     [Column(DataType = DataType.Json)]
-    public string[]? Tags { get; set; }
+    public List<string>? Tags { get; set; }
 
     [Column, NotNull]
     public bool IsActive { get; set; }

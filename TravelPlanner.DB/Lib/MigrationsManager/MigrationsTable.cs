@@ -1,4 +1,5 @@
-﻿using LinqToDB.Mapping;
+﻿using LinqToDB;
+using LinqToDB.Mapping;
 
 namespace TravelPlanner.DB.Lib.MigrationsManager;
 
@@ -12,7 +13,7 @@ public class MigrationsTable
     [Column(Length = 1000), NotNull]
     public required string ClassName { get; set; }
 
-    [Column, NotNull]
+    [Column(DataType = DataType.Int32), NotNull]
     public DateTime RunAt { get; set; }
 
 }

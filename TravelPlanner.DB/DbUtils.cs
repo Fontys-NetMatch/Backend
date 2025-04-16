@@ -51,9 +51,11 @@ public class DbUtils
     public static void GenerateUniqueConstraint(
         DbContext dbContext,
         string tableName,
-        string colName
-    ){
-        var constraintName = $"UC_{tableName}_{colName}";
+        params string[] colNames
+    )
+    {
+        var columnsPart = string.Join("_", colNames);
+        var constraintName = $"UC_{tableName}_{columnsPart}";
 
         using var checkCmd = dbContext.CreateCommand();
         checkCmd.CommandText = $@"
@@ -63,14 +65,15 @@ public class DbUtils
         AND TABLE_NAME = '{tableName}'";
 
         var exists = Convert.ToInt32(checkCmd.ExecuteScalar()) > 0;
-
         if (exists) return;
+
+        var columnList = string.Join(", ", colNames.Select(c => $"{c}"));
 
         using var alterCmd = dbContext.CreateCommand();
         alterCmd.CommandText = $@"
-            ALTER TABLE {tableName}
-            ADD CONSTRAINT {constraintName}
-            UNIQUE ({colName})";
+        ALTER TABLE {tableName}
+        ADD CONSTRAINT {constraintName}
+        UNIQUE ({columnList})";
 
         alterCmd.ExecuteNonQuery();
     }

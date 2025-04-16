@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using TravelPlanner.API.Infrastructure.Extensions;
 using TravelPlanner.API.Response;
@@ -38,12 +39,34 @@ namespace TravelPlanner.API.Controllers
                 .WithOrder(4)
                 .WithOpenApi();
 
-            // GetProduct all active products endpoint
+            // GetProduct all products endpoint
             app.MapGet("/product", (
+                    [FromQuery] bool? isActive,
+                    [FromQuery] int? typeId,
+                    [FromQuery] string? searchQuery,
+                    [FromQuery] string? startLocation,
+                    [FromQuery] string? endLocation,
+                    [FromQuery] DateTime? startDateTime,
+                    [FromQuery] DateTime? endDateTime,
+                    [FromQuery] int? minPrice,
+                    [FromQuery] int? maxPrice,
+                    [FromQuery] int? minPeople,
                     [FromServices] ProductController controller
-                ) => controller.GetAllActiveProducts())
-                .WithName("GetAllActiveProducts")
-                .WithDescription("GetProduct all active products")
+                ) => controller.GetAllProducts(new ProductFiltersData
+                {
+                    IsActive = isActive,
+                    TypeId = typeId,
+                    SearchQuery = searchQuery,
+                    StartLocation = startLocation,
+                    EndLocation = endLocation,
+                    StartDateTime = startDateTime,
+                    EndDateTime = endDateTime,
+                    MinPrice = minPrice,
+                    MaxPrice = maxPrice,
+                    MinPeople = minPeople
+                }))
+                .WithName("GetAllProducts")
+                .WithDescription("GetProduct all products")
                 .Produces<ProductsResponse>()
                 .Produces<ErrorResponse>(StatusCodes.Status500InternalServerError)
                 .RequiresJwtToken()
@@ -129,7 +152,7 @@ namespace TravelPlanner.API.Controllers
                 var product = _container.GetById(id).Result;
                 if (product == null)
                 {
-                    return new ErrorResponse("Product not found");
+                    return new NotFoundResponse("Product not found");
                 }
 
                 var translations = product.Translations
@@ -144,8 +167,8 @@ namespace TravelPlanner.API.Controllers
 
                 var response = new ProductResponse(
                     product.ID,
-                    product.Departure,
-                    product.Arrival,
+                    product.StartLocation,
+                    product.EndLocation,
                     product.DeletedAt,
                     product.IsActive,
                     product.ProductType_ID,
@@ -160,14 +183,14 @@ namespace TravelPlanner.API.Controllers
             }
         }
 
-        private BaseResponse GetAllActiveProducts()
+        private BaseResponse GetAllProducts(ProductFiltersData filters)
         {
             try
             {
-                var products = _container.GetAllActive().Result;
+                var products = _container.GetAll(filters).Result;
                 if (products.Count == 0)
                 {
-                    return new ErrorResponse("No active products found");
+                    return new NoContentResponse("No products found");
                 }
 
                 // Transform the IEnumerable<Product> to List<ProductTypeResponse>
@@ -181,12 +204,13 @@ namespace TravelPlanner.API.Controllers
                             translation.Name,
                             translation.Description,
                             translation.IsActive
-                        )).ToList();
+                        ))
+                        .ToList();
 
                     return new ProductResponse(
                         product.ID,
-                        product.Departure,
-                        product.Arrival,
+                        product.StartLocation,
+                        product.EndLocation,
                         product.DeletedAt,
                         product.IsActive,
                         product.ProductType_ID,
