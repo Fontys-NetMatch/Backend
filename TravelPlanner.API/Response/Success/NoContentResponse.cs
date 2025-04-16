@@ -3,7 +3,7 @@ namespace TravelPlanner.API.Response.Success;
 public record NoContentResponse : BaseResponse
 {
 
-    public NoContentResponse(string message) : base(message)
+    public NoContentResponse()
     {
         StatusCode = 204;
     }

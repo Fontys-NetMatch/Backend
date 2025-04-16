@@ -7,7 +7,7 @@ public record LoginResponse : BaseResponse
 
     public new LoginDataObj Data { get; init; }
 
-    public LoginResponse(string message, LoginDataObj login) : base(message)
+    public LoginResponse(LoginDataObj login)
     {
         StatusCode = 200;
         Data = login;

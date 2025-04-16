@@ -9,7 +9,7 @@ public record ProductTypeTranslationResponse : BaseResponse
     public string? Name { get; set; }
     public bool IsActive { get; set; }
 
-    public ProductTypeTranslationResponse(int id, int productTypeID, string langIsoCode, string name, bool isActive) : base("Product translation found")
+    public ProductTypeTranslationResponse(int id, int productTypeID, string langIsoCode, string name, bool isActive)
     {
         ID = id;
         ProductType_ID = productTypeID;

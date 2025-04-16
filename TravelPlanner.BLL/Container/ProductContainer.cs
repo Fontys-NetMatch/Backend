@@ -10,7 +10,7 @@ using TravelPlanner.Domain.Models.Entities.Products;
 using TravelPlanner.Domain.Models.Entities.Translations;
 using TravelPlanner.Domain.Models.Request.Product;
 
-namespace TravelPlanner.BLL;
+namespace TravelPlanner.BLL.Container;
 
 public class ProductContainer : IProductContainer
 {
@@ -30,6 +30,7 @@ public class ProductContainer : IProductContainer
 
         return await _db.Products
             .LoadWith(p => p.Translations)
+            .LoadWith(p => p.Dates)
             .FirstOrDefaultAsync(p => p.ID == id);
     }
 
@@ -84,6 +85,7 @@ public class ProductContainer : IProductContainer
 
         var products = await query
             .LoadWith(p => p.Translations)
+            .LoadWith(p => p.Dates)
             .ToListAsync();
         if (products == null)
         {

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TravelPlanner.Domain.Models.Entities;
+using TravelPlanner.Domain.Models.Entities.Products;
 using TravelPlanner.Domain.Models.Request.Quotation;
 
 namespace TravelPlanner.Domain.Interfaces.BLL
@@ -16,5 +17,6 @@ namespace TravelPlanner.Domain.Interfaces.BLL
         Task<Quotation?> GetQuotationById(int id);
         Task SoftDeleteQuotation(int id);
         Task UpdateQuotation(QuotationUpdateData quotation);
+        Task<List<ProductDate>> GetQuotationProducts(int quotationId);
     }
 }

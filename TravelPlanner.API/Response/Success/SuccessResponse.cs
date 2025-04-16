@@ -3,9 +3,12 @@ namespace TravelPlanner.API.Response.Success;
 public record SuccessResponse : BaseResponse
 {
 
-    public SuccessResponse(string message) : base(message)
+    public string Message { get; set; } = "Success";
+
+    public SuccessResponse(string message)
     {
         StatusCode = 200;
+        Message = message;
     }
 
 }

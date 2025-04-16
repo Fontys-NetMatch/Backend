@@ -6,9 +6,9 @@ using TravelPlanner.API.Response;
 using TravelPlanner.API.Response.Error;
 using TravelPlanner.API.Response.Success;
 using TravelPlanner.API.Response.Success.Product;
+using TravelPlanner.API.Response.Success.ProductDate;
 using TravelPlanner.API.Response.Success.ProductTranslation;
 using TravelPlanner.Domain.Interfaces.BLL;
-using TravelPlanner.Domain.Models.Entities.Products;
 using TravelPlanner.Domain.Models.Request.Product;
 
 namespace TravelPlanner.API.Controllers
@@ -74,7 +74,7 @@ namespace TravelPlanner.API.Controllers
                 .WithOpenApi();
 
             // Create product endpoint
-            app.MapPost("/product", (
+            app.MapPost("/product/", (
                 [FromBody] ProductData data,
                 [FromServices] ProductController controller
             ) => controller.CreateProduct(data))
@@ -148,16 +148,28 @@ namespace TravelPlanner.API.Controllers
                         translation.LangIsoCode,
                         translation.Name,
                         translation.Description,
+                        translation.Tags,
                         translation.IsActive
                     )).ToList();
+                var dates = product.Dates
+                    .Select(date => new ProductDateResponse(
+                        date.ID,
+                        date.Price,
+                        date.StartDate,
+                        date.EndDate,
+                        date.Slots,
+                        date.IsActive
+                    ))
+                    .ToList();
 
-                var response = new ProductResponse(
+                var response = new ProductResponseWithDates(
                     product.ID,
                     product.StartLocation,
                     product.EndLocation,
                     product.DeletedAt,
                     product.ProductType_ID,
-                    new ProductTranslationsResponse(translations, "Product translations retrieved successfully")
+                    translations,
+                    dates
                 );
 
                 return response;
@@ -175,7 +187,7 @@ namespace TravelPlanner.API.Controllers
                 var products = _container.GetAll(filters).Result;
                 if (products.Count == 0)
                 {
-                    return new NoContentResponse("No products found");
+                    return new NoContentResponse();
                 }
 
                 // Transform the IEnumerable<Product> to List<ProductTypeResponse>
@@ -188,22 +200,34 @@ namespace TravelPlanner.API.Controllers
                             translation.LangIsoCode,
                             translation.Name,
                             translation.Description,
+                            translation.Tags,
                             translation.IsActive
                         ))
                         .ToList();
+                    var dates = product.Dates
+                        .Select(date => new ProductDateResponse(
+                            date.ID,
+                            date.Price,
+                            date.StartDate,
+                            date.EndDate,
+                            date.Slots,
+                            date.IsActive
+                        ))
+                        .ToList();
 
-                    return new ProductResponse(
+                    return new ProductResponseWithDates(
                         product.ID,
                         product.StartLocation,
                         product.EndLocation,
                         product.DeletedAt,
                         product.ProductType_ID,
-                        new ProductTranslationsResponse(translations, "Product translations retrieved successfully")
+                        translations,
+                        dates
                     );
                 }).ToList();
 
                 // Wrap the list of ProductTypeResponse objects in a ProductsTypeResponse
-                return new ProductsResponse(productResponses, "Active products retrieved successfully");
+                return new ProductsResponseWithDates(productResponses);
             }
             catch (Exception e)
             {
@@ -211,7 +235,6 @@ namespace TravelPlanner.API.Controllers
                 return new ErrorResponse(e.Message);
             }
         }
-
 
         private BaseResponse CreateProduct(ProductData data)
         {

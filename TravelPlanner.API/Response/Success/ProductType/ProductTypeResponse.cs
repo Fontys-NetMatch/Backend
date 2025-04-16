@@ -9,9 +9,9 @@ public record ProductTypeResponse : BaseResponse
 
     public bool IsActive { get; set; }
 
-    public ProductTypeTranslationsResponse Translations { get; set; }
+    public List<ProductTypeTranslationResponse> Translations { get; set; }
 
-    public ProductTypeResponse(int id, bool isActive, ProductTypeTranslationsResponse translations) : base("Product found")
+    public ProductTypeResponse(int id, bool isActive, List<ProductTypeTranslationResponse> translations)
     {
         ID = id;
         IsActive = isActive;
