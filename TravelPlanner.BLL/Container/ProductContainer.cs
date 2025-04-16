@@ -10,7 +10,7 @@ using TravelPlanner.Domain.Models.Entities.Products;
 using TravelPlanner.Domain.Models.Entities.Translations;
 using TravelPlanner.Domain.Models.Request.Product;
 
-namespace TravelPlanner.BLL;
+namespace TravelPlanner.BLL.Container;
 
 public class ProductContainer : IProductContainer
 {
@@ -78,6 +78,20 @@ public class ProductContainer : IProductContainer
         var products = await query
             .LoadWith(p => p.Translations)
             .LoadWith(p => p.Dates)
+            .ToListAsync();
+        if (products == null)
+        {
+            throw new InvalidOperationException("No products found");
+        }
+
+        return products;
+    }
+
+    public async Task<List<Product>> GetAllInactive()
+    {
+        var products = await _db.Products
+            .Where(p => p.IsActive == false)
+            .LoadWith(p => p.Translations)
             .ToListAsync();
         if (products == null)
         {
@@ -164,4 +178,31 @@ public class ProductContainer : IProductContainer
         }
     }
 
+    public async Task Restore(int id)
+    {
+        if (id <= 0)
+        {
+            throw new ArgumentException("Invalid product ID", nameof(id));
+        }
+
+        var product = await GetById(id);
+        if (product == null)
+        {
+            throw new InvalidOperationException("Product does not exist");
+        }
+
+        if (product.DeletedAt == null)
+        {
+            throw new InvalidOperationException("Product is already restored");
+        }
+
+        product.IsActive = true;
+        product.DeletedAt = null;
+
+        var result = await _db.UpdateAsync(product);
+        if (result == 0)
+        {
+            throw new InvalidOperationException("Failed to restore product");
+        }
+    }
 }

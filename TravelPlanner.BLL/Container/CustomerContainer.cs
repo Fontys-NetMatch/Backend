@@ -7,7 +7,7 @@ using TravelPlanner.DB;
 using TravelPlanner.Domain.Interfaces.BLL;
 using TravelPlanner.Domain.Models.Entities;
 
-namespace TravelPlanner.BLL;
+namespace TravelPlanner.BLL.Container;
 
 public class CustomerContainer : ICustomerContainer
 {

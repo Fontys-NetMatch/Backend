@@ -13,11 +13,13 @@ namespace TravelPlanner.Domain.Interfaces.BLL
 {
     public interface IProductTranslationContainer
     {
-        Task<List<ProductTranslation>> GetAll();
-        Task<List<ProductTranslation>> GetAllActive();
+        Task<List<ProductTranslation>> GetAll(string isoCode);
+        Task<List<ProductTranslation>> GetAllActive(string isoCode);
         Task<ProductTranslation?> GetById(int id);
+        Task<ProductTranslation> GetByIdAndIso(int id, string isoCode);
         Task Create(int productId, ProductTranslationData product);
         Task Update(int translationId, ProductTranslationUpdateData product);
         Task Delete(int translationId);
+
     }
 }
