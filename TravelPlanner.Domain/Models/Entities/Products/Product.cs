@@ -16,8 +16,8 @@ public record Product
     [Column, NotNull]
     public decimal Taxes { get; set; }
 
-    [Column(DataType = DataType.Int32), NotNull]
-    public DateTime DeletedAt { get; set; }
+    [Column, Nullable]
+    public DateTime? DeletedAt { get; set; }
 
     [Column, NotNull]
     public bool IsActive { get; set; }

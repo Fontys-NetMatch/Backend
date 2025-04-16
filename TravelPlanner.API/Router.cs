@@ -9,6 +9,7 @@ public class Router
     {
         StatusController.Register(app);
         AuthController.Register(app);
+        
     }
 
 }

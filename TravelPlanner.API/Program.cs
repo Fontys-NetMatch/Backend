@@ -132,13 +132,15 @@ builder.Services.AddAuthentication(option =>
         }
     };
 });
-builder.Services.AddCors();
+/*builder.Services.AddCors();
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 app.UseSwagger();
 app.UseSwaggerUI();
+
+ProductController.Register(app);
 
 app.UseCors(policyBuilder => policyBuilder
     .WithOrigins(config.GetAllowedOrigins())
@@ -151,6 +153,36 @@ app.UseAuthentication();
 app.UseMiddleware<AuthErrorMiddleware>();
 app.UseHttpsRedirection();
 
+_ = new Router(app);
+
+app.Run();*/
+
+builder.Services.AddCors();
+
+var app = builder.Build();
+
+// Swagger
+app.UseSwagger();
+app.UseSwaggerUI();
+
+// HTTPS redirect
+//app.UseHttpsRedirection();
+
+// CORS moet vóór auth!
+app.UseCors(policyBuilder => policyBuilder
+    .WithOrigins(config.GetAllowedOrigins())
+    .AllowAnyMethod()
+    .AllowAnyHeader());
+
+// Authentication en Authorization
+app.UseAuthentication();
+app.UseAuthorization();
+
+// Middleware
+app.UseMiddleware<AuthErrorMiddleware>();
+
+// API-routes
+ProductController.Register(app);
 _ = new Router(app);
 
 app.Run();

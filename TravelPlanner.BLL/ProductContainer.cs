@@ -18,7 +18,7 @@ public class ProductContainer : IProductContainer
         _db = db;
     }
 
-    public void CreateProduct(Product product)
+    /*public void CreateProduct(Product product)
     {
         if (product == null)
         {
@@ -35,7 +35,33 @@ public class ProductContainer : IProductContainer
         {
             throw new InvalidOperationException("Failed to create product in the database");
         }
+    }*/
+
+    public void CreateProduct(Product product)
+    {
+        if (product == null)
+        {
+            throw new ArgumentNullException(nameof(product), "Product cannot be null");
+        }
+
+        if (string.IsNullOrEmpty(product.Location) || product.Taxes <= 0)
+        {
+            throw new ArgumentException("Invalid product data");
+        }
+
+        // ✅ Zorg voor geldige DeletedAt
+        if (product.DeletedAt == default || product.DeletedAt < new DateTime(1000, 1, 1))
+        {
+            product.DeletedAt = DateTime.UtcNow;
+        }
+
+        var result = _db.InsertWithInt32Identity(product);
+        if (result <= 0)
+        {
+            throw new InvalidOperationException("Failed to create product in the database");
+        }
     }
+
 
     public async Task<Product?> GetProductByIdAsync(int id)
     {
