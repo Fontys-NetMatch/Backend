@@ -10,5 +10,6 @@ namespace TravelPlanner.Domain.Interfaces.BLL
         Task Create(ProductData product);
         Task Update(int id, ProductData product);
         Task SoftDelete(int id);
+        Task Restore(int id);
     }
 }

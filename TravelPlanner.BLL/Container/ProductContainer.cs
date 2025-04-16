@@ -30,6 +30,7 @@ public class ProductContainer : IProductContainer
 
         return await _db.Products
             .LoadWith(p => p.Translations)
+            .LoadWith(p => p.Dates)
             .FirstOrDefaultAsync(p => p.ID == id);
     }
 
@@ -37,10 +38,18 @@ public class ProductContainer : IProductContainer
     {
         var query = _db.Products.AsQueryable();
 
-        if (filters.IsActive != null)
+        if (filters.IsDeleted != null)
         {
-            query = query.Where(p => p.IsActive == filters.IsActive);
+            if (!(bool)filters.IsDeleted)
+            {
+                query = query.Where(p => p.DeletedAt == null);
+            }
+            else
+            {
+                query = query.Where(p => p.DeletedAt != null);
+            }
         }
+
         if(filters.TypeId != null)
         {
             query = query.Where(p => p.ProductType_ID == filters.TypeId);
@@ -76,20 +85,7 @@ public class ProductContainer : IProductContainer
 
         var products = await query
             .LoadWith(p => p.Translations)
-            .ToListAsync();
-        if (products == null)
-        {
-            throw new InvalidOperationException("No products found");
-        }
-
-        return products;
-    }
-
-    public async Task<List<Product>> GetAllInactive()
-    {
-        var products = await _db.Products
-            .Where(p => p.IsActive == false)
-            .LoadWith(p => p.Translations)
+            .LoadWith(p => p.Dates)
             .ToListAsync();
         if (products == null)
         {
@@ -110,7 +106,7 @@ public class ProductContainer : IProductContainer
         {
             StartLocation = data.StartLocation,
             EndLocation = data.EndLocation,
-            IsActive = data.IsActive,
+            DeletedAt = data.DeletedAt,
             ProductType_ID = data.ProductType_ID
         });
         if (productId <= 0)
@@ -138,7 +134,7 @@ public class ProductContainer : IProductContainer
 
         existingProduct.StartLocation = data.StartLocation;
         existingProduct.EndLocation = data.EndLocation;
-        existingProduct.IsActive = data.IsActive;
+        existingProduct.DeletedAt = data.DeletedAt;
         existingProduct.ProductType_ID = data.ProductType_ID;
 
         var result = await _db.UpdateAsync(existingProduct);
@@ -166,7 +162,6 @@ public class ProductContainer : IProductContainer
             throw new InvalidOperationException("Product is already deleted");
         }
 
-        product.IsActive = false;
         product.DeletedAt = DateTime.Now;
 
         var result = await _db.UpdateAsync(product);
@@ -194,7 +189,6 @@ public class ProductContainer : IProductContainer
             throw new InvalidOperationException("Product is already restored");
         }
 
-        product.IsActive = true;
         product.DeletedAt = null;
 
         var result = await _db.UpdateAsync(product);

@@ -1,13 +1,10 @@
-﻿using TravelPlanner.API.Response;
-using TravelPlanner.Domain.Models.Entities;
-
-namespace TravelPlanner.API.Response.Success
+﻿namespace TravelPlanner.API.Response.Success.Customer
 {
     public record CustomersResponse : BaseResponse
     {
-        public List<Customer> Customers { get; set; }
+        public List<Domain.Models.Entities.Customer> Customers { get; set; }
 
-        public CustomersResponse(List<Customer> customers, string message) : base(message)
+        public CustomersResponse(List<Domain.Models.Entities.Customer> customers)
         {
             Customers = customers;
         }

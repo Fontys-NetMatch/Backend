@@ -1,14 +1,13 @@
 ﻿using TravelPlanner.API.Response.Success.ProductTranslation;
-using TravelPlanner.Domain.Models.Entities.Products;
 
 namespace TravelPlanner.API.Response.Success.Product;
 
 public record ProductResponse : BaseResponse
 {
 
-    public int ID { get; set; }
+    public int? ID { get; set; }
 
-    public string StartLocation { get; set; }
+    public string StartLocation { get; set; } = null!;
 
     public string? EndLocation { get; set; }
 
@@ -16,18 +15,31 @@ public record ProductResponse : BaseResponse
 
     public bool IsActive { get; set; }
 
+    public int ProductTypeId { get; set; }
     public int ProductType_ID { get; set; }
 
-    public ProductTranslationsResponse Translations { get; set; }
+    public List<ProductTranslationResponse> Translations { get; set; } = null!;
 
-    public ProductResponse(int id, string startLocation, string? endLocation, DateTime? deletedAt, bool isActive, int productType_ID, ProductTranslationsResponse translations) : base("Product found")
+    protected ProductResponse()
     {
+    }
+
+    public ProductResponse(
+        int id,
+        string startLocation,
+        string? endLocation,
+        DateTime? deletedAt,
+        bool isActive,
+        int productTypeId,
+        List<ProductTranslationResponse> translations
+    ){
         ID = id;
         StartLocation = startLocation;
         EndLocation = endLocation;
         DeletedAt = deletedAt;
+        ProductType_ID = productTypeId;
         IsActive = isActive;
-        ProductType_ID = productType_ID;
+        ProductTypeId = productTypeId;
         Translations = translations;
     }
 

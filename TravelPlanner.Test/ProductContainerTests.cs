@@ -1,18 +1,11 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Moq;
 using System.Linq.Expressions;
-using System.Threading.Tasks;
 using LinqToDB;
-using LinqToDB.Data;
-using TravelPlanner.BLL;
-using TravelPlanner.Domain.Interfaces;
+using TravelPlanner.BLL.Container;
 using TravelPlanner.Domain.Models.Entities.Products;
 using TravelPlanner.Domain.Models.Entities.Translations;
-using TravelPlanner.Domain.Models.Request.Product;
 using TravelPlanner.DB;
+using TravelPlanner.Domain.Models.Request.Product;
 
 namespace TravelPlanner.Test
 {
@@ -36,7 +29,6 @@ namespace TravelPlanner.Test
                 new Product 
                 { 
                     ID = 1,
-                    IsActive = true,
                     Translations = new List<ProductTranslation>
                     {
                         new ProductTranslation
@@ -75,7 +67,7 @@ namespace TravelPlanner.Test
             _mockDb.Setup(x => x.Products).Returns(mockTable.Object);
 
             // Act
-            var result = await _container.GetAll();
+            var result = await _container.GetAll(new ProductFiltersData());
 
             // Assert
             Assert.AreEqual(1, result.Count);
@@ -94,7 +86,7 @@ namespace TravelPlanner.Test
             _mockDb.Setup(x => x.Products).Returns(mockTable.Object);
 
             // Act
-            await _container.GetAll();
+            await _container.GetAll(new ProductFiltersData());
         }
 
         [TestMethod]

@@ -4,6 +4,7 @@ using TravelPlanner.API.Infrastructure.Extensions;
 using TravelPlanner.API.Response.Error;
 using TravelPlanner.API.Response.Success;
 using TravelPlanner.API.Response;
+using TravelPlanner.API.Response.Success.Customer;
 using TravelPlanner.Domain.Interfaces.BLL;
 using TravelPlanner.Domain.Models.Entities;
 
@@ -78,7 +79,7 @@ namespace TravelPlanner.API.Controllers
                 var customer = _container.GetCustomerById(id).Result;
                 return customer == null
                     ? new ErrorResponse("Customer not found")
-                    : new CustomerResponse(customer, "Customer retrieved successfully");
+                    : new CustomerResponse(customer);
             }
             catch (Exception e)
             {
@@ -92,7 +93,7 @@ namespace TravelPlanner.API.Controllers
             try
             {
                 var customers = _container.GetAllCustomers().Result;
-                return new CustomersResponse(customers, "Customers retrieved successfully");
+                return new CustomersResponse(customers);
             }
             catch (Exception e)
             {

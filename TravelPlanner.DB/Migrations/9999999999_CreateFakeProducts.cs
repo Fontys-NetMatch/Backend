@@ -18,7 +18,6 @@ public class CreateFakeProducts : IMigration
         new ProductType
         {
             IsActive = true,
-            DeletedAt = null,
             Translations = new List<ProductTypeTranslation>
             {
                 new ProductTypeTranslation { LangIsoCode = "en", Name = "Flight", IsActive = true, ProductType_ID = 0 },
@@ -28,7 +27,6 @@ public class CreateFakeProducts : IMigration
         new ProductType
         {
             IsActive = true,
-            DeletedAt = null,
             Translations = new List<ProductTypeTranslation>
             {
                 new ProductTypeTranslation { LangIsoCode = "en", Name = "Hotel", IsActive = true, ProductType_ID = 0 },
@@ -38,7 +36,6 @@ public class CreateFakeProducts : IMigration
         new ProductType
         {
             IsActive = true,
-            DeletedAt = null,
             Translations = new List<ProductTypeTranslation>
             {
                 new ProductTypeTranslation { LangIsoCode = "en", Name = "Hostel", IsActive = true, ProductType_ID = 0 },
@@ -48,7 +45,6 @@ public class CreateFakeProducts : IMigration
         new ProductType
         {
             IsActive = true,
-            DeletedAt = null,
             Translations = new List<ProductTypeTranslation>
             {
                 new ProductTypeTranslation { LangIsoCode = "en", Name = "Car", IsActive = true, ProductType_ID = 0 },
@@ -58,7 +54,6 @@ public class CreateFakeProducts : IMigration
         new ProductType
         {
             IsActive = true,
-            DeletedAt = null,
             Translations = new List<ProductTypeTranslation>
             {
                 new ProductTypeTranslation { LangIsoCode = "en", Name = "Exhibit", IsActive = true, ProductType_ID = 0 },
@@ -68,7 +63,6 @@ public class CreateFakeProducts : IMigration
         new ProductType
         {
             IsActive = true,
-            DeletedAt = null,
             Translations = new List<ProductTypeTranslation>
             {
                 new ProductTypeTranslation { LangIsoCode = "en", Name = "Cruise", IsActive = true, ProductType_ID = 0 },
@@ -78,7 +72,6 @@ public class CreateFakeProducts : IMigration
         new ProductType
         {
             IsActive = true,
-            DeletedAt = null,
             Translations = new List<ProductTypeTranslation>
             {
                 new ProductTypeTranslation { LangIsoCode = "en", Name = "Bus", IsActive = true, ProductType_ID = 0 },
@@ -88,7 +81,6 @@ public class CreateFakeProducts : IMigration
         new ProductType
         {
             IsActive = true,
-            DeletedAt = null,
             Translations = new List<ProductTypeTranslation>
             {
                 new ProductTypeTranslation { LangIsoCode = "en", Name = "Train", IsActive = true, ProductType_ID = 0 },
@@ -98,7 +90,6 @@ public class CreateFakeProducts : IMigration
         new ProductType
         {
             IsActive = true,
-            DeletedAt = null,
             Translations = new List<ProductTypeTranslation>
             {
                 new ProductTypeTranslation { LangIsoCode = "en", Name = "Restaurant Booking", IsActive = true, ProductType_ID = 0 },
@@ -108,7 +99,6 @@ public class CreateFakeProducts : IMigration
         new ProductType
         {
             IsActive = true,
-            DeletedAt = null,
             Translations = new List<ProductTypeTranslation>
             {
                 new ProductTypeTranslation { LangIsoCode = "en", Name = "Event", IsActive = true, ProductType_ID = 0 },
@@ -118,7 +108,6 @@ public class CreateFakeProducts : IMigration
         new ProductType
         {
             IsActive = true,
-            DeletedAt = null,
             Translations = new List<ProductTypeTranslation>
             {
                 new ProductTypeTranslation { LangIsoCode = "en", Name = "Insurance", IsActive = true, ProductType_ID = 0 },
@@ -128,7 +117,6 @@ public class CreateFakeProducts : IMigration
         new ProductType
         {
             IsActive = true,
-            DeletedAt = null,
             Translations = new List<ProductTypeTranslation>
             {
                 new ProductTypeTranslation { LangIsoCode = "en", Name = "Guided Tour", IsActive = true, ProductType_ID = 0 },
@@ -511,7 +499,6 @@ public class CreateFakeProducts : IMigration
                 StartLocation = product.StartLocation,
                 EndLocation = product.EndLocation,
                 ProductType_ID = productType.ID,
-                IsActive = true,
                 DeletedAt = null
             };
             var productId = dbContext.InsertWithInt32Identity(dbProduct);

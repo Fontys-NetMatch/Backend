@@ -9,8 +9,6 @@ namespace TravelPlanner.Domain.Models.Entities;
 [Table("QuotationProductDates")]
 public record QuotationProductDate
 {
-    [Column, PrimaryKey, Identity]
-    public int ID { get; set; }
 
     [Column, NotNull]
     public required int ProductDate_ID { get; set; }
@@ -22,6 +20,6 @@ public record QuotationProductDate
     public required int Quotation_ID { get; set; }
 
     [Association(ThisKey = nameof(Quotation_ID), OtherKey = nameof(Quotation.ID), CanBeNull = false)]
-    public required Quotation Quotation { get; set; }
+    public Quotation Quotation { get; set; }
 
 }

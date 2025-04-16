@@ -9,7 +9,7 @@ namespace TravelPlanner.API.Response.Success.Quotation
         public QuotationStatus Status { get; set; }
         public int CustomerId { get; set; }
 
-        public QuotationResponse(int id, string name, QuotationStatus status, int customerId, string message): base(message)
+        public QuotationResponse(int id, string name, QuotationStatus status, int customerId)
         {
             Id = id;
             Name = name;

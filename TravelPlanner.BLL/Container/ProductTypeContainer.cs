@@ -108,13 +108,7 @@ public class ProductTypeContainer : IProductTypeContainer
             throw new InvalidOperationException("Product does not exist");
         }
 
-        if (product.DeletedAt != null)
-        {
-            throw new InvalidOperationException("Product is already deleted");
-        }
-
         product.IsActive = false;
-        product.DeletedAt = DateTime.Now;
 
         var result = await _db.UpdateAsync(product);
         if (result == 0)

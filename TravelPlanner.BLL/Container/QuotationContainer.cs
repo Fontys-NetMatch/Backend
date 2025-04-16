@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using LinqToDB;
+﻿using LinqToDB;
 using TravelPlanner.DB;
 using TravelPlanner.Domain.Enums;
-using TravelPlanner.Domain.Models.Entities;
 using TravelPlanner.Domain.Interfaces.BLL;
+using TravelPlanner.Domain.Models.Entities;
+using TravelPlanner.Domain.Models.Entities.Products;
 using TravelPlanner.Domain.Models.Request.Quotation;
 
-namespace TravelPlanner.BLL;
+namespace TravelPlanner.BLL.Container;
 
 public class QuotationContainer : IQuotationContainer
 {
@@ -52,6 +49,11 @@ public class QuotationContainer : IQuotationContainer
         }
 
         return await _db.Quotations.LoadWith(q => q.Customer).FirstOrDefaultAsync(q => q.ID == id);
+    }
+
+    public Task<List<ProductDate>> GetQuotationProducts(int quotationId)
+    {
+        throw new NotImplementedException();
     }
 
     public async Task UpdateQuotation(QuotationUpdateData quotation)

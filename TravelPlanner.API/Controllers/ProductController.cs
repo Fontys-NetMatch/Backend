@@ -6,9 +6,9 @@ using TravelPlanner.API.Response;
 using TravelPlanner.API.Response.Error;
 using TravelPlanner.API.Response.Success;
 using TravelPlanner.API.Response.Success.Product;
+using TravelPlanner.API.Response.Success.ProductDate;
 using TravelPlanner.API.Response.Success.ProductTranslation;
 using TravelPlanner.Domain.Interfaces.BLL;
-using TravelPlanner.Domain.Models.Entities.Products;
 using TravelPlanner.Domain.Models.Request.Product;
 
 namespace TravelPlanner.API.Controllers
@@ -54,7 +54,6 @@ namespace TravelPlanner.API.Controllers
                     [FromServices] ProductController controller
                 ) => controller.GetAllProducts(new ProductFiltersData
                 {
-                    IsActive = isActive,
                     TypeId = typeId,
                     SearchQuery = searchQuery,
                     StartLocation = startLocation,
@@ -74,28 +73,9 @@ namespace TravelPlanner.API.Controllers
                 .WithOrder(1)
                 .WithOpenApi();
 
-            // GetProduct all inactive products endpoint
-            app.MapGet("/product/inactive", (
-                    [FromServices] ProductController controller
-                ) => controller.GetAllInactiveProducts())
-                .WithName("GetAllDeletedProducts")
-                .WithDescription("GetProduct all inactive products")
-                .Produces<ProductsResponse>()
-                .Produces<ErrorResponse>(StatusCodes.Status500InternalServerError)
-                .RequiresJwtToken()
-                .WithTags("Product")
-                .WithOrder(2)
-                .WithOpenApi();
-
             // Create product endpoint
-<<<<<<< Updated upstream
-            app.MapPost("/product", (
-                [FromBody] ProductData data,
-=======
             app.MapPost("/product/", (
-                HttpContext context,
-                [FromBody] ProductCreateData data,
->>>>>>> Stashed changes
+                [FromBody] ProductData data,
                 [FromServices] ProductController controller
             ) => controller.CreateProduct(data))
                 .WithName("CreateProduct")
@@ -151,11 +131,7 @@ namespace TravelPlanner.API.Controllers
                 .WithOpenApi();
         }
 
-<<<<<<< Updated upstream
         private BaseResponse GetProduct(int id)
-=======
-        private BaseResponse CreateProduct(HttpContext? context, ProductCreateData data)
->>>>>>> Stashed changes
         {
             try
             {
@@ -172,17 +148,28 @@ namespace TravelPlanner.API.Controllers
                         translation.LangIsoCode,
                         translation.Name,
                         translation.Description,
+                        translation.Tags,
                         translation.IsActive
                     )).ToList();
+                var dates = product.Dates
+                    .Select(date => new ProductDateResponse(
+                        date.ID,
+                        date.Price,
+                        date.StartDate,
+                        date.EndDate,
+                        date.Slots,
+                        date.IsActive
+                    ))
+                    .ToList();
 
-                var response = new ProductResponse(
+                var response = new ProductResponseWithDates(
                     product.ID,
                     product.StartLocation,
                     product.EndLocation,
                     product.DeletedAt,
-                    product.IsActive,
                     product.ProductType_ID,
-                    new ProductTranslationsResponse(translations, "Product translations retrieved successfully")
+                    translations,
+                    dates
                 );
 
                 return response;
@@ -200,7 +187,7 @@ namespace TravelPlanner.API.Controllers
                 var products = _container.GetAll(filters).Result;
                 if (products.Count == 0)
                 {
-                    return new NoContentResponse("No products found");
+                    return new NoContentResponse();
                 }
 
                 // Transform the IEnumerable<Product> to List<ProductTypeResponse>
@@ -213,67 +200,34 @@ namespace TravelPlanner.API.Controllers
                             translation.LangIsoCode,
                             translation.Name,
                             translation.Description,
+                            translation.Tags,
                             translation.IsActive
                         ))
                         .ToList();
+                    var dates = product.Dates
+                        .Select(date => new ProductDateResponse(
+                            date.ID,
+                            date.Price,
+                            date.StartDate,
+                            date.EndDate,
+                            date.Slots,
+                            date.IsActive
+                        ))
+                        .ToList();
 
-                    return new ProductResponse(
+                    return new ProductResponseWithDates(
                         product.ID,
                         product.StartLocation,
                         product.EndLocation,
                         product.DeletedAt,
-                        product.IsActive,
                         product.ProductType_ID,
-                        new ProductTranslationsResponse(translations, "Product translations retrieved successfully")
+                        translations,
+                        dates
                     );
                 }).ToList();
 
                 // Wrap the list of ProductTypeResponse objects in a ProductsTypeResponse
-                return new ProductsResponse(productResponses, "Active products retrieved successfully");
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                return new ErrorResponse(e.Message);
-            }
-        }
-
-        private BaseResponse GetAllInactiveProducts()
-        {
-            try
-            {
-                var products = _container.GetAllInactive().Result;
-                if (products.Count == 0)
-                {
-                    return new ErrorResponse("No inactive products found");
-                }
-
-                // Transform the IEnumerable<Product> to List<ProductTypeResponse>
-                var productResponses = products.Select(product =>
-                {
-                    var translations = product.Translations
-                        .Select(translation => new ProductTranslationResponse(
-                            translation.ID,
-                            translation.Product_ID,
-                            translation.LangIsoCode,
-                            translation.Name,
-                            translation.Description,
-                            translation.IsActive
-                        )).ToList();
-
-                    return new ProductResponse(
-                        product.ID,
-                        product.Departure,
-                        product.Arrival,
-                        product.DeletedAt,
-                        product.IsActive,
-                        product.ProductType_ID,
-                        new ProductTranslationsResponse(translations, "Product translations retrieved successfully")
-                    );
-                }).ToList();
-
-                // Wrap the list of ProductTypeResponse objects in a ProductsTypeResponse
-                return new ProductsResponse(productResponses, "Inactive products retrieved successfully");
+                return new ProductsResponseWithDates(productResponses);
             }
             catch (Exception e)
             {

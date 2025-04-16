@@ -2,8 +2,12 @@ namespace TravelPlanner.API.Response.Error;
 
 public record ErrorResponse : BaseResponse
 {
-    public ErrorResponse(string message) : base(message)
+
+    public string Message { get; set; } = string.Empty;
+
+    public ErrorResponse(string message)
     {
         StatusCode = 400;
+        Message = message;
     }
 }

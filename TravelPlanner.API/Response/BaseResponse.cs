@@ -7,16 +7,10 @@ namespace TravelPlanner.API.Response;
 public record BaseResponse
 {
     public bool Success => StatusCode is >= 200 and < 300;
-    public string Message { get; init; } = "Unknown error";
 
     // ReSharper disable once MemberCanBeProtected.Global
     public int StatusCode { get; init; } = 200;
     public string StatusDescription => GetStatusDescription();
-
-    protected BaseResponse(string message)
-    {
-        Message = message;
-    }
 
     public IResult GetResults()
     {

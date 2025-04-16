@@ -13,12 +13,5 @@ public class CreateProductAddons : IMigration
     public void Up(DbContext dbContext)
     {
         dbContext.CreateTable<ProductAddon>(tableOptions: TableOptions.CheckExistence);
-
-        DbUtils.AssignDefaultValue(
-            dbContext,
-            "ProductAddons",
-            "IsActive",
-            true
-        );
     }
 }

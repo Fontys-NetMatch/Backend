@@ -8,15 +8,17 @@ public record ProductTranslationResponse : BaseResponse
     public string? LangIsoCode { get; set; }
     public string? Name { get; set; }
     public string? Desciption { get; set; }
+    public List<string>? Tags { get; set; } = new();
     public bool IsActive { get; set; }
 
-    public ProductTranslationResponse(int id, int productID, string langIsoCode, string name, string? desciption, bool isActive) : base("Product translation found")
+    public ProductTranslationResponse(int id, int productID, string langIsoCode, string name, string? desciption, List<string>? tags, bool isActive)
     {
         ID = id;
         Product_ID = productID;
         LangIsoCode = langIsoCode;
         Name = name;
         Desciption = desciption;
+        Tags = tags;
         IsActive = isActive;
     }
 
