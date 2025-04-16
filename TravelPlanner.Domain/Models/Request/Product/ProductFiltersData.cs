@@ -3,7 +3,7 @@
 public class ProductFiltersData
 {
 
-    public bool? IsActive { get; set; }
+    public bool? IsDeleted { get; set; }
     public int? TypeId { get; set; }
     public string? SearchQuery { get; set; }
     public string? StartLocation { get; set; }

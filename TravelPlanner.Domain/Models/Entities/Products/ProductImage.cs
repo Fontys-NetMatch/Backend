@@ -18,9 +18,6 @@ public record ProductImage
     public DateTime DeletedAt { get; set; }
 
     [Column, NotNull]
-    public bool IsActive { get; set; }
-
-    [Column, NotNull]
     public required int Product_ID { get; set; }
 
     [Association(ThisKey = nameof(Product_ID), OtherKey = nameof(Product.ID), CanBeNull = false)]

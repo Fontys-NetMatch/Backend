@@ -14,19 +14,16 @@ public record ProductResponse : BaseResponse
 
     public DateTime? DeletedAt { get; set; }
 
-    public bool IsActive { get; set; }
-
     public int ProductType_ID { get; set; }
 
     public ProductTranslationsResponse Translations { get; set; }
 
-    public ProductResponse(int id, string startLocation, string? endLocation, DateTime? deletedAt, bool isActive, int productType_ID, ProductTranslationsResponse translations) : base("Product found")
+    public ProductResponse(int id, string startLocation, string? endLocation, DateTime? deletedAt, int productType_ID, ProductTranslationsResponse translations) : base("Product found")
     {
         ID = id;
         StartLocation = startLocation;
         EndLocation = endLocation;
         DeletedAt = deletedAt;
-        IsActive = isActive;
         ProductType_ID = productType_ID;
         Translations = translations;
     }

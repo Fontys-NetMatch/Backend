@@ -12,7 +12,7 @@ public record Product
     [Column, PrimaryKey, Identity]
     public int ID { get; set; }
 
-    [Column(DataType = DataType.Text, Length = 1000)]
+    [Column(DataType = DataType.Text, Length = 1000), NotNull]
     public string StartLocation { get; set; }
 
     [Column(DataType = DataType.Text, Length = 1000)]
@@ -20,9 +20,6 @@ public record Product
 
     [Column(DataType = DataType.Int32)]
     public DateTime? DeletedAt { get; set; }
-
-    [Column, NotNull]
-    public bool IsActive { get; set; }
 
     [Column, NotNull]
     public int ProductType_ID { get; set; }

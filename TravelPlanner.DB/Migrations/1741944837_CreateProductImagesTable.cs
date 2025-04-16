@@ -19,12 +19,6 @@ public class ProductImagesTable : IMigration
             "Products",
             "ID"
         );
-        DbUtils.AssignDefaultValue(
-            dbContext,
-            "ProductImages",
-            "IsActive",
-            true
-        );
 
     }
 }

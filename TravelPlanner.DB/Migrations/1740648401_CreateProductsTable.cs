@@ -18,11 +18,6 @@ public class CreateProductsTable: IMigration
             "ProductTypes",
             "ID"
         );
-        DbUtils.AssignDefaultValue(
-            dbContext,
-            "Products",
-            "IsActive",
-            true
-        );
+        
     }
 }
