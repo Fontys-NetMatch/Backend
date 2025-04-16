@@ -5,10 +5,11 @@ using System.Threading.Tasks;
 using LinqToDB;
 using TravelPlanner.DB;
 using TravelPlanner.Domain.Models.Entities;
+using TravelPlanner.Domain.Interfaces.BLL;
 
 namespace TravelPlanner.BLL.Container;
 
-public class UserContainer
+public class UserContainer : IUserContainer
 {
     private readonly DbManager _db;
 
