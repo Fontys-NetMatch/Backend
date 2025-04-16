@@ -1,6 +1,6 @@
 namespace TravelPlanner.API.Response.Error;
 
-public record UnauthorizedResponse : BaseResponse
+public record UnauthorizedResponse : ErrorResponse
 {
     public UnauthorizedResponse(string message) : base(message)
     {

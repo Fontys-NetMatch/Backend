@@ -115,7 +115,7 @@ namespace TravelPlanner.API.Controllers
                 var response = new ProductTypeResponse(
                     product.ID,
                     product.IsActive,
-                    new ProductTypeTranslationsResponse(translations, "ProductType translations retrieved successfully")
+                    translations
                 );
 
                 return response;
@@ -133,7 +133,7 @@ namespace TravelPlanner.API.Controllers
                 var products = _container.GetAllActive().Result;
                 if (products.Count == 0)
                 {
-                    return new NoContentResponse("No active ProductTypes found");
+                    return new NoContentResponse();
                 }
 
                 // Transform the IEnumerable<Product> to List<ProductTypeResponse>
@@ -151,12 +151,12 @@ namespace TravelPlanner.API.Controllers
                     return new ProductTypeResponse(
                         id: product.ID,
                         isActive: product.IsActive,
-                        new ProductTypeTranslationsResponse(translations, "ProductType translations retrieved successfully")
+                        translations
                     );
                 }).ToList();
 
                 // Wrap the list of ProductTypeResponse objects in a ProductsTypeResponse
-                return new ProductsTypeResponse(productTypeResponses, "Active ProductTypes retrieved successfully");
+                return new ProductsTypeResponse(productTypeResponses);
             }
             catch (Exception e)
             {

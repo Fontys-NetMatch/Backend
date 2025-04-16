@@ -111,15 +111,14 @@ namespace TravelPlanner.API.Controllers
                 Quotation? quotation = _container.GetQuotationById(id).Result;
                 if (quotation == null)
                 {
-                    return new NoContentResponse("Quotation not found");
+                    return new NoContentResponse();
                 }
 
                 var response = new QuotationResponse(
                     id: quotation.ID,
                     name: quotation.Name,
                     status: quotation.Status,
-                    customerId: quotation.Customer_ID,
-                    message: "Quotation retrieved successfully"
+                    customerId: quotation.Customer_ID
                 );
                 return response;
             }
@@ -160,9 +159,9 @@ namespace TravelPlanner.API.Controllers
             try
             {
                 var quotations = _container.GetAllActiveQuotations().Result;
-                if (quotations == null || !quotations.Any())
+                if (quotations.Count == 0)
                 {
-                    return new NoContentResponse("No active quotations found");
+                    return new NoContentResponse();
                 }
 
                 // Convert each Quotation to a QuotationResponse
@@ -170,11 +169,10 @@ namespace TravelPlanner.API.Controllers
                     id: quotation.ID,
                     name: quotation.Name,
                     status: quotation.Status,
-                    customerId: quotation.Customer_ID,
-                    message: "Quotation retrieved successfully"
+                    customerId: quotation.Customer_ID
                 )).ToList();
 
-                return new QuotationsResponse(quotationResponses, "Active quotations retrieved successfully");
+                return new QuotationsResponse(quotationResponses);
             }
             catch (Exception ex)
             {

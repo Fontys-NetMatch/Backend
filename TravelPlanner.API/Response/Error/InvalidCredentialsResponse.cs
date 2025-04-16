@@ -1,6 +1,6 @@
 ﻿namespace TravelPlanner.API.Response.Error;
 
-public record InvalidCredentialsResponse : BaseResponse
+public record InvalidCredentialsResponse : ErrorResponse
 {
     public InvalidCredentialsResponse() : base("Invalid credentials")
     {

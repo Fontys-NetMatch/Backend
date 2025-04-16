@@ -4,7 +4,7 @@
     {
         public List<QuotationResponse> Quotations { get; set; }
 
-        public QuotationsResponse(List<QuotationResponse> quotations, string message) : base(message)
+        public QuotationsResponse(List<QuotationResponse> quotations)
         {
             Quotations = quotations;
         }

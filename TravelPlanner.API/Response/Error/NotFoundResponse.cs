@@ -1,6 +1,6 @@
 namespace TravelPlanner.API.Response.Error;
 
-public record NotFoundResponse : BaseResponse
+public record NotFoundResponse : ErrorResponse
 {
     public NotFoundResponse(string message) : base(message)
     {

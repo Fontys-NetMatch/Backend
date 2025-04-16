@@ -4,7 +4,7 @@ public record ProductsTypeResponse : BaseResponse
 {
     public List<ProductTypeResponse> ProductTypes { get; set; }
 
-    public ProductsTypeResponse(List<ProductTypeResponse> productTypes, string message) : base(message)
+    public ProductsTypeResponse(List<ProductTypeResponse> productTypes)
     {
         ProductTypes = productTypes;
     }

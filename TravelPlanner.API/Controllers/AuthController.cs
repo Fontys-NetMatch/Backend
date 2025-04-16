@@ -64,7 +64,6 @@ public class AuthController
             var jwtToken = GenerateJwtToken(user, data.Remember);
 
             var response = new LoginResponse(
-                "User logged in successfully",
                 new LoginDataObj(jwtToken, user)
             );
             return response;

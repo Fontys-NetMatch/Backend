@@ -1,6 +1,6 @@
 namespace TravelPlanner.API.Response.Error;
 
-public record ValidationErrorResponse : BaseResponse
+public record ValidationErrorResponse : ErrorResponse
 {
     public List<string> Errors { get; set; }
 
