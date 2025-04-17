@@ -55,9 +55,14 @@ public class QuotationContainer : IQuotationContainer
         return await _db.Quotations.LoadWith(q => q.Customer).FirstOrDefaultAsync(q => q.ID == id);
     }
 
-    public Task<List<ProductDate>> GetQuotationProducts(int quotationId)
+    public async Task<List<ProductDate>> GetQuotationProducts(int quotationId)
     {
-        throw new NotImplementedException();
+        var results = await _db.QuotationProductDates
+        .LoadWith(qpd => qpd.ProductDate)
+        .Where(qpd => qpd.Quotation_ID == quotationId)
+        .ToListAsync();
+
+        return results.Select(qpd => qpd.ProductDate).ToList();
     }
 
     public async Task UpdateQuotation(QuotationUpdateData quotation)
@@ -140,5 +145,4 @@ public class QuotationContainer : IQuotationContainer
 
         return await pdf.GenerateQuotation(quotation);
     }
-
 }

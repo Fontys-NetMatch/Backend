@@ -12,6 +12,11 @@ namespace TravelPlanner.BLL.Service
     {
         private readonly IQuotationContainer _service;
 
+        public QuotationService(IQuotationContainer _service)
+        {
+            this._service = _service;
+        }
+
         public async Task<double> FlatCommision(int id, double money)
         {
             return await Calculate(id) + money;
