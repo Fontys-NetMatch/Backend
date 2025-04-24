@@ -5,14 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5099d7a6-8b02-485a-8878-9f585802c48f" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/Backend.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TravelPlanner.API/appsettings.Development.json" beforeDir="false" afterPath="$PROJECT_DIR$/TravelPlanner.API/appsettings.Development.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TravelPlanner.BLL/AuthContainer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/TravelPlanner.BLL/AuthContainer.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TravelPlanner.DB/Migrations/1740061084_ClearDb.cs" beforeDir="false" afterPath="$PROJECT_DIR$/TravelPlanner.DB/Migrations/1740061084_ClearDb.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TravelPlanner.Domain/Models/Request/Auth/RegisterData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/TravelPlanner.Domain/Models/Request/Auth/RegisterData.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TravelPlanner.API/Controllers/ProductController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/TravelPlanner.API/Controllers/ProductController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TravelPlanner.API/Response/Success/ProductTranslation/ProductTranslationResponse.cs" beforeDir="false" afterPath="$PROJECT_DIR$/TravelPlanner.API/Response/Success/ProductTranslation/ProductTranslationResponse.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TravelPlanner.BLL/Container/ProductContainer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/TravelPlanner.BLL/Container/ProductContainer.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -79,6 +74,7 @@
       <workItem from="1743492117970" duration="1177000" />
       <workItem from="1743493889781" duration="1298000" />
       <workItem from="1743579125518" duration="322000" />
+      <workItem from="1744889157971" duration="78000" />
     </task>
     <servers />
   </component>
