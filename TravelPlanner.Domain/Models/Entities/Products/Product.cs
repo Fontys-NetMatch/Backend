@@ -1,5 +1,4 @@
-﻿using System.ComponentModel;
-using LinqToDB;
+﻿using LinqToDB;
 using LinqToDB.Mapping;
 using TravelPlanner.Domain.Models.Entities.Translations;
 
@@ -18,7 +17,7 @@ public record Product
     [Column(DataType = DataType.Text, Length = 1000)]
     public string? EndLocation { get; set; }
 
-    [Column(DataType = DataType.Int32)]
+    [Column, Nullable]
     public DateTime? DeletedAt { get; set; }
 
     [Column, NotNull]
