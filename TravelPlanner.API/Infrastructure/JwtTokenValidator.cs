@@ -10,7 +10,7 @@ namespace TravelPlanner.API.Infrastructure;
 public class JwtTokenValidator
 {
 
-    private IAppConfig _config;
+    private readonly IAppConfig _config;
 
     public JwtTokenValidator(IAppConfig config)
     {
@@ -32,44 +32,42 @@ public class JwtTokenValidator
         if (path.StartsWith("/swagger")) return Task.CompletedTask;
 
         string? authHeader = context.Request.Headers.Authorization;
-        if (requiresJwtToken && authHeader is null)
+        switch (requiresJwtToken)
         {
-            context.HttpContext.Items.Add("AuthError", "No JWT Token provided");
-            return Task.CompletedTask;
-        }
-
-        if (requiresJwtToken)
-        {
-            try
-            {
-                var jwtToken = authHeader!.Replace("Bearer ", "");
-
-                var jwtTokenHandler = new JwtSecurityTokenHandler();
-                // Validation 1 - Validation JWT token format
-                var tokenInVerification = jwtTokenHandler.ValidateToken(jwtToken, GetValidationParameters(), out var validatedToken);
-
-                if (validatedToken is JwtSecurityToken jwtSecurityToken)
+            case true when authHeader is null:
+                context.HttpContext.Items.Add("AuthError", "No JWT Token provided");
+                return Task.CompletedTask;
+            case true:
+                try
                 {
-                    var result = jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase);
+                    var jwtToken = authHeader!.Replace("Bearer ", "");
 
-                    if (result == false)
+                    var jwtTokenHandler = new JwtSecurityTokenHandler();
+                    // Validation 1 - Validation JWT token format
+                    var tokenInVerification = jwtTokenHandler.ValidateToken(jwtToken, GetValidationParameters(), out var validatedToken);
+
+                    if (validatedToken is JwtSecurityToken jwtSecurityToken)
                     {
-                        context.HttpContext.Items.Add("AuthError", "Invalid token");
-                        return Task.CompletedTask;
+                        var result = jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase);
+
+                        if (result == false)
+                        {
+                            context.HttpContext.Items.Add("AuthError", "Invalid token");
+                            return Task.CompletedTask;
+                        }
                     }
+
+                    // token is valid
+                    context.HttpContext.Items.Add("JwtToken", jwtToken);
+                    return Task.CompletedTask;
+                }catch (Exception)
+                {
+                    context.HttpContext.Items.Add("AuthError", "Invalid token");
+                    return Task.CompletedTask;
                 }
-
-                // token is valid
-                context.HttpContext.Items.Add("JwtToken", jwtToken);
+            default:
                 return Task.CompletedTask;
-            }catch (Exception e)
-            {
-                context.HttpContext.Items.Add("AuthError", "Invalid token");
-                return Task.CompletedTask;
-            }
         }
-
-        return Task.CompletedTask;
     }
 
     private TokenValidationParameters GetValidationParameters()

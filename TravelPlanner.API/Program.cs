@@ -1,123 +1,20 @@
 using LinqToDB.Data;
-using Microsoft.AspNetCore.Authentication.BearerToken;
-using Microsoft.OpenApi.Models;
-using TravelPlanner.API;
-using TravelPlanner.API.Controllers;
-using TravelPlanner.API.Infrastructure;
 using TravelPlanner.API.Infrastructure.Middleware;
-using TravelPlanner.BLL.Container;
-using TravelPlanner.DB;
+using TravelPlanner.API.StartupUtils;
 using TravelPlanner.DB.Lib;
 using TravelPlanner.DB.Lib.MigrationsManager;
-using TravelPlanner.Domain.Interfaces;
-using TravelPlanner.Domain.Interfaces.BLL;
-using TravelPlanner.Domain.Models;
 
 var builder = WebApplication.CreateBuilder(args);
-// dev mode is enabled if the appsettings.Development.json file exists
-var devMode = File.Exists("appsettings.Development.json");
-
-if (devMode)
-{
-    builder.Environment.EnvironmentName = "Development";
-
-    Console.ForegroundColor = ConsoleColor.Green;
-    Console.WriteLine("-------------------------------------");
-    Console.WriteLine("   App Running In Development Mode   ");
-    Console.WriteLine("-------------------------------------");
-    Console.ForegroundColor = ConsoleColor.White;
-}
-else
-{
-    builder.Environment.EnvironmentName = "Production";
-}
-
-builder.Configuration.Sources.Clear();
-builder.Configuration.AddJsonFile(devMode ? "appsettings.Development.json" : "appsettings.json", false, true);
+ConfigProvider.LoadFiles(builder);
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(options =>
-{
-    options.SwaggerDoc("v1", new OpenApiInfo
-    {
-        Version = "v1",
-        Title = "NetMatch - TravelPlanner API",
-        Description = "The api for the TravelPlanner application",
-    });
-    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme {
-        In = ParameterLocation.Header,
-        Description = "Please insert JWT with Bearer into field",
-        Name = "Authorization",
-        BearerFormat = "JWT",
-        Scheme = "bearer",
-        Type = SecuritySchemeType.Http
-    });
-    options.AddSecurityRequirement(new OpenApiSecurityRequirement {
-        {
-            new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference
-                {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer"
-                }
-            },
-            []
-        }
-    });
-});
+SwaggerProvider.Register(builder.Services);
 
 // Load Config
-// Load configuration
-var appUrl = builder.Configuration.GetValue<string>("AppUrl");
-var allowedOrigins = builder.Configuration.GetValue<string>("AllowedOrigins");
+var config = ConfigProvider.Register(builder);
 
-if (appUrl == null) throw new ArgumentNullException(appUrl);
-if (allowedOrigins == null) throw new ArgumentNullException(allowedOrigins);
-
-DbConfig dbConfig = new();
-builder.Configuration.GetSection("Database").Bind(dbConfig);
-
-var jwtSection = builder.Configuration.GetSection("Jwt");
-var jwtSecret = jwtSection.GetValue<string>("Secret");
-var jwtIssuer = jwtSection.GetValue<string>("Issuer");
-var jwtAudience = jwtSection.GetValue<string>("Audience");
-
-if (jwtSecret == null) throw new ArgumentNullException(jwtSecret);
-if (jwtIssuer == null) throw new ArgumentNullException(jwtIssuer);
-if (jwtAudience == null) throw new ArgumentNullException(jwtAudience);
-
-JwtConfig jwtConfig = new()
-{
-    Secret = jwtSecret,
-    Issuer = jwtIssuer,
-    Audience = jwtAudience
-};
-
-// Setup dependency injection
-var config = new AppConfig(appUrl, allowedOrigins, dbConfig, jwtConfig, devMode);
-builder.Services.Add(new ServiceDescriptor(typeof(IAppConfig), config));
-
-// Register services
-builder.Services.AddTransient<DbContext>();
-builder.Services.AddTransient<DbManager>();
-
-builder.Services.AddTransient<StatusController>();
-builder.Services.AddTransient<AuthController>();
-
-builder.Services.AddTransient<ProductController>();
-builder.Services.AddTransient<ProductTranslationController>();
-
-builder.Services.AddTransient<ProductTypeController>();
-
-builder.Services.AddTransient<QuotationController>();
-
-builder.Services.AddSingleton<IAuthContainer, AuthContainer>();
-builder.Services.AddSingleton<IProductContainer, ProductContainer>();
-builder.Services.AddSingleton<IProductTranslationContainer, ProductTranslationContainer>();
-builder.Services.AddSingleton<IProductTypeContainer, ProductTypeContainer>();
-builder.Services.AddSingleton<IQuotationContainer, QuotationContainer>();
+// LoadFiles services
+ServicesProvider.Register(builder.Services);
 
 // Setup database
 DataConnection.DefaultSettings = new DbSettings(config);
@@ -126,23 +23,7 @@ migrationManager.RegisterCustomSchemas();
 migrationManager.Init(config);
 
 // Auth
-builder.Services.AddAuthorization();
-builder.Services.AddAuthentication(option =>
-{
-    option.DefaultAuthenticateScheme = BearerTokenDefaults.AuthenticationScheme;
-    option.DefaultChallengeScheme = BearerTokenDefaults.AuthenticationScheme;
-}).AddBearerToken(options =>
-{
-    options.Events = new BearerTokenEvents
-    {
-        OnMessageReceived = context =>
-        {
-            JwtTokenValidator picturaApiKeyValidator = new(config);
-            return picturaApiKeyValidator.VerifyToken(context);
-        }
-    };
-});
-builder.Services.AddCors();
+AuthProvider.Register(builder.Services, config);
 
 var app = builder.Build();
 
@@ -161,6 +42,6 @@ app.UseAuthentication();
 app.UseMiddleware<AuthErrorMiddleware>();
 app.UseHttpsRedirection();
 
-_ = new Router(app);
+Router.Register(app);
 
 app.Run();
