@@ -1,11 +1,11 @@
 ﻿using TravelPlanner.API.Controllers;
 
-namespace TravelPlanner.API;
+namespace TravelPlanner.API.StartupUtils;
 
-public class Router
+public static class Router
 {
 
-    public Router(WebApplication app)
+    public static void Register(WebApplication app)
     {
         StatusController.Register(app);
         AuthController.Register(app);
