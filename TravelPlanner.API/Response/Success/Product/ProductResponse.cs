@@ -5,7 +5,7 @@ namespace TravelPlanner.API.Response.Success.Product;
 public record ProductResponse : BaseResponse
 {
 
-    public int? ID { get; set; }
+    public int? Id { get; set; }
 
     public string StartLocation { get; set; } = null!;
 
@@ -13,10 +13,9 @@ public record ProductResponse : BaseResponse
 
     public DateTime? DeletedAt { get; set; }
 
-    public bool IsActive { get; set; }
-
     public int ProductTypeId { get; set; }
-    public int ProductType_ID { get; set; }
+
+    public Domain.Models.Entities.Products.ProductType ProductType { get; set; } = null!;
 
     public List<ProductTranslationResponse> Translations { get; set; } = null!;
 
@@ -29,17 +28,16 @@ public record ProductResponse : BaseResponse
         string startLocation,
         string? endLocation,
         DateTime? deletedAt,
-        bool isActive,
         int productTypeId,
+        Domain.Models.Entities.Products.ProductType productType,
         List<ProductTranslationResponse> translations
     ){
-        ID = id;
+        Id = id;
         StartLocation = startLocation;
         EndLocation = endLocation;
         DeletedAt = deletedAt;
-        ProductType_ID = productTypeId;
-        IsActive = isActive;
         ProductTypeId = productTypeId;
+        ProductType = productType;
         Translations = translations;
     }
 

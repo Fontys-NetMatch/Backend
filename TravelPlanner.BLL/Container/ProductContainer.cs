@@ -29,9 +29,11 @@ public class ProductContainer : IProductContainer
         }
 
         return await _db.Products
+            .LoadWith(p => p.ProductType)
+            .LoadWith(p => p.ProductType.Translations)
             .LoadWith(p => p.Translations)
             .LoadWith(p => p.Dates)
-            .FirstOrDefaultAsync(p => p.ID == id);
+            .FirstOrDefaultAsync(p => p.Id == id);
     }
 
     public async Task<List<Product>> GetAll(ProductFiltersData filters)
@@ -52,7 +54,7 @@ public class ProductContainer : IProductContainer
 
         if(filters.TypeId != null)
         {
-            query = query.Where(p => p.ProductType_ID == filters.TypeId);
+            query = query.Where(p => p.ProductTypeId == filters.TypeId);
         }
         if (filters.StartLocation != null)
         {
@@ -84,6 +86,8 @@ public class ProductContainer : IProductContainer
         }
 
         var products = await query
+            .LoadWith(p => p.ProductType)
+            .LoadWith(p => p.ProductType.Translations)
             .LoadWith(p => p.Translations)
             .LoadWith(p => p.Dates)
             .ToListAsync();
@@ -97,7 +101,7 @@ public class ProductContainer : IProductContainer
 
     public async Task Create(ProductData data)
     {
-        if (data.ProductType_ID <= 0)
+        if (data.ProductTypeId <= 0)
         {
             throw new ArgumentException("Invalid product type Id");
         }
@@ -107,7 +111,7 @@ public class ProductContainer : IProductContainer
             StartLocation = data.StartLocation,
             EndLocation = data.EndLocation,
             DeletedAt = data.DeletedAt,
-            ProductType_ID = data.ProductType_ID
+            ProductTypeId = data.ProductTypeId
         });
         if (productId <= 0)
         {
@@ -121,7 +125,7 @@ public class ProductContainer : IProductContainer
         {
             throw new ArgumentException("Invalid product ID");
         }
-        if (data.ProductType_ID <= 0)
+        if (data.ProductTypeId <= 0)
         {
             throw new ArgumentException("Invalid product type Id");
         }
@@ -135,7 +139,7 @@ public class ProductContainer : IProductContainer
         existingProduct.StartLocation = data.StartLocation;
         existingProduct.EndLocation = data.EndLocation;
         existingProduct.DeletedAt = data.DeletedAt;
-        existingProduct.ProductType_ID = data.ProductType_ID;
+        existingProduct.ProductTypeId = data.ProductTypeId;
 
         var result = await _db.UpdateAsync(existingProduct);
         if (result == 0)

@@ -31,7 +31,7 @@ public class ProductTypeContainer : IProductTypeContainer
 
         return await _db.ProductTypes
             .LoadWith(p => p.Translations)
-            .FirstOrDefaultAsync(p => p.ID == id);
+            .FirstOrDefaultAsync(p => p.Id == id);
     }
 
     public async Task<List<ProductType>> GetAll()

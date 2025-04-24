@@ -29,7 +29,7 @@ public record ProductTranslation
     [Column, NotNull]
     public required int Product_ID { get; set; }
 
-    [Association(ThisKey = nameof(Product_ID), OtherKey = nameof(TravelPlanner.Domain.Models.Entities.Products.Product.ID), CanBeNull = false)]
+    [Association(ThisKey = nameof(Product_ID), OtherKey = nameof(TravelPlanner.Domain.Models.Entities.Products.Product.Id), CanBeNull = false)]
     public TravelPlanner.Domain.Models.Entities.Products.Product? Product { get; set; }
 
 
