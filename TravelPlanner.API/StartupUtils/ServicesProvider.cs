@@ -2,6 +2,7 @@
 using PDF_Generator;
 using TravelPlanner.API.Controllers;
 using TravelPlanner.BLL.Container;
+using TravelPlanner.BLL.Service;
 using TravelPlanner.DB;
 using TravelPlanner.DB.Lib;
 using TravelPlanner.Domain.Interfaces.BLL;
@@ -38,6 +39,7 @@ public static class ServicesProvider
         services.AddSingleton<IRazorViewEngine, RazorViewEngine>();
         services.AddRazorPages();
         services.AddSingleton<IPDFService, PDFService>();
+        services.AddSingleton<IQuotationService, QuotationService>();
 
     }
 
