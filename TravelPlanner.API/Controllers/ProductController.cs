@@ -41,7 +41,7 @@ namespace TravelPlanner.API.Controllers
 
             // GetProduct all products endpoint
             app.MapGet("/product", (
-                    [FromQuery] bool? isActive,
+                    [FromQuery] bool? isDeleted,
                     [FromQuery] int? typeId,
                     [FromQuery] string? searchQuery,
                     [FromQuery] string? startLocation,
@@ -62,7 +62,8 @@ namespace TravelPlanner.API.Controllers
                     EndDateTime = endDateTime,
                     MinPrice = minPrice,
                     MaxPrice = maxPrice,
-                    MinPeople = minPeople
+                    MinPeople = minPeople,
+                    IsDeleted = isDeleted
                 }))
                 .WithName("GetAllProducts")
                 .WithDescription("GetProduct all products")
