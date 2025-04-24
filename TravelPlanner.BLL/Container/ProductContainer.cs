@@ -37,7 +37,7 @@ public class ProductContainer : IProductContainer
     }
 
     public async Task<List<Product>> GetAll(ProductFiltersData filters)
-    {
+    {       
         var query = _db.Products.AsQueryable();
 
         if (filters.IsDeleted != null)
