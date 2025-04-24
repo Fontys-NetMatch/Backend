@@ -1,8 +1,11 @@
-﻿using TravelPlanner.API.Controllers;
+﻿using Microsoft.AspNetCore.Mvc.Razor;
+using PDF_Generator;
+using TravelPlanner.API.Controllers;
 using TravelPlanner.BLL.Container;
 using TravelPlanner.DB;
 using TravelPlanner.DB.Lib;
 using TravelPlanner.Domain.Interfaces.BLL;
+using TravelPlanner.Domain.Interfaces.PDF;
 
 namespace TravelPlanner.API.StartupUtils;
 
@@ -29,6 +32,13 @@ public static class ServicesProvider
         services.AddSingleton<IProductTranslationContainer, ProductTranslationContainer>();
         services.AddSingleton<IProductTypeContainer, ProductTypeContainer>();
         services.AddSingleton<IQuotationContainer, QuotationContainer>();
+
+        // Services
+        services.AddSingleton<IRazorViewToStringRenderer, RazorViewToStringRenderer>();
+        services.AddSingleton<IRazorViewEngine, RazorViewEngine>();
+        services.AddRazorPages();
+        services.AddSingleton<IPDFService, PDFService>();
+
     }
 
 }
