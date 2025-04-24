@@ -1,7 +1,4 @@
-﻿using System.ComponentModel;
-using LinqToDB;
-using LinqToDB.Mapping;
-using TravelPlanner.Domain.Enums;
+﻿using LinqToDB.Mapping;
 using TravelPlanner.Domain.Models.Entities.Products;
 
 namespace TravelPlanner.Domain.Models.Entities;
@@ -11,15 +8,15 @@ public record QuotationProductDate
 {
 
     [Column, NotNull]
-    public required int ProductDate_ID { get; set; }
+    public required int ProductDateId { get; set; }
 
-    [Association(ThisKey = nameof(ProductDate_ID), OtherKey = nameof(ProductDate.ID), CanBeNull = false)]
+    [Association(ThisKey = nameof(ProductDateId), OtherKey = nameof(ProductDate.Id), CanBeNull = false)]
     public required ProductDate ProductDate { get; set; }
 
     [Column, NotNull]
-    public required int Quotation_ID { get; set; }
+    public required int QuotationId { get; set; }
 
-    [Association(ThisKey = nameof(Quotation_ID), OtherKey = nameof(Quotation.ID), CanBeNull = false)]
-    public Quotation Quotation { get; set; }
+    [Association(ThisKey = nameof(QuotationId), OtherKey = nameof(Quotation.ID), CanBeNull = false)]
+    public Quotation Quotation { get; set; } = null!;
 
 }

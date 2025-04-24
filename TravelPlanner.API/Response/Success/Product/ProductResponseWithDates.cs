@@ -18,7 +18,7 @@ public record ProductResponseWithDates : ProductResponse
         List<ProductTranslationResponse> translations,
         List<ProductDateResponse> dates
     ){
-        ID = id;
+        Id = id;
         StartLocation = startLocation;
         EndLocation = endLocation;
         DeletedAt = deletedAt;

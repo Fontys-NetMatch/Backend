@@ -33,7 +33,7 @@ public class QuotationContainer : IQuotationContainer
             throw new ArgumentException("Quotation name cannot be null or empty");
         }
 
-        if (quotation.Customer_ID <= 0)
+        if (quotation.CustomerId <= 0)
         {
             throw new ArgumentException("Invalid Customer ID");
         }
@@ -59,7 +59,7 @@ public class QuotationContainer : IQuotationContainer
     {
         var results = await _db.QuotationProductDates
         .LoadWith(qpd => qpd.ProductDate)
-        .Where(qpd => qpd.Quotation_ID == quotationId)
+        .Where(qpd => qpd.QuotationId == quotationId)
         .ToListAsync();
 
         return results.Select(qpd => qpd.ProductDate).ToList();
@@ -72,12 +72,12 @@ public class QuotationContainer : IQuotationContainer
             throw new ArgumentNullException(nameof(quotation), "Quotation cannot be null");
         }
 
-        if (quotation.ID <= 0)
+        if (quotation.Id <= 0)
         {
             throw new ArgumentException("Quotation must have a valid ID");
         }
 
-        var existingQuotation = await GetQuotationById(quotation.ID);
+        var existingQuotation = await GetQuotationById(quotation.Id);
         if (existingQuotation == null)
         {
             throw new InvalidOperationException("Quotation does not exist and cannot be updated");

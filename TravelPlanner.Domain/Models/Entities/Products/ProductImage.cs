@@ -7,9 +7,13 @@ namespace TravelPlanner.Domain.Models.Entities.Products;
 [Table("ProductImages")]
 public record ProductImage
 {
+    public ProductImage(string path)
+    {
+        Path = path;
+    }
 
     [Column, PrimaryKey, Identity]
-    public int ID { get; set; }
+    public int Id { get; set; }
 
     [Column(Length = 500), NotNull]
     public string Path { get; set; }
@@ -18,9 +22,9 @@ public record ProductImage
     public DateTime DeletedAt { get; set; }
 
     [Column, NotNull]
-    public required int Product_ID { get; set; }
+    public required int ProductId { get; set; }
 
-    [Association(ThisKey = nameof(Product_ID), OtherKey = nameof(Product.ID), CanBeNull = false)]
-    public required Product Product { get; set; }
+    [Association(ThisKey = nameof(ProductId), OtherKey = nameof(Product.Id), CanBeNull = false)]
+    public Product Product { get; set; } = null!;
 
 }
