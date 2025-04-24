@@ -3,6 +3,7 @@ using TravelPlanner.API.Infrastructure.Extensions;
 using TravelPlanner.API.Response;
 using TravelPlanner.API.Response.Error;
 using TravelPlanner.API.Response.Success;
+using TravelPlanner.API.Response.Success.User;
 using TravelPlanner.Domain.Interfaces.BLL;
 using TravelPlanner.Domain.Models.Entities;
 
@@ -57,7 +58,8 @@ public class UserController : Controller
             .WithOrder(3)
             .WithOpenApi();
 
-        app.MapPut("/user", (
+        app.MapPut("/user/{id:int}", (
+                [FromRoute] int id,
                 [FromBody] User user,
                 [FromServices] UserController controller
             ) => controller.UpdateUser(user))
@@ -89,9 +91,18 @@ public class UserController : Controller
         try
         {
             var user = _container.GetUserByIdAsync(id).Result;
-            return user == null
-                ? new ErrorResponse("User not found")
-                : new UserResponse(user, "User retrieved successfully");
+            if (user == null)
+                return new NotFoundResponse("User not found");
+
+            return new UserResponse(
+                user.ID,
+                user.Firstname,
+                user.Surname,
+                user.Email,
+                user.ProfileImagePath,
+                user.IsActive
+            );
+
         }
         catch (Exception e)
         {
@@ -105,9 +116,18 @@ public class UserController : Controller
         {
             var users = _container.GetAllActiveUsersAsync().Result;
             if (users.Count == 0)
-                return new ErrorResponse("No active users found");
+                return new NoContentResponse();
 
-            return new UsersResponse(users, "Active users retrieved successfully");
+            var responses = users.Select(user => new UserResponse(
+                user.ID,
+                user.Firstname,
+                user.Surname,
+                user.Email,
+                user.ProfileImagePath,
+                user.IsActive
+            )).ToList();
+
+            return new UsersResponse(responses);
         }
         catch (Exception e)
         {
