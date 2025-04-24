@@ -9,13 +9,13 @@ public record ProductTranslation
 {
 
     [Column, PrimaryKey, Identity]
-    public int ID { get; set; }
+    public int Id { get; set; }
 
     [Column(Length = 10), NotNull]
-    public string LangIsoCode { get; set; }
+    public string LangIsoCode { get; set; } = null!;
 
     [Column(Length = 100), NotNull]
-    public string Name { get; set; }
+    public string Name { get; set; } = null!;
 
     [Column(DataType = DataType.Text, Length = 1000)]
     public string? Description { get; set; }
@@ -27,9 +27,9 @@ public record ProductTranslation
     public bool IsActive { get; set; }
 
     [Column, NotNull]
-    public required int Product_ID { get; set; }
+    public required int ProductId { get; set; }
 
-    [Association(ThisKey = nameof(Product_ID), OtherKey = nameof(TravelPlanner.Domain.Models.Entities.Products.Product.Id), CanBeNull = false)]
+    [Association(ThisKey = nameof(ProductId), OtherKey = nameof(Products.Product.Id), CanBeNull = false)]
     public TravelPlanner.Domain.Models.Entities.Products.Product? Product { get; set; }
 
 

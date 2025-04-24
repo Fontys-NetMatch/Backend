@@ -25,7 +25,7 @@ public class UserController : Controller
                 [FromServices] UserController controller
             ) => controller.GetUser(id))
             .WithName("GetUserById")
-            .WithDescription("Get a user by ID")
+            .WithDescription("Get a user by Id")
             .Produces<UserResponse>()
             .Produces<ErrorResponse>(StatusCodes.Status500InternalServerError)
             .RequiresJwtToken()
@@ -77,7 +77,7 @@ public class UserController : Controller
                 [FromServices] UserController controller
             ) => controller.SoftDeleteUser(id))
             .WithName("SoftDeleteUser")
-            .WithDescription("Soft delete a user by ID")
+            .WithDescription("Soft delete a user by Id")
             .Produces<SuccessResponse>()
             .Produces<ErrorResponse>(StatusCodes.Status500InternalServerError)
             .RequiresJwtToken()
@@ -95,7 +95,7 @@ public class UserController : Controller
                 return new NotFoundResponse("User not found");
 
             return new UserResponse(
-                user.ID,
+                user.Id,
                 user.Firstname,
                 user.Surname,
                 user.Email,
@@ -119,7 +119,7 @@ public class UserController : Controller
                 return new NoContentResponse();
 
             var responses = users.Select(user => new UserResponse(
-                user.ID,
+                user.Id,
                 user.Firstname,
                 user.Surname,
                 user.Email,

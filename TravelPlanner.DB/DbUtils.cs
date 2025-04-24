@@ -42,7 +42,7 @@ public class DbUtils
         alterCmd.CommandText = $@"
             ALTER TABLE {sourceTableName}
             ADD CONSTRAINT {constraintName}
-            FOREIGN KEY ({targetTableResourceName}_{targetTableColName}) 
+            FOREIGN KEY ({targetTableResourceName}{targetTableColName}) 
             REFERENCES {targetTableName}({targetTableColName})";
 
         alterCmd.ExecuteNonQuery();

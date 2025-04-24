@@ -9,7 +9,7 @@ namespace TravelPlanner.Domain.Models.Entities;
 public record Quotation
 {
     [Column, PrimaryKey, Identity]
-    public int ID { get; set; }
+    public int Id { get; set; }
 
     [Column(Length = 255), NotNull]
     public required string Name { get; set; }
@@ -18,15 +18,15 @@ public record Quotation
     public required QuotationStatus Status { get; set; }
 
     [Column, NotNull]
-    public required int Customer_ID { get; set; }
+    public required int CustomerId { get; set; }
 
-    [Association(ThisKey = nameof(Customer_ID), OtherKey = nameof(Customer.ID), CanBeNull = false)]
+    [Association(ThisKey = nameof(CustomerId), OtherKey = nameof(Customer.Id), CanBeNull = false)]
     public required Customer Customer { get; set; }
 
     [Column, NotNull]
-    public required int User_ID { get; set; }
+    public required int UserId { get; set; }
 
-    [Association(ThisKey = nameof(User_ID), OtherKey = nameof(User.ID), CanBeNull = false)]
+    [Association(ThisKey = nameof(UserId), OtherKey = nameof(User.Id), CanBeNull = false)]
     public required User User { get; set; }
 
 }

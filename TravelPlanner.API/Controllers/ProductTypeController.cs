@@ -22,13 +22,13 @@ namespace TravelPlanner.API.Controllers
 
         public static void Register(WebApplication app)
         {
-            // GetProductType by ID endpoint
+            // GetProductType by Id endpoint
             app.MapGet("/product-type/{typeId:int}", (
                     [FromRoute] int typeId,
                     [FromServices] ProductTypeController controller
                 ) => controller.GetProduct(typeId))
                 .WithName("GetProductTypeById")
-                .WithDescription("GetProduct a product type by ID")
+                .WithDescription("GetProduct a product type by Id")
                 .Produces<ProductResponse>()
                 .Produces<ErrorResponse>(StatusCodes.Status500InternalServerError)
                 .RequiresJwtToken()
@@ -84,7 +84,7 @@ namespace TravelPlanner.API.Controllers
                 [FromServices] ProductTypeController controller
             ) => controller.SoftDeleteProduct(typeId))
                 .WithName("SoftDeleteProductType")
-                .WithDescription("Soft delete a product type by ID")
+                .WithDescription("Soft delete a product type by Id")
                 .Produces<SuccessResponse>()
                 .Produces<ErrorResponse>(StatusCodes.Status500InternalServerError)
                 .RequiresJwtToken()

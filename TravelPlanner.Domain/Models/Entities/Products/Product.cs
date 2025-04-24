@@ -29,7 +29,7 @@ public record Product
     [Association(ThisKey = nameof(Id), OtherKey = nameof(ProductDate.ProductId))]
     public List<ProductDate> Dates { get; set; } = null!;
 
-    [Association(ThisKey = nameof(Id), OtherKey = nameof(ProductTranslation.Product_ID))]
+    [Association(ThisKey = nameof(Id), OtherKey = nameof(ProductTranslation.ProductId))]
     public List<ProductTranslation> Translations { get; init; } = null!;
 
 }

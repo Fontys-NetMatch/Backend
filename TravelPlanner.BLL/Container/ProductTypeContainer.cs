@@ -26,7 +26,7 @@ public class ProductTypeContainer : IProductTypeContainer
     {
         if (id <= 0)
         {
-            throw new ArgumentException("Invalid product ID", nameof(id));
+            throw new ArgumentException("Invalid product Id", nameof(id));
         }
 
         return await _db.ProductTypes
@@ -77,7 +77,7 @@ public class ProductTypeContainer : IProductTypeContainer
     {
         if (id <= 0)
         {
-            throw new ArgumentException("Invalid product ID");
+            throw new ArgumentException("Invalid product Id");
         }
 
         var existingProduct = await GetById(id);
@@ -99,7 +99,7 @@ public class ProductTypeContainer : IProductTypeContainer
     {
         if (id <= 0)
         {
-            throw new ArgumentException("Invalid product ID", nameof(id));
+            throw new ArgumentException("Invalid product Id", nameof(id));
         }
 
         var product = await GetById(id);

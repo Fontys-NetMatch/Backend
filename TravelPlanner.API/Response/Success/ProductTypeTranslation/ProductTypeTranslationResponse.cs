@@ -3,16 +3,16 @@
 public record ProductTypeTranslationResponse : BaseResponse
 {
 
-    public int ID { get; set; }
-    public int ProductType_ID { get; set; }
+    public int Id { get; set; }
+    public int ProductTypeId { get; set; }
     public string? LangIsoCode { get; set; }
     public string? Name { get; set; }
     public bool IsActive { get; set; }
 
-    public ProductTypeTranslationResponse(int id, int productTypeID, string langIsoCode, string name, bool isActive)
+    public ProductTypeTranslationResponse(int id, int productTypeId, string langIsoCode, string name, bool isActive)
     {
-        ID = id;
-        ProductType_ID = productTypeID;
+        Id = id;
+        ProductTypeId = productTypeId;
         LangIsoCode = langIsoCode;
         Name = name;
         IsActive = isActive;

@@ -11,7 +11,7 @@ namespace TravelPlanner.Domain.Models.Entities.Translations
     public class ProductAddonTranslation
     {
         [Column, PrimaryKey, Identity]
-        public int ID { get; set; }
+        public int Id { get; set; }
 
         [Column(Length = 100), NotNull]
         public int Name { get; set; }

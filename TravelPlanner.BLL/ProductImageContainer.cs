@@ -33,7 +33,7 @@ namespace TravelPlanner.BLL
         {
             if (id <= 0)
             {
-                throw new ArgumentException("ProductImage ID must be positive", nameof(id));
+                throw new ArgumentException("ProductImage Id must be positive", nameof(id));
             }
 
             return await _db.ProductImages.FirstOrDefaultAsync(pi => pi.Id == id);
@@ -48,7 +48,7 @@ namespace TravelPlanner.BLL
 
             if (productImage.Id <= 0)
             {
-                throw new ArgumentException("ProductImage must have a valid ID", nameof(productImage));
+                throw new ArgumentException("ProductImage must have a valid Id", nameof(productImage));
             }
 
             var result = await _db.UpdateAsync(productImage);
@@ -76,7 +76,7 @@ namespace TravelPlanner.BLL
         {
             if (id <= 0)
             {
-                throw new ArgumentException("ProductImage ID must be positive", nameof(id));
+                throw new ArgumentException("ProductImage Id must be positive", nameof(id));
             }
 
             var productImage = await GetProductImageByIdAsync(id);

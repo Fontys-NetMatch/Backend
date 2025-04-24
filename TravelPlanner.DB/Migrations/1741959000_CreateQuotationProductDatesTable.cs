@@ -16,14 +16,14 @@ public class CreateQuotationProductDates : IMigration
             dbContext,
             "QuotationProductDates",
             "ProductDates",
-            "ID"
+            "Id"
         );
 
         DbUtils.GenerateForeignKey(
             dbContext,
             "QuotationProductDates",
             "Quotations",
-            "ID"
+            "Id"
         );
 
     }

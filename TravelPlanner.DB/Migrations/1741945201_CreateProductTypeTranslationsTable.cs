@@ -18,7 +18,7 @@ public class CreateProductTypesTranslations : IMigration
             dbContext,
             "ProductTypeTranslations",
             "ProductTypes",
-            "ID"
+            "Id"
         );
         DbUtils.AssignDefaultValue(
             dbContext,

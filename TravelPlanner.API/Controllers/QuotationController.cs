@@ -35,14 +35,14 @@ namespace TravelPlanner.API.Controllers
                 .WithTags("Quotation")
                 .WithOpenApi();
 
-            // Get Quotation by ID
+            // Get Quotation by Id
             app.MapGet("/quotation/{id}", (
                 HttpContext context,
                 [FromRoute] int id,
                 [FromServices] QuotationController controller
             ) => controller.GetQuotation(context, id))
                 .WithName("GetQuotation")
-                .WithDescription("Get a quotation by ID")
+                .WithDescription("Get a quotation by Id")
                 .Produces<QuotationResponse>()
                 .Produces<ErrorResponse>(StatusCodes.Status500InternalServerError)
                 .RequiresJwtToken()
@@ -70,7 +70,7 @@ namespace TravelPlanner.API.Controllers
                 [FromServices] QuotationController controller
             ) => controller.SoftDeleteQuotation(context, id))
                 .WithName("SoftDeleteQuotation")
-                .WithDescription("Soft delete a quotation by ID")
+                .WithDescription("Soft delete a quotation by Id")
                 .Produces<SuccessResponse>()
                 .Produces<ErrorResponse>(StatusCodes.Status500InternalServerError)
                 .RequiresJwtToken()
@@ -139,10 +139,10 @@ namespace TravelPlanner.API.Controllers
                 }
 
                 var response = new QuotationResponse(
-                    id: quotation.ID,
+                    id: quotation.Id,
                     name: quotation.Name,
                     status: quotation.Status,
-                    customerId: quotation.Customer_ID
+                    customerId: quotation.CustomerId
                 );
                 return response;
             }
@@ -190,10 +190,10 @@ namespace TravelPlanner.API.Controllers
 
                 // Convert each Quotation to a QuotationResponse
                 var quotationResponses = quotations.Select(quotation => new QuotationResponse(
-                    id: quotation.ID,
+                    id: quotation.Id,
                     name: quotation.Name,
                     status: quotation.Status,
-                    customerId: quotation.Customer_ID
+                    customerId: quotation.CustomerId
                 )).ToList();
 
                 return new QuotationsResponse(quotationResponses);

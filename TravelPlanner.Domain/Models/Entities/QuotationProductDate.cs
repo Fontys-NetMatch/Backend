@@ -16,7 +16,7 @@ public record QuotationProductDate
     [Column, NotNull]
     public required int QuotationId { get; set; }
 
-    [Association(ThisKey = nameof(QuotationId), OtherKey = nameof(Quotation.ID), CanBeNull = false)]
+    [Association(ThisKey = nameof(QuotationId), OtherKey = nameof(Quotation.Id), CanBeNull = false)]
     public Quotation Quotation { get; set; } = null!;
 
 }

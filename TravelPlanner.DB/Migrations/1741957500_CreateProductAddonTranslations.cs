@@ -19,7 +19,7 @@ public class CreateProductAddonTranslations : IMigration
             dbContext,
             "ProductAddonTranslations",
             "ProductAddons",
-            "ID"
+            "Id"
         );
         DbUtils.AssignDefaultValue(
             dbContext,

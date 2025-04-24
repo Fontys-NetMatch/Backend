@@ -17,7 +17,7 @@ public class CreateProductDatesTable : IMigration
             dbContext,
             "ProductDates",
             "Products",
-            "ID"
+            "Id"
         );
         DbUtils.AssignDefaultValue(
             dbContext,

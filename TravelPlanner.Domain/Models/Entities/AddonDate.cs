@@ -9,7 +9,7 @@ namespace TravelPlanner.Domain.Models.Entities
     {
 
         [Column, PrimaryKey, Identity]
-        public int ID { get; set; }
+        public int Id { get; set; }
 
         [Column, NotNull]
         public decimal Price { get; set; }
@@ -18,15 +18,15 @@ namespace TravelPlanner.Domain.Models.Entities
         public int? Slots { get; set; }
 
         [Column, NotNull]
-        public required int ProductDate_ID { get; set; }
+        public required int ProductDateId { get; set; }
 
-        [Association(ThisKey = nameof(ProductDate_ID), OtherKey = nameof(ProductDate.Id), CanBeNull = false)]
+        [Association(ThisKey = nameof(ProductDateId), OtherKey = nameof(ProductDate.Id), CanBeNull = false)]
         public required ProductDate ProductDate { get; set; }
 
         [Column, NotNull]
-        public required int ProductAddon_ID { get; set; }
+        public required int ProductAddonId { get; set; }
 
-        [Association(ThisKey = nameof(ProductAddon_ID), OtherKey = nameof(ProductAddon.ID), CanBeNull = false)]
+        [Association(ThisKey = nameof(ProductAddonId), OtherKey = nameof(ProductAddon.Id), CanBeNull = false)]
         public required ProductAddon ProductAddon { get; set; }
     }
 }

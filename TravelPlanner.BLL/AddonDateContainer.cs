@@ -37,10 +37,10 @@ namespace TravelPlanner.BLL
         {
             if (id <= 0)
             {
-                throw new ArgumentException("AddonDate ID must be positive", nameof(id));
+                throw new ArgumentException("AddonDate Id must be positive", nameof(id));
             }
 
-            return await _db.AddonDates.FirstOrDefaultAsync(ad => ad.ID == id);
+            return await _db.AddonDates.FirstOrDefaultAsync(ad => ad.Id == id);
         }
 
         public async Task UpdateAddonDateAsync(AddonDate addonDate)
@@ -50,9 +50,9 @@ namespace TravelPlanner.BLL
                 throw new ArgumentNullException(nameof(addonDate), "AddonDate cannot be null");
             }
 
-            if (addonDate.ID <= 0)
+            if (addonDate.Id <= 0)
             {
-                throw new ArgumentException("AddonDate must have a valid ID");
+                throw new ArgumentException("AddonDate must have a valid Id");
             }
 
             var result = await _db.UpdateAsync(addonDate);
@@ -66,11 +66,11 @@ namespace TravelPlanner.BLL
         {
             if (productDateId <= 0)
             {
-                throw new ArgumentException("ProductDate ID must be positive", nameof(productDateId));
+                throw new ArgumentException("ProductDate Id must be positive", nameof(productDateId));
             }
 
             var addonDates = await _db.AddonDates
-                                  .Where(ad => ad.ProductDate_ID == productDateId)
+                                  .Where(ad => ad.ProductDateId == productDateId)
                                   .ToListAsync();
 
             if (addonDates == null || !addonDates.Any())
@@ -85,11 +85,11 @@ namespace TravelPlanner.BLL
         {
             if (productAddonId <= 0)
             {
-                throw new ArgumentException("ProductAddon ID must be positive", nameof(productAddonId));
+                throw new ArgumentException("ProductAddon Id must be positive", nameof(productAddonId));
             }
 
             var addonDates = await _db.AddonDates
-                                  .Where(ad => ad.ProductAddon_ID == productAddonId)
+                                  .Where(ad => ad.ProductAddonId == productAddonId)
                                   .ToListAsync();
 
             if (addonDates == null || !addonDates.Any())
@@ -104,7 +104,7 @@ namespace TravelPlanner.BLL
         {
             if (id <= 0)
             {
-                throw new ArgumentException("AddonDate ID must be positive", nameof(id));
+                throw new ArgumentException("AddonDate Id must be positive", nameof(id));
             }
 
             var addonDate = await GetAddonDateByIdAsync(id);

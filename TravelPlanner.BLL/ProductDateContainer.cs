@@ -33,7 +33,7 @@ namespace TravelPlanner.BLL
         {
             if (id <= 0)
             {
-                throw new ArgumentException("ProductDate ID must be positive", nameof(id));
+                throw new ArgumentException("ProductDate Id must be positive", nameof(id));
             }
 
             return await _db.ProductDates.FirstOrDefaultAsync(pd => pd.Id == id);
@@ -48,7 +48,7 @@ namespace TravelPlanner.BLL
 
             if (productDate.Id <= 0)
             {
-                throw new ArgumentException("ProductDate must have a valid ID", nameof(productDate));
+                throw new ArgumentException("ProductDate must have a valid Id", nameof(productDate));
             }
 
             var result = await _db.UpdateAsync(productDate);
@@ -76,7 +76,7 @@ namespace TravelPlanner.BLL
         {
             if (id <= 0)
             {
-                throw new ArgumentException("ProductDate ID must be positive", nameof(id));
+                throw new ArgumentException("ProductDate Id must be positive", nameof(id));
             }
 
             var productDate = await GetProductDateByIdAsync(id);

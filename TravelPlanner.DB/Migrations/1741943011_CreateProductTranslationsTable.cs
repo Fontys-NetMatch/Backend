@@ -17,13 +17,13 @@ public class CreateProductTranslationsTable : IMigration
             dbContext,
             "ProductTranslations",
             "Products",
-            "ID"
+            "Id"
         );
         // TODO: Make this unique key use langisocode and productid
         DbUtils.GenerateUniqueConstraint(
             dbContext,
             "ProductTranslations",
-            ["Product_ID", "LangIsoCode"]
+            ["ProductId", "LangIsoCode"]
         );
         DbUtils.AssignDefaultValue(
             dbContext,

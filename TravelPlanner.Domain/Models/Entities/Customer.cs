@@ -6,7 +6,7 @@ namespace TravelPlanner.Domain.Models.Entities
     public record Customer
     {
         [Column, PrimaryKey, Identity]
-        public int ID { get; set; }
+        public int Id { get; set; }
 
         [Column(Length = 255), NotNull]
         public required string Firstname { get; set; }

@@ -16,7 +16,7 @@ public class CreateProductsTable: IMigration
             dbContext,
             "Products",
             "ProductTypes",
-            "ID"
+            "Id"
         );
         
     }

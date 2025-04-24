@@ -33,10 +33,10 @@ namespace TravelPlanner.BLL
         {
             if (id <= 0)
             {
-                throw new ArgumentException("ProductAddonTranslation ID must be positive", nameof(id));
+                throw new ArgumentException("ProductAddonTranslation Id must be positive", nameof(id));
             }
 
-            return await _db.ProductAddonTranslations.FirstOrDefaultAsync(pat => pat.ID == id);
+            return await _db.ProductAddonTranslations.FirstOrDefaultAsync(pat => pat.Id == id);
         }
 
         public async Task UpdateProductAddonTranslationAsync(ProductAddonTranslation productAddonTranslation)
@@ -46,9 +46,9 @@ namespace TravelPlanner.BLL
                 throw new ArgumentNullException(nameof(productAddonTranslation), "ProductAddonTranslation cannot be null");
             }
 
-            if (productAddonTranslation.ID <= 0)
+            if (productAddonTranslation.Id <= 0)
             {
-                throw new ArgumentException("ProductAddonTranslation must have a valid ID");
+                throw new ArgumentException("ProductAddonTranslation must have a valid Id");
             }
 
             var result = await _db.UpdateAsync(productAddonTranslation);
@@ -81,7 +81,7 @@ namespace TravelPlanner.BLL
         {
             if (id <= 0)
             {
-                throw new ArgumentException("ProductAddonTranslation ID must be positive", nameof(id));
+                throw new ArgumentException("ProductAddonTranslation Id must be positive", nameof(id));
             }
 
             var productAddonTranslation = await GetProductAddonTranslationByIdAsync(id);

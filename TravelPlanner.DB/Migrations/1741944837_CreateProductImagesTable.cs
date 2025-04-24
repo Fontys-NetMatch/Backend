@@ -17,7 +17,7 @@ public class ProductImagesTable : IMigration
             dbContext,
             "ProductImages",
             "Products",
-            "ID"
+            "Id"
         );
 
     }

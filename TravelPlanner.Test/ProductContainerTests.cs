@@ -33,10 +33,10 @@ namespace TravelPlanner.Test
                     {
                         new ProductTranslation
                         {
-                            ID = 1,
+                            Id = 1,
                             LangIsoCode = "en",
                             Name = "Test Product",
-                            Product_ID = 1,
+                            ProductId = 1,
                             IsActive = true
                         }
                     }

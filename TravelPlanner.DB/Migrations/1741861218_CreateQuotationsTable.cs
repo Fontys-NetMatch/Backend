@@ -16,14 +16,14 @@ public class CreateQuotationsTable : IMigration
             dbContext,
             "Quotations",
             "Customers",
-            "ID"
+            "Id"
         );
 
         DbUtils.GenerateForeignKey(
             dbContext,
             "Quotations",
             "Users",
-            "ID"
+            "Id"
         );
 
     }

@@ -21,13 +21,13 @@ namespace TravelPlanner.DB.Migrations
                 dbContext,
                 "AddonDates",
                 "ProductDates",
-                "ID"
+                "Id"
             );
             DbUtils.GenerateForeignKey(
                 dbContext,
                 "AddonDates",
                 "ProductAddons",
-                "ID"
+                "Id"
             );
 
         }

@@ -16,7 +16,7 @@ public class LoginDataObj
     {
         JwtToken = jwtToken;
 
-        Id = user.ID;
+        Id = user.Id;
         Firstname = user.Firstname;
         Surname = user.Surname;
         Email = user.Email;

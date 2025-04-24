@@ -28,7 +28,7 @@ namespace TravelPlanner.API.Controllers
                     [FromServices] CustomerController controller
                 ) => controller.GetCustomerById(id))
                 .WithName("GetCustomerById")
-                .WithDescription("Get a customer by ID")
+                .WithDescription("Get a customer by Id")
                 .Produces<Customer>()
                 .Produces<ErrorResponse>(StatusCodes.Status500InternalServerError)
                 .RequiresJwtToken()
@@ -118,7 +118,7 @@ namespace TravelPlanner.API.Controllers
         {
             try
             {
-                customer.ID = id;
+                customer.Id = id;
                 _container.UpdateCustomer(customer).Wait();
                 return new SuccessResponse("Customer updated successfully");
             }

@@ -38,10 +38,10 @@ namespace TravelPlanner.BLL
         {
             if (id <= 0)
             {
-                throw new ArgumentException("ProductTranslation ID must be positive", nameof(id));
+                throw new ArgumentException("ProductTranslation Id must be positive", nameof(id));
             }
 
-            return await _db.ProductTranslations.FirstOrDefaultAsync(pt => pt.ID == id);
+            return await _db.ProductTranslations.FirstOrDefaultAsync(pt => pt.Id == id);
         }
 
         public async Task UpdateProductTranslationAsync(ProductTranslation productTranslation)
@@ -51,9 +51,9 @@ namespace TravelPlanner.BLL
                 throw new ArgumentNullException(nameof(productTranslation), "ProductTranslation cannot be null");
             }
 
-            if (productTranslation.ID <= 0)
+            if (productTranslation.Id <= 0)
             {
-                throw new ArgumentException("ProductTranslation must have a valid ID");
+                throw new ArgumentException("ProductTranslation must have a valid Id");
             }
 
             var result = await _db.UpdateAsync(productTranslation);
@@ -81,7 +81,7 @@ namespace TravelPlanner.BLL
         {
             if (id <= 0)
             {
-                throw new ArgumentException("ProductTranslation ID must be positive", nameof(id));
+                throw new ArgumentException("ProductTranslation Id must be positive", nameof(id));
             }
 
             var productTranslation = await GetProductTranslationByIdAsync(id);
@@ -103,16 +103,16 @@ namespace TravelPlanner.BLL
         {
             if (productId <= 0)
             {
-                throw new ArgumentException("Product ID must be positive", nameof(productId));
+                throw new ArgumentException("Product Id must be positive", nameof(productId));
             }
 
             var translations = await _db.ProductTranslations
-                                      .Where(pt => pt.Product_ID == productId)
+                                      .Where(pt => pt.ProductId == productId)
                                       .ToListAsync();
 
             if (translations == null || !translations.Any())
             {
-                throw new InvalidOperationException("No translations found for the given Product ID");
+                throw new InvalidOperationException("No translations found for the given Product Id");
             }
 
             return translations;

@@ -10,7 +10,7 @@
 
         public CustomerResponse(Domain.Models.Entities.Customer customer)
         {
-            Id = customer.ID;
+            Id = customer.Id;
             Firstname = customer.Firstname;
             Surname = customer.Surname;
             Email = customer.Email;

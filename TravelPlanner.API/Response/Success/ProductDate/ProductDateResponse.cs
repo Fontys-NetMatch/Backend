@@ -3,7 +3,7 @@
 public class ProductDateResponse
 {
 
-    public int ID { get; set; }
+    public int Id { get; set; }
     public double Price { get; set; }
     public DateTime StartDate { get; set; }
     public DateTime EndDate { get; set; }
@@ -12,7 +12,7 @@ public class ProductDateResponse
 
     public ProductDateResponse(int id, double price, DateTime startDate, DateTime endDate, int? slots, bool isActive)
     {
-        ID = id;
+        Id = id;
         Price = price;
         StartDate = startDate;
         EndDate = endDate;

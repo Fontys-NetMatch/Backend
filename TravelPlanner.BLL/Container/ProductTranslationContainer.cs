@@ -26,24 +26,24 @@ public class ProductTranslationContainer : IProductTranslationContainer
     {
         if (id <= 0)
         {
-            throw new ArgumentException("Invalid product translation ID", nameof(id));
+            throw new ArgumentException("Invalid product translation Id", nameof(id));
         }
 
-        return await _db.ProductTranslations.FirstOrDefaultAsync(p => p.ID == id);
+        return await _db.ProductTranslations.FirstOrDefaultAsync(p => p.Id == id);
     }
 
     public async Task<ProductTranslation?> GetByIdAndIso(int id, string isoCode)
     {
         if (id <= 0)
         {
-            throw new ArgumentException("Invalid product translation ID", nameof(id));
+            throw new ArgumentException("Invalid product translation Id", nameof(id));
         }
         if (isoCode == null)
         {
             throw new ArgumentException("Ïnvalid IsoCode", nameof(isoCode));
         }
         return await _db.ProductTranslations
-            .Where(p => p.ID == id && p.LangIsoCode == isoCode)
+            .Where(p => p.Id == id && p.LangIsoCode == isoCode)
             .FirstOrDefaultAsync();
 
     }
@@ -83,7 +83,7 @@ public class ProductTranslationContainer : IProductTranslationContainer
 
         var translationId = await _db.InsertWithInt32IdentityAsync(new ProductTranslation()
         {
-            Product_ID = productId,
+            ProductId = productId,
             LangIsoCode = data.LangIsoCode,
             Name = data.Name,
             Description = data.Description,
@@ -99,7 +99,7 @@ public class ProductTranslationContainer : IProductTranslationContainer
     {
         if (translationId <= 0)
         {
-            throw new ArgumentException("Invalid product translation ID");
+            throw new ArgumentException("Invalid product translation Id");
         }
         if (string.IsNullOrEmpty(data.Name) || string.IsNullOrEmpty(data.Description))
         {
@@ -127,7 +127,7 @@ public class ProductTranslationContainer : IProductTranslationContainer
     {
         if (translationId <= 0)
         {
-            throw new ArgumentException("Invalid product translation ID");
+            throw new ArgumentException("Invalid product translation Id");
         }
 
         var existingTranslation = await GetById(translationId);

@@ -29,7 +29,7 @@ public record ProductAddonTranslation
     [Column, NotNull]
     public required int ProductAddonId { get; set; }
 
-    [Association(ThisKey = nameof(ProductAddonId), OtherKey = nameof(ProductAddon.ID), CanBeNull = false)]
+    [Association(ThisKey = nameof(ProductAddonId), OtherKey = nameof(ProductAddon.Id), CanBeNull = false)]
     public ProductAddon Product { get; set; } = null!;
 
 

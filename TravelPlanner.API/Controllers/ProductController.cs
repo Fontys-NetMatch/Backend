@@ -25,13 +25,13 @@ namespace TravelPlanner.API.Controllers
         public static void Register(WebApplication app)
         {
 
-            // GetProduct by ID endpoint
+            // GetProduct by Id endpoint
             app.MapGet("/product/{productId:int}", (
                     [FromRoute] int productId,
                     [FromServices] ProductController controller
                 ) => controller.GetProduct(productId))
                 .WithName("GetProductById")
-                .WithDescription("GetProduct a product by ID")
+                .WithDescription("GetProduct a product by Id")
                 .Produces<ProductResponse>()
                 .Produces<ErrorResponse>(StatusCodes.Status500InternalServerError)
                 .RequiresJwtToken()
@@ -109,7 +109,7 @@ namespace TravelPlanner.API.Controllers
                 [FromServices] ProductController controller
             ) => controller.SoftDeleteProduct(productId))
                 .WithName("SoftDeleteProduct")
-                .WithDescription("Soft delete a product by ID")
+                .WithDescription("Soft delete a product by Id")
                 .Produces<SuccessResponse>()
                 .Produces<ErrorResponse>(StatusCodes.Status500InternalServerError)
                 .RequiresJwtToken()
@@ -123,7 +123,7 @@ namespace TravelPlanner.API.Controllers
                 [FromServices] ProductController controller
            ) => controller.RestoreProduct(productId))
                 .WithName("RestoreProduct")
-                .WithDescription("Restore a product by ID")
+                .WithDescription("Restore a product by Id")
                 .Produces<SuccessResponse>()
                 .Produces<ErrorResponse>(StatusCodes.Status500InternalServerError)
                 .RequiresJwtToken()
@@ -144,8 +144,8 @@ namespace TravelPlanner.API.Controllers
 
                 var translations = product.Translations
                     .Select(translation => new ProductTranslationResponse(
-                        translation.ID,
-                        translation.Product_ID,
+                        translation.Id,
+                        translation.ProductId,
                         translation.LangIsoCode,
                         translation.Name,
                         translation.Description,
@@ -197,8 +197,8 @@ namespace TravelPlanner.API.Controllers
                 {
                     var translations = product.Translations
                         .Select(translation => new ProductTranslationResponse(
-                            translation.ID,
-                            translation.Product_ID,
+                            translation.Id,
+                            translation.ProductId,
                             translation.LangIsoCode,
                             translation.Name,
                             translation.Description,

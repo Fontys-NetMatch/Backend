@@ -8,7 +8,7 @@ namespace TravelPlanner.Domain.Models.Entities.Product
     {
 
         [Column, PrimaryKey, Identity]
-        public int ID { get; set; }
+        public int Id { get; set; }
 
         [Column, NotNull]
         public bool IsActive { get; set; }

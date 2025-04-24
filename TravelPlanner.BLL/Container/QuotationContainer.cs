@@ -35,7 +35,7 @@ public class QuotationContainer : IQuotationContainer
 
         if (quotation.CustomerId <= 0)
         {
-            throw new ArgumentException("Invalid Customer ID");
+            throw new ArgumentException("Invalid Customer Id");
         }
 
         var result = _db.InsertWithInt32Identity(quotation);
@@ -49,10 +49,10 @@ public class QuotationContainer : IQuotationContainer
     {
         if (id <= 0)
         {
-            throw new ArgumentException("Quotation ID must be positive", nameof(id));
+            throw new ArgumentException("Quotation Id must be positive", nameof(id));
         }
 
-        return await _db.Quotations.LoadWith(q => q.Customer).FirstOrDefaultAsync(q => q.ID == id);
+        return await _db.Quotations.LoadWith(q => q.Customer).FirstOrDefaultAsync(q => q.Id == id);
     }
 
     public async Task<List<ProductDate>> GetQuotationProducts(int quotationId)
@@ -74,7 +74,7 @@ public class QuotationContainer : IQuotationContainer
 
         if (quotation.Id <= 0)
         {
-            throw new ArgumentException("Quotation must have a valid ID");
+            throw new ArgumentException("Quotation must have a valid Id");
         }
 
         var existingQuotation = await GetQuotationById(quotation.Id);
@@ -94,7 +94,7 @@ public class QuotationContainer : IQuotationContainer
     {
         if (id <= 0)
         {
-            throw new ArgumentException("Quotation ID must be positive", nameof(id));
+            throw new ArgumentException("Quotation Id must be positive", nameof(id));
         }
 
         var quotation = await GetQuotationById(id);

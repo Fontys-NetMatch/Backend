@@ -5,7 +5,7 @@ namespace TravelPlanner.API.Response.Success.ProductType;
 public record ProductTypeResponse : BaseResponse
 {
 
-    public int ID { get; set; }
+    public int Id { get; set; }
 
     public bool IsActive { get; set; }
 
@@ -13,7 +13,7 @@ public record ProductTypeResponse : BaseResponse
 
     public ProductTypeResponse(int id, bool isActive, List<ProductTypeTranslationResponse> translations)
     {
-        ID = id;
+        Id = id;
         IsActive = isActive;
         Translations = translations;
     }

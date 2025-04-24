@@ -33,7 +33,7 @@ namespace TravelPlanner.BLL
         {
             if (id <= 0)
             {
-                throw new ArgumentException("ProductType ID must be positive", nameof(id));
+                throw new ArgumentException("ProductType Id must be positive", nameof(id));
             }
 
             return await _db.ProductTypes.FirstOrDefaultAsync(pt => pt.Id == id);
@@ -48,7 +48,7 @@ namespace TravelPlanner.BLL
 
             if (productType.Id <= 0)
             {
-                throw new ArgumentException("ProductType must have a valid ID");
+                throw new ArgumentException("ProductType must have a valid Id");
             }
 
             var result = await _db.UpdateAsync(productType);
@@ -76,7 +76,7 @@ namespace TravelPlanner.BLL
         {
             if (id <= 0)
             {
-                throw new ArgumentException("ProductType ID must be positive", nameof(id));
+                throw new ArgumentException("ProductType Id must be positive", nameof(id));
             }
 
             var productType = await GetProductTypeByIdAsync(id);
