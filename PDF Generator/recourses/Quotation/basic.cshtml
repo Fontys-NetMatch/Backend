@@ -1,0 +1,43 @@
+﻿@model QuotationPdfViewModel
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        h1, h2 { margin-bottom: 10px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ccc; padding: 10px; text-align: left; }
+        th { background-color: #f5f5f5; }
+    </style>
+</head>
+<body>
+    <h1>Quotation #@Model.Id</h1>
+    <p><strong>Customer:</strong> @Model.CustomerName</p>
+    <p><strong>Date:</strong> @Model.CreatedAt.ToShortDateString()</p>
+
+    <h2>Products</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Quantity</th>
+                <th>Price</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var product in Model.ProductDates)
+            {
+                <tr>
+                    <td>@product.Name</td>
+                    <td>@product.Quantity</td>
+                    <td>@product.Price.ToString("C")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <h3>Total: @Model.ProductDates.Sum(p => p.Price).ToString("C")</h3>
+</body>
+</html>
