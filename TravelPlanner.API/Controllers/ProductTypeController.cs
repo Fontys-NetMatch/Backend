@@ -32,7 +32,7 @@ namespace TravelPlanner.API.Controllers
                 .Produces<ProductResponse>()
                 .Produces<ErrorResponse>(StatusCodes.Status500InternalServerError)
                 .RequiresJwtToken()
-                .WithTags("Product")
+                .WithTags("Product Type")
                 .WithOrder(3)
                 .WithOpenApi();
 
@@ -45,7 +45,7 @@ namespace TravelPlanner.API.Controllers
                 .Produces<ProductsResponse>()
                 .Produces<ErrorResponse>(StatusCodes.Status500InternalServerError)
                 .RequiresJwtToken()
-                .WithTags("Product")
+                .WithTags("Product Type")
                 .WithOrder(1)
                 .WithOpenApi();
 
@@ -59,7 +59,7 @@ namespace TravelPlanner.API.Controllers
                 .Produces<SuccessResponse>()
                 .Produces<ErrorResponse>(StatusCodes.Status500InternalServerError)
                 .RequiresJwtToken()
-                .WithTags("Product")
+                .WithTags("Product Type")
                 .WithOrder(2)
                 .WithOpenApi();
 
@@ -74,7 +74,7 @@ namespace TravelPlanner.API.Controllers
                 .Produces<SuccessResponse>()
                 .Produces<ErrorResponse>(StatusCodes.Status500InternalServerError)
                 .RequiresJwtToken()
-                .WithTags("Product")
+                .WithTags("Product Type")
                 .WithOrder(4)
                 .WithOpenApi();
 
@@ -88,7 +88,7 @@ namespace TravelPlanner.API.Controllers
                 .Produces<SuccessResponse>()
                 .Produces<ErrorResponse>(StatusCodes.Status500InternalServerError)
                 .RequiresJwtToken()
-                .WithTags("Product")
+                .WithTags("Product Type")
                 .WithOrder(5)
                 .WithOpenApi();
         }
