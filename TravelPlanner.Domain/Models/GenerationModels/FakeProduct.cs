@@ -8,14 +8,14 @@ namespace TravelPlanner.Domain.Models.GenerationModels;
 public record FakeProduct
 {
 
-    public string StartLocation { get; set; }
+    public string StartLocation { get; init; } = null!;
 
-    public string? EndLocation { get; set; }
+    public string? EndLocation { get; init; }
 
-    public string ProductType_Name { get; set; }
+    public string ProductTypeName { get; init; } = null!;
 
-    public List<ProductTranslation> Translations { get; set; } = null!;
+    public List<ProductTranslation> Translations { get; init; } = null!;
 
-    public List<ProductDate> ProductDates { get; set; } = null!;
+    public List<ProductDate> ProductDates { get; init; } = null!;
 
 }

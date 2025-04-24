@@ -20,7 +20,7 @@ namespace TravelPlanner.Domain.Models.Entities
         [Column, NotNull]
         public required int ProductDate_ID { get; set; }
 
-        [Association(ThisKey = nameof(ProductDate_ID), OtherKey = nameof(ProductDate.ID), CanBeNull = false)]
+        [Association(ThisKey = nameof(ProductDate_ID), OtherKey = nameof(ProductDate.Id), CanBeNull = false)]
         public required ProductDate ProductDate { get; set; }
 
         [Column, NotNull]

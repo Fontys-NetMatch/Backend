@@ -48,8 +48,8 @@ public class AuthController
                 [FromBody] RegisterData data,
                 [FromServices] AuthController controller
             ) => controller.RegisterRequest(context, data))
-            .WithName("Register")
-            .WithDescription("Register a new user")
+            .WithName("LoadFiles")
+            .WithDescription("LoadFiles a new user")
             .Produces<SuccessResponse>()
             .Produces<ErrorResponse>(StatusCodes.Status500InternalServerError)
             .WithTags("Auth")

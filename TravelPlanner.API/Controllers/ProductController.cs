@@ -154,7 +154,7 @@ namespace TravelPlanner.API.Controllers
                     )).ToList();
                 var dates = product.Dates
                     .Select(date => new ProductDateResponse(
-                        date.ID,
+                        date.Id,
                         date.Price,
                         date.StartDate,
                         date.EndDate,
@@ -164,11 +164,12 @@ namespace TravelPlanner.API.Controllers
                     .ToList();
 
                 var response = new ProductResponseWithDates(
-                    product.ID,
+                    product.Id,
                     product.StartLocation,
                     product.EndLocation,
                     product.DeletedAt,
-                    product.ProductType_ID,
+                    product.ProductTypeId,
+                    product.ProductType,
                     translations,
                     dates
                 );
@@ -207,7 +208,7 @@ namespace TravelPlanner.API.Controllers
                         .ToList();
                     var dates = product.Dates
                         .Select(date => new ProductDateResponse(
-                            date.ID,
+                            date.Id,
                             date.Price,
                             date.StartDate,
                             date.EndDate,
@@ -217,11 +218,12 @@ namespace TravelPlanner.API.Controllers
                         .ToList();
 
                     return new ProductResponseWithDates(
-                        product.ID,
+                        product.Id,
                         product.StartLocation,
                         product.EndLocation,
                         product.DeletedAt,
-                        product.ProductType_ID,
+                        product.ProductTypeId,
+                        product.ProductType,
                         translations,
                         dates
                     );

@@ -105,15 +105,15 @@ namespace TravelPlanner.API.Controllers
 
                 var translations = product.Translations
                     .Select(translation => new ProductTypeTranslationResponse(
-                        translation.ID,
-                        translation.ProductType_ID,
+                        translation.Id,
+                        translation.ProductTypeId,
                         translation.LangIsoCode,
                         translation.Name,
                         translation.IsActive
                     )).ToList();
 
                 var response = new ProductTypeResponse(
-                    product.ID,
+                    product.Id,
                     product.IsActive,
                     translations
                 );
@@ -141,15 +141,15 @@ namespace TravelPlanner.API.Controllers
                 {
                     var translations = product.Translations
                         .Select(translation => new ProductTypeTranslationResponse(
-                            translation.ID,
-                            translation.ProductType_ID,
+                            translation.Id,
+                            translation.ProductTypeId,
                             translation.LangIsoCode,
                             translation.Name,
                             translation.IsActive
                         )).ToList();
 
                     return new ProductTypeResponse(
-                        id: product.ID,
+                        id: product.Id,
                         isActive: product.IsActive,
                         translations
                     );

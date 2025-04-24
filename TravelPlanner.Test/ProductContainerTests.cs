@@ -28,7 +28,7 @@ namespace TravelPlanner.Test
             {
                 new Product 
                 { 
-                    ID = 1,
+                    Id = 1,
                     Translations = new List<ProductTranslation>
                     {
                         new ProductTranslation
@@ -101,7 +101,7 @@ namespace TravelPlanner.Test
 
             // Assert
             Assert.IsNotNull(result);
-            Assert.AreEqual(1, result.ID);
+            Assert.AreEqual(1, result.Id);
         }
     }
 }

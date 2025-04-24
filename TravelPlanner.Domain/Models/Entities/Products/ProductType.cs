@@ -10,12 +10,12 @@ public record ProductType
 {
 
     [Column, PrimaryKey, Identity]
-    public int ID { get; set; }
+    public int Id { get; set; }
 
     [Column, NotNull]
     public bool IsActive { get; set; }
 
-    [Association(ThisKey = nameof(ID), OtherKey = nameof(ProductTypeTranslation.ProductType_ID))]
-    public List<ProductTypeTranslation> Translations { get; set; } = null!;
+    [Association(ThisKey = nameof(Id), OtherKey = nameof(ProductTypeTranslation.ProductTypeId))]
+    public List<ProductTypeTranslation> Translations { get; init; } = null!;
 
 }

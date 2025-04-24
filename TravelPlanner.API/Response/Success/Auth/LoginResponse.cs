@@ -5,7 +5,7 @@ namespace TravelPlanner.API.Response.Success.Auth;
 public record LoginResponse : BaseResponse
 {
 
-    public new LoginDataObj Data { get; init; }
+    public LoginDataObj Data { get; init; }
 
     public LoginResponse(LoginDataObj login)
     {

@@ -24,6 +24,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\PDF Generator\PDF Generator.csproj" />
         <ProjectReference Include="..\TravelPlanner.Domain\TravelPlanner.Domain.csproj" />
         <ProjectReference Include="..\TravelPlanner.BLL\TravelPlanner.BLL.csproj" />
     </ItemGroup>

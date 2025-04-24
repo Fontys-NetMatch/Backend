@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,5 +19,6 @@ namespace TravelPlanner.Domain.Interfaces.BLL
         Task SoftDeleteQuotation(int id);
         Task UpdateQuotation(QuotationUpdateData quotation);
         Task<List<ProductDate>> GetQuotationProducts(int quotationId);
+        Task<FileContentResult> GeneratePdfAsync(int id);
     }
 }

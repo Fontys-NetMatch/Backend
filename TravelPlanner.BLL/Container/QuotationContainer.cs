@@ -1,7 +1,9 @@
 ﻿using LinqToDB;
+using Microsoft.AspNetCore.Mvc;
 using TravelPlanner.DB;
 using TravelPlanner.Domain.Enums;
 using TravelPlanner.Domain.Interfaces.BLL;
+using TravelPlanner.Domain.Interfaces.PDF;
 using TravelPlanner.Domain.Models.Entities;
 using TravelPlanner.Domain.Models.Entities.Products;
 using TravelPlanner.Domain.Models.Request.Quotation;
@@ -11,10 +13,12 @@ namespace TravelPlanner.BLL.Container;
 public class QuotationContainer : IQuotationContainer
 {
     private readonly DbManager _db;
+    private readonly IPDFService pdf;
 
-    public QuotationContainer(DbManager db)
+    public QuotationContainer(DbManager db, IPDFService pdf)
     {
         _db = db;
+        this.pdf = pdf;
     }
 
     public void CreateQuotation(QuotationData quotation)
@@ -29,7 +33,7 @@ public class QuotationContainer : IQuotationContainer
             throw new ArgumentException("Quotation name cannot be null or empty");
         }
 
-        if (quotation.Customer_ID <= 0)
+        if (quotation.CustomerId <= 0)
         {
             throw new ArgumentException("Invalid Customer ID");
         }
@@ -51,9 +55,14 @@ public class QuotationContainer : IQuotationContainer
         return await _db.Quotations.LoadWith(q => q.Customer).FirstOrDefaultAsync(q => q.ID == id);
     }
 
-    public Task<List<ProductDate>> GetQuotationProducts(int quotationId)
+    public async Task<List<ProductDate>> GetQuotationProducts(int quotationId)
     {
-        throw new NotImplementedException();
+        var results = await _db.QuotationProductDates
+        .LoadWith(qpd => qpd.ProductDate)
+        .Where(qpd => qpd.QuotationId == quotationId)
+        .ToListAsync();
+
+        return results.Select(qpd => qpd.ProductDate).ToList();
     }
 
     public async Task UpdateQuotation(QuotationUpdateData quotation)
@@ -63,12 +72,12 @@ public class QuotationContainer : IQuotationContainer
             throw new ArgumentNullException(nameof(quotation), "Quotation cannot be null");
         }
 
-        if (quotation.ID <= 0)
+        if (quotation.Id <= 0)
         {
             throw new ArgumentException("Quotation must have a valid ID");
         }
 
-        var existingQuotation = await GetQuotationById(quotation.ID);
+        var existingQuotation = await GetQuotationById(quotation.Id);
         if (existingQuotation == null)
         {
             throw new InvalidOperationException("Quotation does not exist and cannot be updated");
@@ -128,5 +137,12 @@ public class QuotationContainer : IQuotationContainer
         }
         return quotations;
     }
+    public async Task<FileContentResult> GeneratePdfAsync(int id)
+    {
+        var quotation = await GetQuotationById(id);
+        if (quotation == null)
+            throw new InvalidOperationException("Quotation not found");
 
+        return await pdf.GenerateQuotation(quotation);
+    }
 }
