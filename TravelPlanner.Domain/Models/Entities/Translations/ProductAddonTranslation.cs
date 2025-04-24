@@ -17,9 +17,9 @@ namespace TravelPlanner.Domain.Models.Entities.Translations
         public int Name { get; set; }
 
         [Column, NotNull]
-        public string Description { get; set; }
+        public string Description { get; set; } = null!;
 
         [Column(Length = 10), NotNull]
-        public string LangIsoCode { get; set; }
+        public string LangIsoCode { get; set; } = null!;
     }
 }

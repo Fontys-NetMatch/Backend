@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using LinqToDB;
+﻿using LinqToDB;
 using TravelPlanner.DB;
 using TravelPlanner.Domain.Models.Entities.Products;
 
@@ -40,7 +36,7 @@ namespace TravelPlanner.BLL
                 throw new ArgumentException("ProductType ID must be positive", nameof(id));
             }
 
-            return await _db.ProductTypes.FirstOrDefaultAsync(pt => pt.ID == id);
+            return await _db.ProductTypes.FirstOrDefaultAsync(pt => pt.Id == id);
         }
 
         public async Task UpdateProductTypeAsync(ProductType productType)
@@ -50,7 +46,7 @@ namespace TravelPlanner.BLL
                 throw new ArgumentNullException(nameof(productType), "ProductType cannot be null");
             }
 
-            if (productType.ID <= 0)
+            if (productType.Id <= 0)
             {
                 throw new ArgumentException("ProductType must have a valid ID");
             }

@@ -4,6 +4,7 @@ using TravelPlanner.Domain.Models.Entities;
 using TravelPlanner.Domain.Models.Entities.Product;
 using TravelPlanner.Domain.Models.Entities.Products;
 using TravelPlanner.Domain.Models.Entities.Translations;
+using ProductAddonTranslation = TravelPlanner.Domain.Models.Entities.Translations.ProductAddonTranslation;
 
 namespace TravelPlanner.DB;
 
@@ -13,7 +14,7 @@ public class DbManager : DbContext
     public ITable<User> Users => this.GetTable<User>();
     public ITable<Customer> Customers => this.GetTable<Customer>();
     public ITable<Product> Products => this.GetTable<Product>();
-    public ITable<ProductTranslation?> ProductTranslations => this.GetTable<ProductTranslation>();
+    public ITable<ProductTranslation> ProductTranslations => this.GetTable<ProductTranslation>();
     public ITable<ProductImage> ProductImages => this.GetTable<ProductImage>();
     public ITable<ProductType> ProductTypes => this.GetTable<ProductType>();
     public ITable<ProductTypeTranslation> ProductTypeTranslations => this.GetTable<ProductTypeTranslation>();
@@ -23,4 +24,5 @@ public class DbManager : DbContext
     public ITable<AddonDate> AddonDates => this.GetTable<AddonDate>();
     public ITable<Quotation> Quotations => this.GetTable<Quotation>();
     public ITable<QuotationProductDate> QuotationProductDates => this.GetTable<QuotationProductDate>();
+
 }

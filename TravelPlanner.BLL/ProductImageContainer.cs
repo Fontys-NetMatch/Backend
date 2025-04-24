@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using LinqToDB;
+﻿using LinqToDB;
 using TravelPlanner.DB;
 using TravelPlanner.Domain.Models.Entities.Products;
 
@@ -40,7 +36,7 @@ namespace TravelPlanner.BLL
                 throw new ArgumentException("ProductImage ID must be positive", nameof(id));
             }
 
-            return await _db.ProductImages.FirstOrDefaultAsync(pi => pi.ID == id);
+            return await _db.ProductImages.FirstOrDefaultAsync(pi => pi.Id == id);
         }
 
         public async Task UpdateProductImageAsync(ProductImage productImage)
@@ -50,7 +46,7 @@ namespace TravelPlanner.BLL
                 throw new ArgumentNullException(nameof(productImage), "ProductImage cannot be null");
             }
 
-            if (productImage.ID <= 0)
+            if (productImage.Id <= 0)
             {
                 throw new ArgumentException("ProductImage must have a valid ID", nameof(productImage));
             }
@@ -65,10 +61,10 @@ namespace TravelPlanner.BLL
         public async Task<IEnumerable<ProductImage>> GetAllActiveProductImagesAsync()
         {
             var productImages = await _db.ProductImages
-                                  .Where(pi => pi.IsActive)
+                                  .Where(pi => pi.DeletedAt == null)
                                   .ToListAsync();
 
-            if (productImages == null || !productImages.Any())
+            if (productImages == null || productImages.Count == 0)
             {
                 throw new InvalidOperationException("No active ProductImages found");
             }
@@ -89,12 +85,11 @@ namespace TravelPlanner.BLL
                 throw new InvalidOperationException("ProductImage does not exist and cannot be soft-deleted");
             }
 
-            if (!productImage.IsActive)
+            if (productImage.DeletedAt == null)
             {
-                throw new InvalidOperationException("ProductImage is already inactive");
+                throw new InvalidOperationException("ProductImage is already soft-deleted");
             }
 
-            productImage.IsActive = false;
             productImage.DeletedAt = DateTime.UtcNow;
             await UpdateProductImageAsync(productImage);
         }

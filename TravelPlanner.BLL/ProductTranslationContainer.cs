@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using LinqToDB;
 using TravelPlanner.DB;
 using TravelPlanner.Domain.Models.Entities;
+using TravelPlanner.Domain.Models.Entities.Translations;
 
 namespace TravelPlanner.BLL
 {

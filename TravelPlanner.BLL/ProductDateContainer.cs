@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using LinqToDB;
+﻿using LinqToDB;
 using TravelPlanner.DB;
 using TravelPlanner.Domain.Models.Entities.Products;
 
@@ -40,7 +36,7 @@ namespace TravelPlanner.BLL
                 throw new ArgumentException("ProductDate ID must be positive", nameof(id));
             }
 
-            return await _db.ProductDates.FirstOrDefaultAsync(pd => pd.ID == id);
+            return await _db.ProductDates.FirstOrDefaultAsync(pd => pd.Id == id);
         }
 
         public async Task UpdateProductDateAsync(ProductDate productDate)
@@ -50,7 +46,7 @@ namespace TravelPlanner.BLL
                 throw new ArgumentNullException(nameof(productDate), "ProductDate cannot be null");
             }
 
-            if (productDate.ID <= 0)
+            if (productDate.Id <= 0)
             {
                 throw new ArgumentException("ProductDate must have a valid ID", nameof(productDate));
             }
