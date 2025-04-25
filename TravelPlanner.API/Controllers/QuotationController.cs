@@ -6,6 +6,8 @@ using TravelPlanner.Domain.Interfaces.BLL;
 using TravelPlanner.Domain.Models.Entities;
 using TravelPlanner.API.Infrastructure.Extensions;
 using TravelPlanner.API.Response.Success.Quotation;
+using TravelPlanner.Domain.Interfaces.BLL.Container;
+using TravelPlanner.Domain.Interfaces.BLL.Service;
 using TravelPlanner.Domain.Models.Request.Quotation;
 
 namespace TravelPlanner.API.Controllers
@@ -13,10 +15,12 @@ namespace TravelPlanner.API.Controllers
     public class QuotationController : Controller
     {
         private readonly IQuotationContainer _container;
-
-        public QuotationController(IQuotationContainer container)
+        private readonly IQuotationService _service;
+        
+        public QuotationController(IQuotationContainer container, IQuotationService service)
         {
             _container = container;
+            _service = service;
         }
 
         public static void Register(WebApplication app)
@@ -90,6 +94,36 @@ namespace TravelPlanner.API.Controllers
                 .WithTags("Quotation")
                 .WithOpenApi();
 
+            // Get flat commision quotation price
+            app.MapPost("/quotations/{id}/flatcommision", (
+                    HttpContext context,
+                    [FromRoute] int id,
+                    [FromBody] double commision,
+                    [FromServices] QuotationController controller
+                ) => controller.GetQuotationValueFlat(context,id , commision))
+                .WithName("GetFlatCommision")
+                .WithDescription("Get the quotation price with a flat commision")
+                .Produces<QuotationsResponse>()
+                .Produces<ErrorResponse>(StatusCodes.Status500InternalServerError)
+                .RequiresJwtToken()
+                .WithTags("Quotation")
+                .WithOpenApi();
+            
+            // Get percentile commision quotation price
+            app.MapPost("/quotations/{id}/percentilecommision", (
+                    HttpContext context,
+                    [FromRoute] int id,
+                    [FromBody] double percentile,
+                    [FromServices] QuotationController controller
+                ) => controller.GetQuotationValueFlat(context,id , percentile))
+                .WithName("GetPercentileCommision")
+                .WithDescription("Get the quotation price with a percentile commision")
+                .Produces<QuotationsResponse>()
+                .Produces<ErrorResponse>(StatusCodes.Status500InternalServerError)
+                .RequiresJwtToken()
+                .WithTags("Quotation")
+                .WithOpenApi();
+            
             // Download Quotation as PDF
             app.MapGet("/quotations/{id}/pdf", async (
     int id,
@@ -112,7 +146,6 @@ namespace TravelPlanner.API.Controllers
         private async Task<FileContentResult> GetQuotationPdf(int id)
         {
             return await _container.GeneratePdfAsync(id);
-            throw new NotImplementedException();
         }
 
         private BaseResponse CreateQuotation(HttpContext? context, QuotationData quotation)
@@ -197,6 +230,33 @@ namespace TravelPlanner.API.Controllers
                 )).ToList();
 
                 return new QuotationsResponse(quotationResponses);
+            }
+            catch (Exception ex)
+            {
+                return new ErrorResponse(ex.Message);
+            }
+        }
+        private BaseResponse GetQuotationValueFlat(HttpContext? context, int Id, double Commision)
+        {
+            try
+            {
+                Double Price =  _service.FlatCommision(Id, Commision).Result;
+
+                return new PriceCalcResponse(Price);
+            }
+            catch (Exception ex)
+            {
+                return new ErrorResponse(ex.Message);
+            }
+        }
+        
+        private BaseResponse GetQuotationValuePercentile(HttpContext? context, int Id, double Percentile)
+        {
+            try
+            {
+                Double Price =  _service.PercentileCommision(Id, Percentile).Result;
+
+                return new PriceCalcResponse(Price);
             }
             catch (Exception ex)
             {

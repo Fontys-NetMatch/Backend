@@ -6,6 +6,7 @@ using System.Linq;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using TravelPlanner.Domain.Interfaces.BLL.Container;
 using TravelPlanner.Domain.Models.Entities.Products;
 using TravelPlanner.Domain.Models.Entities.Translations;
 using TravelPlanner.Domain.Models.Request.Product;
@@ -13,15 +14,8 @@ using TravelPlanner.Domain.Models.Request.ProductTranslation;
 
 namespace TravelPlanner.BLL.Container;
 
-public class ProductTranslationContainer : IProductTranslationContainer
+public class ProductTranslationContainer(DbManager db) : IProductTranslationContainer
 {
-    private readonly DbManager _db;
-
-    public ProductTranslationContainer(DbManager db)
-    {
-        _db = db;
-    }
-
     public async Task<ProductTranslation?> GetById(int id)
     {
         if (id <= 0)
@@ -29,7 +23,7 @@ public class ProductTranslationContainer : IProductTranslationContainer
             throw new ArgumentException("Invalid product translation Id", nameof(id));
         }
 
-        return await _db.ProductTranslations.FirstOrDefaultAsync(p => p.Id == id);
+        return await db.ProductTranslations.FirstOrDefaultAsync(p => p.Id == id);
     }
 
     public async Task<ProductTranslation?> GetByIdAndIso(int id, string isoCode)
@@ -42,7 +36,7 @@ public class ProductTranslationContainer : IProductTranslationContainer
         {
             throw new ArgumentException("Ïnvalid IsoCode", nameof(isoCode));
         }
-        return await _db.ProductTranslations
+        return await db.ProductTranslations
             .Where(p => p.Id == id && p.LangIsoCode == isoCode)
             .FirstOrDefaultAsync();
 
@@ -50,7 +44,7 @@ public class ProductTranslationContainer : IProductTranslationContainer
 
     public async Task<List<ProductTranslation>> GetAll(string isoCode)
     {
-        var translations = await _db.ProductTranslations
+        var translations = await db.ProductTranslations
             .Where(p => p.LangIsoCode == isoCode)
             .ToListAsync();
         if (translations == null)
@@ -63,7 +57,7 @@ public class ProductTranslationContainer : IProductTranslationContainer
 
     public async Task<List<ProductTranslation>> GetAllActive(string isoCode)
     {
-        var translations = await _db.ProductTranslations
+        var translations = await db.ProductTranslations
             .Where(p => p.IsActive && p.LangIsoCode == isoCode)
             .ToListAsync();
         if (translations == null)
@@ -81,7 +75,7 @@ public class ProductTranslationContainer : IProductTranslationContainer
             throw new ArgumentException("Invalid product translation data");
         }
 
-        var translationId = await _db.InsertWithInt32IdentityAsync(new ProductTranslation()
+        var translationId = await db.InsertWithInt32IdentityAsync(new ProductTranslation()
         {
             ProductId = productId,
             LangIsoCode = data.LangIsoCode,
@@ -115,15 +109,14 @@ public class ProductTranslationContainer : IProductTranslationContainer
         existingTranslation.Name = data.Name;
         existingTranslation.Description = data.Description;
         existingTranslation.IsActive = data.IsActive;
-
-        var result = await _db.UpdateAsync(existingTranslation);
-        if (result == 0)
+        
+        if (await db.UpdateAsync(existingTranslation) == 0)
         {
             throw new InvalidOperationException("Failed to update product translation");
         }
     }
 
-    public async Task Delete(int translationId)
+    public async Task<bool> Delete(int translationId)
     {
         if (translationId <= 0)
         {
@@ -135,11 +128,40 @@ public class ProductTranslationContainer : IProductTranslationContainer
         {
             throw new InvalidOperationException("Product translation does not exist");
         }
-
-        var result = await _db.DeleteAsync(existingTranslation);
-        if (result == 0)
+        
+        if (await db.DeleteAsync(existingTranslation) == 0)
         {
             throw new InvalidOperationException("Failed to delete product translation");
         }
+        return true;
+    }
+
+    public async Task<bool> Restore(int id)
+    {
+        if (id <= 0)
+        {
+            throw new ArgumentException("Invalid product Id", nameof(id));
+        }
+
+        var product = await GetById(id);
+        if (product == null)
+        {
+            throw new InvalidOperationException("Product does not exist");
+        }
+
+        if (product.IsActive)
+        {
+            throw new InvalidOperationException("Product is already restored");
+        }
+
+        product.IsActive = true;
+
+        var result = await db.UpdateAsync(product);
+        if (result == 0)
+        {
+            throw new InvalidOperationException("Failed to restore product");
+        }
+
+        return true;
     }
 }

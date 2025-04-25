@@ -7,6 +7,7 @@ using TravelPlanner.API.Response.Success.Product;
 using TravelPlanner.API.Response.Success.ProductType;
 using TravelPlanner.API.Response.Success.ProductTypeTranslation;
 using TravelPlanner.Domain.Interfaces.BLL;
+using TravelPlanner.Domain.Interfaces.BLL.Container;
 using TravelPlanner.Domain.Models.Request.ProductType;
 
 namespace TravelPlanner.API.Controllers
@@ -28,7 +29,7 @@ namespace TravelPlanner.API.Controllers
                     [FromServices] ProductTypeController controller
                 ) => controller.GetProduct(typeId))
                 .WithName("GetProductTypeById")
-                .WithDescription("GetProduct a product type by Id")
+                .WithDescription("Get a product type by Id")
                 .Produces<ProductResponse>()
                 .Produces<ErrorResponse>(StatusCodes.Status500InternalServerError)
                 .RequiresJwtToken()
@@ -41,7 +42,7 @@ namespace TravelPlanner.API.Controllers
                     [FromServices] ProductTypeController controller
                 ) => controller.GetAllActiveProducts())
                 .WithName("GetAllActiveProductTypes")
-                .WithDescription("GetProduct all active product types")
+                .WithDescription("Get all active product types")
                 .Produces<ProductsResponse>()
                 .Produces<ErrorResponse>(StatusCodes.Status500InternalServerError)
                 .RequiresJwtToken()

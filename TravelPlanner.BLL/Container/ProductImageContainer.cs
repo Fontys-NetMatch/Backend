@@ -1,18 +1,12 @@
 ﻿using LinqToDB;
 using TravelPlanner.DB;
+using TravelPlanner.Domain.Interfaces.BLL.Container;
 using TravelPlanner.Domain.Models.Entities.Products;
 
-namespace TravelPlanner.BLL
+namespace TravelPlanner.BLL.Container
 {
-    public class ProductImageContainer
+    public class ProductImageContainer(DbManager db) : IProductImageContainer
     {
-        private readonly DbManager _db;
-
-        public ProductImageContainer(DbManager db)
-        {
-            _db = db;
-        }
-
         public async Task<int> CreateProductImageAsync(ProductImage productImage)
         {
             if (productImage == null)
@@ -20,7 +14,7 @@ namespace TravelPlanner.BLL
                 throw new ArgumentNullException(nameof(productImage), "ProductImage cannot be null");
             }
 
-            var result = await _db.InsertWithInt32IdentityAsync(productImage);
+            var result = await db.InsertWithInt32IdentityAsync(productImage);
             if (result == 0)
             {
                 throw new InvalidOperationException("Failed to create ProductImage in the database");
@@ -36,7 +30,7 @@ namespace TravelPlanner.BLL
                 throw new ArgumentException("ProductImage Id must be positive", nameof(id));
             }
 
-            return await _db.ProductImages.FirstOrDefaultAsync(pi => pi.Id == id);
+            return await db.ProductImages.FirstOrDefaultAsync(pi => pi.Id == id);
         }
 
         public async Task UpdateProductImageAsync(ProductImage productImage)
@@ -51,7 +45,7 @@ namespace TravelPlanner.BLL
                 throw new ArgumentException("ProductImage must have a valid Id", nameof(productImage));
             }
 
-            var result = await _db.UpdateAsync(productImage);
+            var result = await db.UpdateAsync(productImage);
             if (result == 0)
             {
                 throw new InvalidOperationException("Failed to update ProductImage");
@@ -60,11 +54,11 @@ namespace TravelPlanner.BLL
 
         public async Task<IEnumerable<ProductImage>> GetAllActiveProductImagesAsync()
         {
-            var productImages = await _db.ProductImages
+            var productImages = await db.ProductImages
                                   .Where(pi => pi.DeletedAt == null)
                                   .ToListAsync();
 
-            if (productImages == null || productImages.Count == 0)
+            if (productImages is not {Count: < 1})
             {
                 throw new InvalidOperationException("No active ProductImages found");
             }
@@ -72,7 +66,7 @@ namespace TravelPlanner.BLL
             return productImages;
         }
 
-        public async Task SoftDeleteProductImageAsync(int id)
+        public async Task<bool> SoftDeleteProductImageAsync(int id)
         {
             if (id <= 0)
             {
@@ -91,7 +85,44 @@ namespace TravelPlanner.BLL
             }
 
             productImage.DeletedAt = DateTime.UtcNow;
-            await UpdateProductImageAsync(productImage);
+            try
+            {
+                await UpdateProductImageAsync(productImage);
+                return true;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw new InvalidOperationException("Failed to delete product");
+            }
+        }
+
+        public async Task<bool> Restore(int id)
+        {
+            if (id <= 0)
+            {
+                throw new ArgumentException("Invalid product Id", nameof(id));
+            }
+
+            var product = await GetProductImageByIdAsync(id);
+            if (product == null)
+            {
+                throw new InvalidOperationException("Product does not exist");
+            }
+
+            if (product.DeletedAt == null)
+            {
+                throw new InvalidOperationException("Product is already restored");
+            }
+
+            product.DeletedAt = null;
+            
+            if (await db.UpdateAsync(product) == 0)
+            {
+                throw new InvalidOperationException("Failed to restore product");
+            }
+
+            return true;
         }
     }
 }

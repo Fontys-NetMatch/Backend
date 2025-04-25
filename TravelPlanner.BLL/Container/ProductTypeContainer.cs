@@ -6,6 +6,7 @@ using System.Linq;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using TravelPlanner.Domain.Interfaces.BLL.Container;
 using TravelPlanner.Domain.Models.Entities.Products;
 using TravelPlanner.Domain.Models.Entities.Translations;
 using TravelPlanner.Domain.Models.Request.Product;
@@ -13,15 +14,8 @@ using TravelPlanner.Domain.Models.Request.ProductType;
 
 namespace TravelPlanner.BLL.Container;
 
-public class ProductTypeContainer : IProductTypeContainer
+public class ProductTypeContainer(DbManager db) : IProductTypeContainer
 {
-    private readonly DbManager _db;
-
-    public ProductTypeContainer(DbManager db)
-    {
-        _db = db;
-    }
-
     public async Task<ProductType?> GetById(int id)
     {
         if (id <= 0)
@@ -29,14 +23,14 @@ public class ProductTypeContainer : IProductTypeContainer
             throw new ArgumentException("Invalid product Id", nameof(id));
         }
 
-        return await _db.ProductTypes
+        return await db.ProductTypes
             .LoadWith(p => p.Translations)
             .FirstOrDefaultAsync(p => p.Id == id);
     }
 
     public async Task<List<ProductType>> GetAll()
     {
-        var products = await _db.ProductTypes
+        var products = await db.ProductTypes
             .LoadWith(p => p.Translations)
             .ToListAsync();
         if (products == null)
@@ -49,7 +43,7 @@ public class ProductTypeContainer : IProductTypeContainer
 
     public async Task<List<ProductType>> GetAllActive()
     {
-        var products = await _db.ProductTypes
+        var products = await db.ProductTypes
             .Where(p => p.IsActive)
             .LoadWith(p => p.Translations)
             .ToListAsync();
@@ -63,7 +57,7 @@ public class ProductTypeContainer : IProductTypeContainer
 
     public async Task Create(ProductTypeData data)
     {
-        var productId = await _db.InsertWithInt32IdentityAsync(new ProductType
+        var productId = await db.InsertWithInt32IdentityAsync(new ProductType
         {
             IsActive = data.IsActive
         });
@@ -87,15 +81,14 @@ public class ProductTypeContainer : IProductTypeContainer
         }
 
         existingProduct.IsActive = data.IsActive;
-
-        var result = await _db.UpdateAsync(existingProduct);
-        if (result == 0)
+        
+        if (await db.UpdateAsync(existingProduct) == 0)
         {
             throw new InvalidOperationException("Failed to update product");
         }
     }
 
-    public async Task SoftDelete(int id)
+    public async Task<bool> SoftDelete(int id)
     {
         if (id <= 0)
         {
@@ -109,12 +102,38 @@ public class ProductTypeContainer : IProductTypeContainer
         }
 
         product.IsActive = false;
-
-        var result = await _db.UpdateAsync(product);
-        if (result == 0)
+        
+        if (await db.UpdateAsync(product) == 0)
         {
             throw new InvalidOperationException("Failed to delete product");
         }
+        return true;
     }
 
+    public async Task<bool> Restore(int id)
+    {
+        if (id <= 0)
+        {
+            throw new ArgumentException("Invalid product Id", nameof(id));
+        }
+
+        var product = await GetById(id);
+        if (product == null)
+        {
+            throw new InvalidOperationException("Product does not exist");
+        }
+
+        if (product.IsActive)
+        {
+            throw new InvalidOperationException("Product is already restored");
+        }
+
+        product.IsActive = true;
+        
+        if (await db.UpdateAsync(product) == 0)
+        {
+            throw new InvalidOperationException("Failed to restore product");
+        }
+        return true;
+    }
 }

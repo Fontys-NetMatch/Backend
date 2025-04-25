@@ -5,6 +5,7 @@ using TravelPlanner.API.Response.Error;
 using TravelPlanner.API.Response.Success;
 using TravelPlanner.API.Response.Success.User;
 using TravelPlanner.Domain.Interfaces.BLL;
+using TravelPlanner.Domain.Interfaces.BLL.Container;
 using TravelPlanner.Domain.Models.Entities;
 
 namespace TravelPlanner.API.Controllers;
@@ -94,6 +95,16 @@ public class UserController : Controller
             if (user == null)
                 return new NotFoundResponse("User not found");
 
+            if (user.ProfileImagePath == null)
+            {
+                return new UserResponse(
+                    user.Id,
+                    user.Firstname,
+                    user.Surname,
+                    user.Email,
+                    user.IsActive
+                );
+            }
             return new UserResponse(
                 user.Id,
                 user.Firstname,
@@ -117,15 +128,13 @@ public class UserController : Controller
             var users = _container.GetAllActiveUsersAsync().Result;
             if (users.Count == 0)
                 return new NoContentResponse();
+            
+            var responses = users.Select(user =>
+                string.IsNullOrWhiteSpace(user.ProfileImagePath)
+                    ? new UserResponse(user.Id, user.Firstname, user.Surname, user.Email, user.IsActive)
+                    : new UserResponse(user.Id, user.Firstname, user.Surname, user.Email, user.ProfileImagePath, user.IsActive)
+            ).ToList();
 
-            var responses = users.Select(user => new UserResponse(
-                user.Id,
-                user.Firstname,
-                user.Surname,
-                user.Email,
-                user.ProfileImagePath,
-                user.IsActive
-            )).ToList();
 
             return new UsersResponse(responses);
         }

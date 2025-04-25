@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using TravelPlanner.DB;
 using TravelPlanner.Domain.Enums;
 using TravelPlanner.Domain.Interfaces.BLL;
+using TravelPlanner.Domain.Interfaces.BLL.Container;
 using TravelPlanner.Domain.Interfaces.PDF;
 using TravelPlanner.Domain.Models.Entities;
 using TravelPlanner.Domain.Models.Entities.Products;
@@ -10,17 +11,8 @@ using TravelPlanner.Domain.Models.Request.Quotation;
 
 namespace TravelPlanner.BLL.Container;
 
-public class QuotationContainer : IQuotationContainer
+public class QuotationContainer(DbManager db, IPDFService pdf) : IQuotationContainer
 {
-    private readonly DbManager _db;
-    private readonly IPDFService pdf;
-
-    public QuotationContainer(DbManager db, IPDFService pdf)
-    {
-        _db = db;
-        this.pdf = pdf;
-    }
-
     public void CreateQuotation(QuotationData quotation)
     {
         if (quotation == null)
@@ -37,9 +29,8 @@ public class QuotationContainer : IQuotationContainer
         {
             throw new ArgumentException("Invalid Customer Id");
         }
-
-        var result = _db.InsertWithInt32Identity(quotation);
-        if (result <= 0)
+        
+        if (db.InsertWithInt32Identity(quotation) <= 0)
         {
             throw new InvalidOperationException("Failed to create quotation in the database");
         }
@@ -52,12 +43,12 @@ public class QuotationContainer : IQuotationContainer
             throw new ArgumentException("Quotation Id must be positive", nameof(id));
         }
 
-        return await _db.Quotations.LoadWith(q => q.Customer).FirstOrDefaultAsync(q => q.Id == id);
+        return await db.Quotations.LoadWith(q => q.Customer).FirstOrDefaultAsync(q => q.Id == id);
     }
 
     public async Task<List<ProductDate>> GetQuotationProducts(int quotationId)
     {
-        var results = await _db.QuotationProductDates
+        var results = await db.QuotationProductDates
         .LoadWith(qpd => qpd.ProductDate)
         .Where(qpd => qpd.QuotationId == quotationId)
         .ToListAsync();
@@ -82,9 +73,8 @@ public class QuotationContainer : IQuotationContainer
         {
             throw new InvalidOperationException("Quotation does not exist and cannot be updated");
         }
-
-        var result = await _db.UpdateAsync(quotation);
-        if (result == 0)
+        
+        if (await db.UpdateAsync(quotation) == 0)
         {
             throw new InvalidOperationException("Failed to update quotation");
         }
@@ -109,15 +99,15 @@ public class QuotationContainer : IQuotationContainer
         }
 
         quotation.Status = QuotationStatus.Archived;
-        await _db.UpdateAsync(quotation);
+        await db.UpdateAsync(quotation);
     }
 
     public async Task<List<Quotation>> GetAllQuotations()
     {
-        var quotations = await _db.Quotations
+        var quotations = await db.Quotations
                                   .LoadWith(q => q.Customer)
                                   .ToListAsync();
-        if (!quotations.Any())
+        if (quotations.Count == 0)
         {
             throw new InvalidOperationException("No active quotations found.");
         }
@@ -126,12 +116,12 @@ public class QuotationContainer : IQuotationContainer
 
     public async Task<List<Quotation>> GetAllActiveQuotations()
     {
-        var quotations = await _db.Quotations
+        var quotations = await db.Quotations
             .LoadWith(q => q.Customer)
             .Where(q => q.Status != QuotationStatus.Archived)
             .ToListAsync();
 
-        if (!quotations.Any())
+        if (quotations.Count == 0)
         {
             throw new InvalidOperationException("No active quotations found.");
         }

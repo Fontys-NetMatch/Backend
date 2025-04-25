@@ -9,6 +9,8 @@ using TravelPlanner.API.Response.Success.Product;
 using TravelPlanner.API.Response.Success.ProductDate;
 using TravelPlanner.API.Response.Success.ProductTranslation;
 using TravelPlanner.Domain.Interfaces.BLL;
+using TravelPlanner.Domain.Interfaces.BLL.Container;
+using TravelPlanner.Domain.Interfaces.BLL.Service;
 using TravelPlanner.Domain.Models.Request.Product;
 
 namespace TravelPlanner.API.Controllers
@@ -16,10 +18,14 @@ namespace TravelPlanner.API.Controllers
     public class ProductController : Controller
     {
         private readonly IProductContainer _container;
+        private readonly IProductDeleteService _deleteService;
+        private readonly IProductRestoreService _restoreService;
 
-        public ProductController(IProductContainer container)
+        public ProductController(IProductContainer container, IProductDeleteService deleteService, IProductRestoreService restoreService)
         {
             _container = container;
+            _deleteService = deleteService;
+            _restoreService = restoreService;
         }
 
         public static void Register(WebApplication app)
@@ -31,7 +37,7 @@ namespace TravelPlanner.API.Controllers
                     [FromServices] ProductController controller
                 ) => controller.GetProduct(productId))
                 .WithName("GetProductById")
-                .WithDescription("GetProduct a product by Id")
+                .WithDescription("Get a product by Id")
                 .Produces<ProductResponse>()
                 .Produces<ErrorResponse>(StatusCodes.Status500InternalServerError)
                 .RequiresJwtToken()
@@ -66,7 +72,7 @@ namespace TravelPlanner.API.Controllers
                     IsDeleted = isDeleted
                 }))
                 .WithName("GetAllProducts")
-                .WithDescription("GetProduct all products")
+                .WithDescription("Get all products")
                 .Produces<ProductsResponse>()
                 .Produces<ErrorResponse>(StatusCodes.Status500InternalServerError)
                 .RequiresJwtToken()
@@ -269,7 +275,7 @@ namespace TravelPlanner.API.Controllers
         {
             try
             {
-                _container.SoftDelete(id).Wait();
+                _deleteService.DeleteProduct(id).Wait();
                 return new SuccessResponse("Product soft-deleted successfully");
             }
             catch (Exception e)
@@ -282,7 +288,7 @@ namespace TravelPlanner.API.Controllers
         {
             try
             {
-                _container.Restore(id).Wait();
+                _restoreService.RestoreProduct(id).Wait();
                 return new SuccessResponse("Product is restored succesfully");
             }
             catch (Exception e)

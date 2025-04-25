@@ -19,7 +19,7 @@ public record ProductImage
     public string Path { get; set; }
 
     [Column(DataType = DataType.Int32), NotNull]
-    public DateTime DeletedAt { get; set; }
+    public DateTime? DeletedAt { get; set; }
 
     [Column, NotNull]
     public required int ProductId { get; set; }
