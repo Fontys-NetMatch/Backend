@@ -1,10 +1,11 @@
 ﻿using LinqToDB;
 using TravelPlanner.DB;
+using TravelPlanner.Domain.Interfaces.BLL.Container;
 using TravelPlanner.Domain.Models.Entities.Translations;
 
-namespace TravelPlanner.BLL
+namespace TravelPlanner.BLL.Container
 {
-    public class ProductAddonTranslationContainer
+    public class ProductAddonTranslationContainer : IProductAddonTranslationContainer
     {
         private readonly DbManager _db;
 

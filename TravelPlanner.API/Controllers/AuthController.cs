@@ -14,6 +14,7 @@ using InvalidCredentialsException = TravelPlanner.Domain.Exceptions.InvalidCrede
 using TravelPlanner.API.Response;
 using TravelPlanner.API.Response.DataObjects;
 using TravelPlanner.API.Response.Success.Auth;
+using TravelPlanner.Domain.Interfaces.BLL.Container;
 
 namespace TravelPlanner.API.Controllers;
 

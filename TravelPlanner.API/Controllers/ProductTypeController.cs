@@ -7,6 +7,7 @@ using TravelPlanner.API.Response.Success.Product;
 using TravelPlanner.API.Response.Success.ProductType;
 using TravelPlanner.API.Response.Success.ProductTypeTranslation;
 using TravelPlanner.Domain.Interfaces.BLL;
+using TravelPlanner.Domain.Interfaces.BLL.Container;
 using TravelPlanner.Domain.Models.Request.ProductType;
 
 namespace TravelPlanner.API.Controllers

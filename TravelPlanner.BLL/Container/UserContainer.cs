@@ -6,6 +6,7 @@ using LinqToDB;
 using TravelPlanner.DB;
 using TravelPlanner.Domain.Models.Entities;
 using TravelPlanner.Domain.Interfaces.BLL;
+using TravelPlanner.Domain.Interfaces.BLL.Container;
 
 namespace TravelPlanner.BLL.Container;
 

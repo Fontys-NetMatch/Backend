@@ -1,10 +1,11 @@
 ﻿using LinqToDB;
 using TravelPlanner.DB;
+using TravelPlanner.Domain.Interfaces.BLL.Container;
 using TravelPlanner.Domain.Models.Entities.Products;
 
-namespace TravelPlanner.BLL
+namespace TravelPlanner.BLL.Container
 {
-    public class ProductDateContainer
+    public class ProductDateContainer : IProductDateContainer
     {
         private readonly DbManager _db;
 
@@ -72,7 +73,7 @@ namespace TravelPlanner.BLL
             return productDates;
         }
 
-        public async Task SoftDeleteProductDateAsync(int id)
+        public async Task<bool> SoftDeleteProductDateAsync(int id)
         {
             if (id <= 0)
             {
@@ -91,7 +92,45 @@ namespace TravelPlanner.BLL
             }
 
             productDate.IsActive = false;
-            await UpdateProductDateAsync(productDate);
+            try
+            {
+                await UpdateProductDateAsync(productDate);
+                return true;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+            
+        }
+
+        public async Task<bool> Restore(int id)
+        {
+            if (id <= 0)
+            {
+                throw new ArgumentException("Invalid product Id", nameof(id));
+            }
+
+            var product = await GetProductDateByIdAsync(id);
+            if (product == null)
+            {
+                throw new InvalidOperationException("Product does not exist");
+            }
+
+            if (product.IsActive == null)
+            {
+                throw new InvalidOperationException("Product is already restored");
+            }
+
+            product.IsActive = true;
+
+            var result = await _db.UpdateAsync(product);
+            if (result == 0)
+            {
+                throw new InvalidOperationException("Failed to restore product");
+            }
+            return true;
         }
     }
 }

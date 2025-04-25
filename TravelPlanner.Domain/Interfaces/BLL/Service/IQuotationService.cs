@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TravelPlanner.Domain.Models.Entities.Products;
 
-namespace TravelPlanner.Domain.Interfaces.BLL
+namespace TravelPlanner.Domain.Interfaces.BLL.Service
 {
     public interface IQuotationService
     {

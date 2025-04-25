@@ -4,11 +4,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using LinqToDB;
 using TravelPlanner.DB;
+using TravelPlanner.Domain.Interfaces.BLL.Container;
 using TravelPlanner.Domain.Models.Entities.Product;
 
-namespace TravelPlanner.BLL
+namespace TravelPlanner.BLL.Container
 {
-    public class ProductAddonContainer
+    public class ProductAddonContainer : IProductAddonContainer
     {
         private readonly DbManager _db;
 

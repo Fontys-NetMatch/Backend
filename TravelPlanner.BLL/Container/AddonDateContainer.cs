@@ -4,11 +4,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using LinqToDB;
 using TravelPlanner.DB;
+using TravelPlanner.Domain.Interfaces.BLL.Container;
 using TravelPlanner.Domain.Models.Entities;
 
-namespace TravelPlanner.BLL
+namespace TravelPlanner.BLL.Container
 {
-    public class AddonDateContainer
+    public class AddonDateContainer : IAddonDateContainer
     {
         private readonly DbManager _db;
 

@@ -1,10 +1,11 @@
 ﻿using LinqToDB;
 using TravelPlanner.DB;
+using TravelPlanner.Domain.Interfaces.BLL.Container;
 using TravelPlanner.Domain.Models.Entities.Products;
 
-namespace TravelPlanner.BLL
+namespace TravelPlanner.BLL.Container
 {
-    public class ProductImageContainer
+    public class ProductImageContainer : IProductImageContainer
     {
         private readonly DbManager _db;
 
@@ -72,7 +73,7 @@ namespace TravelPlanner.BLL
             return productImages;
         }
 
-        public async Task SoftDeleteProductImageAsync(int id)
+        public async Task<bool> SoftDeleteProductImageAsync(int id)
         {
             if (id <= 0)
             {
@@ -91,7 +92,45 @@ namespace TravelPlanner.BLL
             }
 
             productImage.DeletedAt = DateTime.UtcNow;
-            await UpdateProductImageAsync(productImage);
+            try
+            {
+                await UpdateProductImageAsync(productImage);
+                return true;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+
+        public async Task<bool> Restore(int id)
+        {
+            if (id <= 0)
+            {
+                throw new ArgumentException("Invalid product Id", nameof(id));
+            }
+
+            var product = await GetProductImageByIdAsync(id);
+            if (product == null)
+            {
+                throw new InvalidOperationException("Product does not exist");
+            }
+
+            if (product.DeletedAt == null)
+            {
+                throw new InvalidOperationException("Product is already restored");
+            }
+
+            product.DeletedAt = null;
+
+            var result = await _db.UpdateAsync(product);
+            if (result == 0)
+            {
+                throw new InvalidOperationException("Failed to restore product");
+            }
+
+            return true;
         }
     }
 }

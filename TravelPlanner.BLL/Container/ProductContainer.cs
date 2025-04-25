@@ -6,6 +6,7 @@ using System.Linq;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using TravelPlanner.Domain.Interfaces.BLL.Container;
 using TravelPlanner.Domain.Models.Entities.Products;
 using TravelPlanner.Domain.Models.Entities.Translations;
 using TravelPlanner.Domain.Models.Request.Product;
@@ -148,7 +149,7 @@ public class ProductContainer : IProductContainer
         }
     }
 
-    public async Task SoftDelete(int id)
+    public async Task<bool> SoftDelete(int id)
     {
         if (id <= 0)
         {
@@ -173,9 +174,13 @@ public class ProductContainer : IProductContainer
         {
             throw new InvalidOperationException("Failed to delete product");
         }
+        else
+        {
+            return true;
+        }
     }
 
-    public async Task Restore(int id)
+    public async Task<bool> Restore(int id)
     {
         if (id <= 0)
         {
@@ -200,5 +205,7 @@ public class ProductContainer : IProductContainer
         {
             throw new InvalidOperationException("Failed to restore product");
         }
+
+        return true;
     }
 }

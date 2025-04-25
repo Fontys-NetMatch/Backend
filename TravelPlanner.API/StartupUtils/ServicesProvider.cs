@@ -6,6 +6,8 @@ using TravelPlanner.BLL.Service;
 using TravelPlanner.DB;
 using TravelPlanner.DB.Lib;
 using TravelPlanner.Domain.Interfaces.BLL;
+using TravelPlanner.Domain.Interfaces.BLL.Container;
+using TravelPlanner.Domain.Interfaces.BLL.Service;
 using TravelPlanner.Domain.Interfaces.PDF;
 
 namespace TravelPlanner.API.StartupUtils;
@@ -28,11 +30,18 @@ public static class ServicesProvider
         services.AddTransient<QuotationController>();
 
         // Containers
+        services.AddSingleton<IAddonDateContainer, AddonDateContainer>();
         services.AddSingleton<IAuthContainer, AuthContainer>();
+        services.AddSingleton<ICustomerContainer, CustomerContainer>();
+        services.AddSingleton<IProductAddonContainer, ProductAddonContainer>();
+        services.AddSingleton<IProductAddonTranslationContainer, ProductAddonTranslationContainer>();
         services.AddSingleton<IProductContainer, ProductContainer>();
+        services.AddSingleton<IProductDateContainer, ProductDateContainer>();
+        services.AddSingleton<IProductImageContainer, ProductImageContainer>();
         services.AddSingleton<IProductTranslationContainer, ProductTranslationContainer>();
         services.AddSingleton<IProductTypeContainer, ProductTypeContainer>();
         services.AddSingleton<IQuotationContainer, QuotationContainer>();
+        services.AddSingleton<IUserContainer, UserContainer>();
 
         // Services
         services.AddSingleton<IRazorViewToStringRenderer, RazorViewToStringRenderer>();
@@ -40,6 +49,9 @@ public static class ServicesProvider
         services.AddRazorPages();
         services.AddSingleton<IPDFService, PDFService>();
         services.AddSingleton<IQuotationService, QuotationService>();
+        services.AddSingleton<IProductRestoreService, ProductRestoreService>();
+        services.AddSingleton<IProductDeleteService, ProductDeleteService>();
+        
 
     }
 
