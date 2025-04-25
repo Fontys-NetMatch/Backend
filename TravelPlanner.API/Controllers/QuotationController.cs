@@ -7,6 +7,7 @@ using TravelPlanner.Domain.Models.Entities;
 using TravelPlanner.API.Infrastructure.Extensions;
 using TravelPlanner.API.Response.Success.Quotation;
 using TravelPlanner.Domain.Models.Request.Quotation;
+using TravelPlanner.Domain.Enums;
 
 namespace TravelPlanner.API.Controllers
 {
@@ -77,42 +78,57 @@ namespace TravelPlanner.API.Controllers
                 .WithTags("Quotation")
                 .WithOpenApi();
 
-            // Get all Active Quotations
-            app.MapGet("/quotations/active", (
-                HttpContext context,
+            // Get all Quotations with optional filters
+            app.MapGet("/quotations", (
+                [FromQuery] string? name,
+                [FromQuery] string? statuses, // e.g. "Draft,Approved"
+                [FromQuery] string? searchQuery,
                 [FromServices] QuotationController controller
-            ) => controller.GetAllActiveQuotations(context))
-                .WithName("GetAllActiveQuotations")
-                .WithDescription("Get all active quotations")
-                .Produces<QuotationsResponse>()
-                .Produces<ErrorResponse>(StatusCodes.Status500InternalServerError)
-                .RequiresJwtToken()
-                .WithTags("Quotation")
-                .WithOpenApi();
+            ) => controller.GetAllQuotations(new QuotationFiltersData
+            {
+                Name = name,
+                Statuses = !string.IsNullOrWhiteSpace(statuses)
+                    ? statuses
+                        .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                        .Select(s => Enum.TryParse<QuotationStatus>(s, true, out var status) ? status : (QuotationStatus?)null)
+                        .Where(s => s.HasValue)
+                        .Select(s => s!.Value)
+                        .ToList()
+                    : null,
+                SearchQuery = searchQuery
+            }))
+            .WithName("GetAllQuotations")
+            .WithDescription("Get all quotations with optional filters")
+            .Produces<QuotationsResponse>()
+            .Produces<ErrorResponse>(StatusCodes.Status500InternalServerError)
+            .RequiresJwtToken()
+            .WithTags("Quotation")
+            .WithOpenApi();
+
+
 
             // Download Quotation as PDF
             app.MapGet("/quotations/{id}/pdf", async (
-    int id,
-    HttpContext context,
-    [FromServices] QuotationController controller
-) =>
+                int id,
+                HttpContext context,
+                [FromServices] QuotationController controller
+            ) =>
             {
-                var fileContentResult = await controller.GetQuotationPdf(id); // This now returns FileContentResult
+                var fileContentResult = await controller.GetQuotationPdf(id);
                 return Results.File(fileContentResult.FileContents, fileContentResult.ContentType, fileContentResult.FileDownloadName);
             })
-.WithName("DownloadQuotationPdf")
-.WithDescription("Download the quotation as a PDF")
-.Produces(StatusCodes.Status200OK, contentType: "application/pdf")
-.Produces<ErrorResponse>(StatusCodes.Status500InternalServerError)
-.RequiresJwtToken()
-.WithTags("Quotation")
-.WithOpenApi();
+            .WithName("DownloadQuotationPdf")
+            .WithDescription("Download the quotation as a PDF")
+            .Produces(StatusCodes.Status200OK, contentType: "application/pdf")
+            .Produces<ErrorResponse>(StatusCodes.Status500InternalServerError)
+            .RequiresJwtToken()
+            .WithTags("Quotation")
+            .WithOpenApi();
         }
 
         private async Task<FileContentResult> GetQuotationPdf(int id)
         {
             return await _container.GeneratePdfAsync(id);
-            throw new NotImplementedException();
         }
 
         private BaseResponse CreateQuotation(HttpContext? context, QuotationData quotation)
@@ -178,25 +194,25 @@ namespace TravelPlanner.API.Controllers
             }
         }
 
-        private BaseResponse GetAllActiveQuotations(HttpContext? context)
+        private BaseResponse GetAllQuotations(QuotationFiltersData filters)
         {
             try
             {
-                var quotations = _container.GetAllActiveQuotations().Result;
-                if (quotations.Count == 0)
+                var quotations = _container.GetAllQuotations(filters).Result;
+
+                if (quotations == null || quotations.Count == 0)
                 {
                     return new NoContentResponse();
                 }
 
-                // Convert each Quotation to a QuotationResponse
-                var quotationResponses = quotations.Select(quotation => new QuotationResponse(
-                    id: quotation.Id,
-                    name: quotation.Name,
-                    status: quotation.Status,
-                    customerId: quotation.CustomerId
+                var responseItems = quotations.Select(q => new QuotationResponse(
+                    id: q.Id,
+                    name: q.Name,
+                    status: q.Status,
+                    customerId: q.CustomerId
                 )).ToList();
 
-                return new QuotationsResponse(quotationResponses);
+                return new QuotationsResponse(responseItems);
             }
             catch (Exception ex)
             {

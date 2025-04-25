@@ -112,31 +112,39 @@ public class QuotationContainer : IQuotationContainer
         await _db.UpdateAsync(quotation);
     }
 
-    public async Task<List<Quotation>> GetAllQuotations()
+    public async Task<List<Quotation>> GetAllQuotations(QuotationFiltersData filters)
     {
-        var quotations = await _db.Quotations
-                                  .LoadWith(q => q.Customer)
-                                  .ToListAsync();
-        if (!quotations.Any())
-        {
-            throw new InvalidOperationException("No active quotations found.");
-        }
-        return quotations;
-    }
-
-    public async Task<List<Quotation>> GetAllActiveQuotations()
-    {
-        var quotations = await _db.Quotations
+        var query = _db.Quotations
             .LoadWith(q => q.Customer)
-            .Where(q => q.Status != QuotationStatus.Archived)
-            .ToListAsync();
+            .LoadWith(q => q.User)
+            .AsQueryable();
 
-        if (!quotations.Any())
+        if (!string.IsNullOrWhiteSpace(filters.Name))
         {
-            throw new InvalidOperationException("No active quotations found.");
+            query = query.Where(q => q.Name.Contains(filters.Name));
         }
-        return quotations;
+
+        if (filters.Statuses != null && filters.Statuses.Any())
+        {
+            query = query.Where(q => filters.Statuses.Contains(q.Status));
+        }
+
+        if (!string.IsNullOrWhiteSpace(filters.SearchQuery))
+        {
+            var keyword = filters.SearchQuery.ToLower();
+
+            query = query.Where(q =>
+                (q.Customer.Firstname + " " + q.Customer.Surname).ToLower().Contains(keyword) ||
+                (q.User.Firstname + " " + q.User.Surname).ToLower().Contains(keyword)
+            );
+        }
+
+        return await query.ToListAsync();
     }
+
+
+
+
     public async Task<FileContentResult> GeneratePdfAsync(int id)
     {
         var quotation = await GetQuotationById(id);
