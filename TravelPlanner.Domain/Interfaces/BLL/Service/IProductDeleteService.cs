@@ -2,6 +2,6 @@
 {
     public interface IProductDeleteService
     {
-        
+        public Task DeleteProduct(int id);
     }
 }

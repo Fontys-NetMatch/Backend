@@ -3,99 +3,90 @@ using TravelPlanner.DB;
 using TravelPlanner.Domain.Interfaces.BLL.Container;
 using TravelPlanner.Domain.Models.Entities.Translations;
 
-namespace TravelPlanner.BLL.Container
+namespace TravelPlanner.BLL.Container;
+
+public class ProductAddonTranslationContainer(DbManager db) : IProductAddonTranslationContainer
 {
-    public class ProductAddonTranslationContainer : IProductAddonTranslationContainer
+    public async Task<int> CreateProductAddonTranslationAsync(ProductAddonTranslation productAddonTranslation)
     {
-        private readonly DbManager _db;
-
-        public ProductAddonTranslationContainer(DbManager db)
+        if (productAddonTranslation == null)
         {
-            _db = db;
+            throw new ArgumentNullException(nameof(productAddonTranslation), "ProductAddonTranslation cannot be null");
         }
 
-        public async Task<int> CreateProductAddonTranslationAsync(ProductAddonTranslation productAddonTranslation)
+        var result = await db.InsertWithInt32IdentityAsync(productAddonTranslation);
+        if (result == 0)
         {
-            if (productAddonTranslation == null)
-            {
-                throw new ArgumentNullException(nameof(productAddonTranslation), "ProductAddonTranslation cannot be null");
-            }
-
-            var result = await _db.InsertWithInt32IdentityAsync(productAddonTranslation);
-            if (result == 0)
-            {
-                throw new InvalidOperationException("Failed to create ProductAddonTranslation in the database");
-            }
-
-            return result;
+            throw new InvalidOperationException("Failed to create ProductAddonTranslation in the database");
         }
 
-        public async Task<ProductAddonTranslation?> GetProductAddonTranslationByIdAsync(int id)
-        {
-            if (id <= 0)
-            {
-                throw new ArgumentException("ProductAddonTranslation Id must be positive", nameof(id));
-            }
+        return result;
+    }
 
-            return await _db.ProductAddonTranslations.FirstOrDefaultAsync(pat => pat.Id == id);
+    public async Task<ProductAddonTranslation?> GetProductAddonTranslationByIdAsync(int id)
+    {
+        if (id <= 0)
+        {
+            throw new ArgumentException("ProductAddonTranslation Id must be positive", nameof(id));
         }
 
-        public async Task UpdateProductAddonTranslationAsync(ProductAddonTranslation productAddonTranslation)
+        return await db.ProductAddonTranslations.FirstOrDefaultAsync(pat => pat.Id == id);
+    }
+
+    public async Task UpdateProductAddonTranslationAsync(ProductAddonTranslation productAddonTranslation)
+    {
+        if (productAddonTranslation == null)
         {
-            if (productAddonTranslation == null)
-            {
-                throw new ArgumentNullException(nameof(productAddonTranslation), "ProductAddonTranslation cannot be null");
-            }
-
-            if (productAddonTranslation.Id <= 0)
-            {
-                throw new ArgumentException("ProductAddonTranslation must have a valid Id");
-            }
-
-            var result = await _db.UpdateAsync(productAddonTranslation);
-            if (result == 0)
-            {
-                throw new InvalidOperationException("Failed to update ProductAddonTranslation");
-            }
+            throw new ArgumentNullException(nameof(productAddonTranslation), "ProductAddonTranslation cannot be null");
         }
 
-        public async Task<IEnumerable<ProductAddonTranslation>> GetAllTranslationsByLangIsoCodeAsync(string langIsoCode)
+        if (productAddonTranslation.Id <= 0)
         {
-            if (string.IsNullOrWhiteSpace(langIsoCode))
-            {
-                throw new ArgumentException("Language ISO code must be provided", nameof(langIsoCode));
-            }
-
-            var translations = await _db.ProductAddonTranslations
-                                       .Where(pat => pat.LangIsoCode == langIsoCode)
-                                       .ToListAsync();
-
-            if (translations == null || !translations.Any())
-            {
-                throw new InvalidOperationException("No translations found for the given language ISO code");
-            }
-
-            return translations;
+            throw new ArgumentException("ProductAddonTranslation must have a valid Id");
         }
 
-        public async Task DeleteProductAddonTranslationAsync(int id)
+        var result = await db.UpdateAsync(productAddonTranslation);
+        if (result == 0)
         {
-            if (id <= 0)
-            {
-                throw new ArgumentException("ProductAddonTranslation Id must be positive", nameof(id));
-            }
+            throw new InvalidOperationException("Failed to update ProductAddonTranslation");
+        }
+    }
 
-            var productAddonTranslation = await GetProductAddonTranslationByIdAsync(id);
-            if (productAddonTranslation == null)
-            {
-                throw new InvalidOperationException("ProductAddonTranslation does not exist and cannot be deleted");
-            }
+    public async Task<IEnumerable<ProductAddonTranslation>> GetAllTranslationsByLangIsoCodeAsync(string langIsoCode)
+    {
+        if (string.IsNullOrWhiteSpace(langIsoCode))
+        {
+            throw new ArgumentException("Language ISO code must be provided", nameof(langIsoCode));
+        }
 
-            var result = await _db.DeleteAsync(productAddonTranslation);
-            if (result == 0)
-            {
-                throw new InvalidOperationException("Failed to delete ProductAddonTranslation");
-            }
+        var translations = await db.ProductAddonTranslations
+            .Where(pat => pat.LangIsoCode == langIsoCode)
+            .ToListAsync();
+
+        if (translations is not { Count: < 1})
+        {
+            throw new InvalidOperationException("No translations found for the given language ISO code");
+        }
+
+        return translations;
+    }
+
+    public async Task DeleteProductAddonTranslationAsync(int id)
+    {
+        if (id <= 0)
+        {
+            throw new ArgumentException("ProductAddonTranslation Id must be positive", nameof(id));
+        }
+
+        var productAddonTranslation = await GetProductAddonTranslationByIdAsync(id);
+        if (productAddonTranslation == null)
+        {
+            throw new InvalidOperationException("ProductAddonTranslation does not exist and cannot be deleted");
+        }
+        
+        if (await db.DeleteAsync(productAddonTranslation) == 0)
+        {
+            throw new InvalidOperationException("Failed to delete ProductAddonTranslation");
         }
     }
 }

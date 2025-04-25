@@ -10,15 +10,8 @@ using TravelPlanner.Domain.Interfaces.BLL.Container;
 
 namespace TravelPlanner.BLL.Container;
 
-public class UserContainer : IUserContainer
+public class UserContainer(DbManager db) : IUserContainer
 {
-    private readonly DbManager _db;
-
-    public UserContainer(DbManager db)
-    {
-        _db = db;
-    }
-
     public void CreateUser(User user)
     {
         if (user == null)
@@ -31,13 +24,13 @@ public class UserContainer : IUserContainer
             throw new ArgumentException("Essential user data (Email, Firstname, or Surname) is missing");
         }
 
-        var existingUser = _db.Users.FirstOrDefault(u => u.Email == user.Email);
+        var existingUser = db.Users.FirstOrDefault(u => u.Email == user.Email);
         if (existingUser != null)
         {
             throw new InvalidOperationException($"A user with the email {user.Email} already exists.");
         }
 
-        var result = _db.InsertWithInt32Identity(user);
+        var result = db.InsertWithInt32Identity(user);
         if (result == 0)
         {
             throw new InvalidOperationException("Failed to create user in the database");
@@ -51,7 +44,7 @@ public class UserContainer : IUserContainer
             throw new ArgumentException("User Id must be positive", nameof(id));
         }
 
-        return await _db.Users.FirstOrDefaultAsync(u => u.Id == id);
+        return await db.Users.FirstOrDefaultAsync(u => u.Id == id);
     }
 
     public async Task UpdateUser(User user)
@@ -71,9 +64,8 @@ public class UserContainer : IUserContainer
         {
             throw new InvalidOperationException("User does not exist and cannot be updated");
         }
-
-        var result = await _db.UpdateAsync(user);
-        if (result == 0)
+        
+        if (await db.UpdateAsync(user) == 0)
         {
             throw new InvalidOperationException("Failed to update user");
         }
@@ -104,7 +96,7 @@ public class UserContainer : IUserContainer
 
     public async Task<List<User>> GetAllActiveUsersAsync()
     {
-        var users = await _db.Users
+        var users = await db.Users
                         .Where(u => u.IsActive)
                         .ToListAsync();
         if (users == null || !users.Any())

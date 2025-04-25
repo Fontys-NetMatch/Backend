@@ -14,7 +14,7 @@ public class ProductRestoreService(
 {
     private bool product = false, productdate = false, productimage = false, producttranslation = false, producttype = false;
     
-    public async Task DeleteProduct(int id)
+    public async Task RestoreProduct(int id)
     {
         try
         {
@@ -31,7 +31,7 @@ public class ProductRestoreService(
             if (productimage) await ProductImageService.SoftDeleteProductImageAsync(id);
             if (productdate) await ProductDateService.SoftDeleteProductDateAsync(id);
             if (product) await ProductService.SoftDelete(id);
-            throw new Exception("Failed to retore product");
+            throw new Exception("Failed to restore product. Rollback attempted.", e);
         }
     }
 }

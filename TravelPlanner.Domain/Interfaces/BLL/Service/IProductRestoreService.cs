@@ -2,7 +2,7 @@
 {
     public interface IProductRestoreService
     {
-    
+        public Task RestoreProduct(int id);
     }
 }
 

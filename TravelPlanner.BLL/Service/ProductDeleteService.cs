@@ -32,7 +32,7 @@ public class ProductDeleteService(
             if (productimage) await ProductImageService.Restore(id);
             if (productdate) await ProductDateService.Restore(id);
             if (product) await ProductService.Restore(id);
-            throw new Exception("Failed to delete product");
+            throw new Exception("Failed to delete product. Rollback attempted.", e);
         }
     }
 }
