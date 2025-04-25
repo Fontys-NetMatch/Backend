@@ -118,7 +118,7 @@ namespace TravelPlanner.API.Controllers
                 .WithOpenApi();
 
             //Restore product endpoint
-            app.MapPut("/product/restore/{productId:int}", (
+            app.MapPost("/product/{productId:int}/restore", (
                 [FromRoute] int productId,
                 [FromServices] ProductController controller
            ) => controller.RestoreProduct(productId))

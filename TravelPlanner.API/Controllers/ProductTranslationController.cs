@@ -30,7 +30,7 @@ namespace TravelPlanner.API.Controllers
                 .Produces<SuccessResponse>()
                 .Produces<ErrorResponse>(StatusCodes.Status500InternalServerError)
                 .RequiresJwtToken()
-                .WithTags("Product")
+                .WithTags("Product Translations")
                 .WithOrder(6)
                 .WithOpenApi();
 
@@ -46,7 +46,7 @@ namespace TravelPlanner.API.Controllers
                 .Produces<SuccessResponse>()
                 .Produces<ErrorResponse>(StatusCodes.Status500InternalServerError)
                 .RequiresJwtToken()
-                .WithTags("Product")
+                .WithTags("Product Translations")
                 .WithOrder(7)
                 .WithOpenApi();
 
@@ -61,7 +61,7 @@ namespace TravelPlanner.API.Controllers
                 .Produces<SuccessResponse>()
                 .Produces<ErrorResponse>(StatusCodes.Status500InternalServerError)
                 .RequiresJwtToken()
-                .WithTags("Product")
+                .WithTags("Product Translations")
                 .WithOrder(8)
                 .WithOpenApi();
 
