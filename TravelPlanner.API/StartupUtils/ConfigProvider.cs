@@ -8,8 +8,8 @@ public static class ConfigProvider
 
     public static void LoadFiles(WebApplicationBuilder builder)
     {
-        // dev mode is enabled if the appsettings.Development.json file exists
-        var b = File.Exists("appsettings.Development.json");
+        // dev mode is enabled if the appsettings.dev.json file exists
+        var b = File.Exists("appsettings.dev.json");
 
         if (b)
         {
@@ -27,7 +27,7 @@ public static class ConfigProvider
         }
 
         builder.Configuration.Sources.Clear();
-        builder.Configuration.AddJsonFile(b ? "appsettings.Development.json" : "appsettings.json", false, true);
+        builder.Configuration.AddJsonFile(b ? "appsettings.dev.json" : "appsettings.json", false, true);
     }
 
     public static AppConfig Register(WebApplicationBuilder builder)

@@ -57,6 +57,20 @@ public class ProductContainer : IProductContainer
         {
             query = query.Where(p => p.ProductTypeId == filters.TypeId);
         }
+
+        if (filters.SearchQuery != null)
+        {
+            query = query
+                .Where(p =>
+                    p.EndLocation != null &&
+                    (
+                        p.StartLocation.Contains(filters.SearchQuery) ||
+                        p.EndLocation.Contains(filters.SearchQuery) ||
+                        p.Translations.Select(t => t.Name).Any(t => t.Contains(filters.SearchQuery)) ||
+                        p.Translations.Select(t => t.Description).Any(t => t != null && t.Contains(filters.SearchQuery))
+                    )
+                );
+        }
         if (filters.StartLocation != null)
         {
             query = query.Where(p => p.StartLocation == filters.StartLocation);
