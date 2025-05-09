@@ -1,15 +1,24 @@
-name: CI/CD
+name: "CI/CD with Security Scans"
 
 on:
   push:
-    branches:
-      - development
-      - production
+    branches: [ production , development ]
+  pull_request:
+    branches: [ production , development ]
+  schedule:
+    - cron: '29 12 * * 0'   # weekly for osv
+    - cron: '35 1 * * 4'    # weekly for CodeQL
   
+permissions:
+  security-events: write
+  contents: read
+  actions: read
+  packages: read
 
 
 jobs:
-  CI:
+  UnitTesten:
+    name: UnitTesten
     runs-on: ubuntu-latest
 
     steps:
@@ -28,3 +37,58 @@ jobs:
 
       - name: Test
         run: dotnet test --no-build
+
+  osv-scan:
+    name: OSV Dependency Vulnerability Scan
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'pull_request' || github.event_name == 'merge_group' || github.event_name == 'push' || github.event_name == 'schedule' }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Go (for OSV-Scanner)
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.21'
+
+      - name: Install OSV-Scanner
+        run: |
+          go install github.com/google/osv-scanner/cmd/osv-scanner@latest
+          echo "${HOME}/go/bin" >> $GITHUB_PATH
+
+      - name: Run OSV-Scanner
+        run: |
+          osv-scanner -r --skip-git ./
+
+  codeql:
+    name: Analyze (${{ matrix.language }})
+    runs-on: ${{ matrix.language == 'swift' && 'macos-latest' || 'ubuntu-latest' }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - language: csharp
+            build-mode: none
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: ${{ matrix.language }}
+          build-mode: ${{ matrix.build-mode }}
+
+      - if: matrix.build-mode == 'manual'
+        shell: bash
+        run: |
+          echo "Manual build mode not configured. Please provide build commands."
+          exit 1
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: "/language:${{ matrix.language }}"
