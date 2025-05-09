@@ -43,8 +43,37 @@ public class QuotationContainer(DbManager db, IPDFService pdf) : IQuotationConta
             throw new ArgumentException("Quotation Id must be positive", nameof(id));
         }
 
-        return await db.Quotations.LoadWith(q => q.Customer).FirstOrDefaultAsync(q => q.Id == id);
+        try
+        {
+            // Attempt to load the quotation with the associated customer
+            var quotation = await db.Quotations
+                .LoadWith(q => q.Customer)  // Load related customer data
+                .FirstOrDefaultAsync(q => q.Id == id);  // Query for the specific id
+
+            if (quotation == null)
+            {
+                // Handle case where no quotation is found (optional)
+                Console.WriteLine("No quotation found with the provided ID.");
+            }
+
+            return quotation;
+        }
+        catch (LinqToDBException ex)
+        {
+            // Handle specific LINQ to DB exceptions
+            Console.Error.WriteLine($"An error occurred while querying the database: {ex.Message}");
+            // Optionally, you can rethrow or return null
+            throw;
+        }
+        catch (Exception ex)
+        {
+            // Catch any other unexpected exceptions
+            Console.Error.WriteLine($"An unexpected error occurred: {ex.Message}");
+            // Optionally, you can rethrow or return null
+            throw;
+        }
     }
+
 
     public async Task<List<ProductDate>> GetQuotationProducts(int quotationId)
     {
@@ -127,12 +156,28 @@ public class QuotationContainer(DbManager db, IPDFService pdf) : IQuotationConta
         }
         return quotations;
     }
-    public async Task<FileContentResult> GeneratePdfAsync(int id)
+    
+    public async Task<FileContentResult?> GeneratePdfAsync(int id)
     {
+        // Get the quotation (or return null if not found)
         var quotation = await GetQuotationById(id);
-        if (quotation == null)
-            throw new InvalidOperationException("Quotation not found");
 
-        return await pdf.GenerateQuotation(quotation);
+        // Return null if the quotation is not found
+        if (quotation == null)
+        {
+            return null;
+        }
+
+        // Proceed with generating the PDF if the quotation exists
+        try
+        {
+            return await pdf.GenerateQuotation(quotation);
+        }
+        catch (Exception ex)
+        {
+            // Log the error and rethrow or handle accordingly
+            Console.Error.WriteLine($"Error generating PDF for Quotation ID {id}: {ex.Message}");
+            return null; // You could also return an error-specific result if needed
+        }
     }
 }
