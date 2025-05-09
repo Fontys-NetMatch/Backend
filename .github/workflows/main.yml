@@ -2,19 +2,18 @@ name: "CI/CD with Security Scans"
 
 on:
   push:
-    branches: [ production , development ]
+    branches: [ production, development ]
   pull_request:
-    branches: [ production , development ]
+    branches: [ production, development ]
   schedule:
-    - cron: '29 12 * * 0'   # weekly for osv
+    - cron: '29 12 * * 0'   # weekly for Snyk
     - cron: '35 1 * * 4'    # weekly for CodeQL
-  
+
 permissions:
   security-events: write
   contents: read
   actions: read
   packages: read
-
 
 jobs:
   UnitTesten:
@@ -38,28 +37,19 @@ jobs:
       - name: Test
         run: dotnet test --no-build
 
-  osv-scan:
-    name: OSV Dependency Vulnerability Scan
+  snyk-scan:
+    name: Snyk Vulnerability Scan
     runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'pull_request' || github.event_name == 'merge_group' || github.event_name == 'push' || github.event_name == 'schedule' }}
-
+    if: ${{ github.event_name == 'pull_request' || github.event_name == 'push' || github.event_name == 'schedule' }}
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Set up Go (for OSV-Scanner)
-        uses: actions/setup-go@v5
+      - name: Run Snyk to check for vulnerabilities
+        uses: snyk/actions/dotnet@v1
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
-          go-version: '1.21'
-
-      - name: Install OSV-Scanner
-        run: |
-          go install github.com/google/osv-scanner/cmd/osv-scanner@latest
-          echo "${HOME}/go/bin" >> $GITHUB_PATH
-
-      - name: Run OSV-Scanner
-        run: |
-          osv-scanner -r --skip-git ./
+          args: --severity-threshold=medium
 
   codeql:
     name: Analyze (${{ matrix.language }})
