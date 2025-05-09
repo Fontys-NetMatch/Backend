@@ -123,30 +123,73 @@ namespace TravelPlanner.API.Controllers
                 .RequiresJwtToken()
                 .WithTags("Quotation")
                 .WithOpenApi();
-            
+
             // Download Quotation as PDF
             app.MapGet("/quotations/{id}/pdf", async (
-    int id,
-    HttpContext context,
-    [FromServices] QuotationController controller
-) =>
-            {
-                var fileContentResult = await controller.GetQuotationPdf(id); // This now returns FileContentResult
-                return Results.File(fileContentResult.FileContents, fileContentResult.ContentType, fileContentResult.FileDownloadName);
-            })
-.WithName("DownloadQuotationPdf")
-.WithDescription("Download the quotation as a PDF")
-.Produces(StatusCodes.Status200OK, contentType: "application/pdf")
-.Produces<ErrorResponse>(StatusCodes.Status500InternalServerError)
-.RequiresJwtToken()
-.WithTags("Quotation")
-.WithOpenApi();
+                    int id, HttpContext context, [FromServices] QuotationController controller) =>
+                {
+                    // Call the service layer to generate the PDF
+                    var result = await controller.GetQuotationPdf(id); // This now returns IResult
+
+                    // Handle IResult as a return type directly
+                    if (result is FileContentResult fileContentResult)
+                    {
+                        return Results.File(fileContentResult.FileContents, fileContentResult.ContentType,
+                            fileContentResult.FileDownloadName);
+                    }
+
+                    // If not a valid result, return the result (e.g., 404 or 500)
+                    return result;
+                })
+                .WithName("DownloadQuotationPdf")
+                .WithDescription("Download the quotation as a PDF")
+                .Produces(StatusCodes.Status200OK, contentType: "application/pdf")
+                .Produces<ErrorResponse>(StatusCodes.Status500InternalServerError)
+                .RequiresJwtToken()
+                .WithTags("Quotation")
+                .WithOpenApi();
         }
 
-        private async Task<FileContentResult> GetQuotationPdf(int id)
+        private async Task<IResult> GetQuotationPdf(int id)
         {
-            return await _container.GeneratePdfAsync(id);
+            try
+            {
+                // Check if the ID is valid (positive number)
+                if (id <= 0)
+                {
+                    return Results.BadRequest("Invalid Quotation ID. It must be a positive integer.");
+                }
+                // Call the service layer to generate the PDF
+                var pdfResult = await _container.GeneratePdfAsync(id);
+
+                // If no PDF is returned (i.e., the quotation was not found), return a 404 Not Found response
+                if (pdfResult == null)
+                {
+                    return Results.NotFound($"Quotation with ID {id} not found.");
+                }
+
+                // If pdfResult is a valid FileContentResult, return it directly as a IResult (using Results.File)
+                if (pdfResult is FileContentResult fileContentResult)
+                {
+                    // Return the generated PDF using Results.File with its content, content type, and download name
+                    return Results.File(fileContentResult.FileContents, fileContentResult.ContentType, fileContentResult.FileDownloadName);
+                }
+
+                // If pdfResult is not a FileContentResult, handle unexpected types
+                return Results.StatusCode(500);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception (you can use a logging framework such as Serilog, NLog, or the built-in ILogger)
+                Console.Error.WriteLine($"Error generating PDF for Quotation ID {id}: {ex.Message}");
+
+                // Return an Internal Server Error response if something went wrong
+                return Results.StatusCode(500);
+            }
         }
+
+
+
 
         private BaseResponse CreateQuotation(HttpContext? context, QuotationData quotation)
         {
