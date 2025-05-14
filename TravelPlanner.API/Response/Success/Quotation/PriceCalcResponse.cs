@@ -2,7 +2,7 @@
 
 public record PriceCalcResponse : BaseResponse
 {
-    public double Price;
+    public double Price { get; set; }
 
     public PriceCalcResponse(double Price)
     {
