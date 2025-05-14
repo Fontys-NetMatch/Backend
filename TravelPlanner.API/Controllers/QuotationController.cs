@@ -103,10 +103,10 @@ namespace TravelPlanner.API.Controllers
                 ) => controller.GetQuotationValueFlat(context,id , commision))
                 .WithName("GetFlatCommision")
                 .WithDescription("Get the quotation price with a flat commision")
-                .Produces<QuotationsResponse>()
+                .Produces<PriceCalcResponse>()
                 .Produces<ErrorResponse>(StatusCodes.Status500InternalServerError)
                 .RequiresJwtToken()
-                .WithTags("Quotation")
+                .WithTags("Price")
                 .WithOpenApi();
             
             // Get percentile commision quotation price
@@ -118,10 +118,10 @@ namespace TravelPlanner.API.Controllers
                 ) => controller.GetQuotationValueFlat(context,id , percentile))
                 .WithName("GetPercentileCommision")
                 .WithDescription("Get the quotation price with a percentile commision")
-                .Produces<QuotationsResponse>()
+                .Produces<PriceCalcResponse>()
                 .Produces<ErrorResponse>(StatusCodes.Status500InternalServerError)
                 .RequiresJwtToken()
-                .WithTags("Quotation")
+                .WithTags("Price")
                 .WithOpenApi();
 
             // Download Quotation as PDF
