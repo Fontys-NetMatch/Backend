@@ -35,9 +35,8 @@ public class CustomerContainer : ICustomerContainer
         {
             throw new InvalidOperationException($"A customer with the email {customer.Email} already exists.");
         }
-
-        var result = _db.InsertWithInt32Identity(customer);
-        if (result <= 0)
+        
+        if (_db.InsertWithInt32Identity(customer) <= 0)
         {
             throw new InvalidOperationException("Failed to create customer in the database");
         }
@@ -70,9 +69,8 @@ public class CustomerContainer : ICustomerContainer
         {
             throw new InvalidOperationException("Customer does not exist and cannot be updated");
         }
-
-        var result = await _db.UpdateAsync(customer);
-        if (result == 0)
+        
+        if (await _db.UpdateAsync(customer) == 0)
         {
             throw new InvalidOperationException("Failed to update customer");
         }
@@ -82,7 +80,7 @@ public class CustomerContainer : ICustomerContainer
     {
         var customers = await _db.Customers
                         .ToListAsync();
-        if (customers == null || !customers.Any())
+        if (customers is not { Count: > 0 })
         {
             throw new InvalidOperationException("No customers found");
         }

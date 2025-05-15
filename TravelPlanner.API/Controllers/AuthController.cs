@@ -14,6 +14,7 @@ using InvalidCredentialsException = TravelPlanner.Domain.Exceptions.InvalidCrede
 using TravelPlanner.API.Response;
 using TravelPlanner.API.Response.DataObjects;
 using TravelPlanner.API.Response.Success.Auth;
+using TravelPlanner.Domain.Interfaces.BLL.Container;
 
 namespace TravelPlanner.API.Controllers;
 
@@ -43,13 +44,14 @@ public class AuthController
             .Produces<ErrorResponse>(StatusCodes.Status500InternalServerError)
             .WithTags("Auth")
             .WithOpenApi();
+        
         app.MapPost("/auth/register", (
                 HttpContext context,
                 [FromBody] RegisterData data,
                 [FromServices] AuthController controller
             ) => controller.RegisterRequest(context, data))
-            .WithName("LoadFiles")
-            .WithDescription("LoadFiles a new user")
+            .WithName("Register")
+            .WithDescription("Register a new user")
             .Produces<SuccessResponse>()
             .Produces<ErrorResponse>(StatusCodes.Status500InternalServerError)
             .WithTags("Auth")

@@ -9,7 +9,7 @@ using TravelPlanner.Domain.Models.Entities.Translations;
 using TravelPlanner.Domain.Models.Request.Product;
 using TravelPlanner.Domain.Models.Request.ProductTranslation;
 
-namespace TravelPlanner.Domain.Interfaces.BLL
+namespace TravelPlanner.Domain.Interfaces.BLL.Container
 {
     public interface IProductTranslationContainer
     {
@@ -19,7 +19,7 @@ namespace TravelPlanner.Domain.Interfaces.BLL
         Task<ProductTranslation?> GetByIdAndIso(int id, string isoCode);
         Task Create(int productId, ProductTranslationData product);
         Task Update(int translationId, ProductTranslationUpdateData product);
-        Task Delete(int translationId);
-
+        Task<bool> Delete(int translationId);
+        Task<bool> Restore(int translationId);
     }
 }

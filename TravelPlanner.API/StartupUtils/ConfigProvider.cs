@@ -35,8 +35,8 @@ public static class ConfigProvider
         var appUrl = builder.Configuration.GetValue<string>("AppUrl");
         var allowedOrigins = builder.Configuration.GetValue<string>("AllowedOrigins");
 
-        if (appUrl == null) throw new ArgumentNullException(appUrl);
-        if (allowedOrigins == null) throw new ArgumentNullException(allowedOrigins);
+        if (appUrl == null) throw new ArgumentNullException(nameof(appUrl));
+        if (allowedOrigins == null) throw new ArgumentNullException(nameof(allowedOrigins));
 
         DbConfig dbConfig = new();
         builder.Configuration.GetSection("Database").Bind(dbConfig);
@@ -46,9 +46,9 @@ public static class ConfigProvider
         var jwtIssuer = jwtSection.GetValue<string>("Issuer");
         var jwtAudience = jwtSection.GetValue<string>("Audience");
 
-        if (jwtSecret == null) throw new ArgumentNullException(jwtSecret);
-        if (jwtIssuer == null) throw new ArgumentNullException(jwtIssuer);
-        if (jwtAudience == null) throw new ArgumentNullException(jwtAudience);
+        if (jwtSecret == null) throw new ArgumentNullException(nameof(jwtSecret));
+        if (jwtIssuer == null) throw new ArgumentNullException(nameof(jwtIssuer));
+        if (jwtAudience == null) throw new ArgumentNullException(nameof(jwtAudience));
 
         JwtConfig jwtConfig = new()
         {

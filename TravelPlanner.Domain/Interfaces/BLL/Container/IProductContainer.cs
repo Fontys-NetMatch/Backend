@@ -1,7 +1,7 @@
 ﻿using TravelPlanner.Domain.Models.Entities.Products;
 using TravelPlanner.Domain.Models.Request.Product;
 
-namespace TravelPlanner.Domain.Interfaces.BLL
+namespace TravelPlanner.Domain.Interfaces.BLL.Container
 {
     public interface IProductContainer
     {
@@ -9,7 +9,7 @@ namespace TravelPlanner.Domain.Interfaces.BLL
         Task<Product?> GetById(int id);
         Task Create(ProductData product);
         Task Update(int id, ProductData product);
-        Task SoftDelete(int id);
-        Task Restore(int id);
+        Task<bool> SoftDelete(int id);
+        Task<bool> Restore(int id);
     }
 }

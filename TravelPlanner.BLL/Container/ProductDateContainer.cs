@@ -1,18 +1,12 @@
 ﻿using LinqToDB;
 using TravelPlanner.DB;
+using TravelPlanner.Domain.Interfaces.BLL.Container;
 using TravelPlanner.Domain.Models.Entities.Products;
 
-namespace TravelPlanner.BLL
+namespace TravelPlanner.BLL.Container
 {
-    public class ProductDateContainer
+    public class ProductDateContainer(DbManager db) : IProductDateContainer
     {
-        private readonly DbManager _db;
-
-        public ProductDateContainer(DbManager db)
-        {
-            _db = db;
-        }
-
         public async Task<int> CreateProductDateAsync(ProductDate productDate)
         {
             if (productDate == null)
@@ -20,7 +14,7 @@ namespace TravelPlanner.BLL
                 throw new ArgumentNullException(nameof(productDate), "ProductDate cannot be null");
             }
 
-            var result = await _db.InsertWithInt32IdentityAsync(productDate);
+            var result = await db.InsertWithInt32IdentityAsync(productDate);
             if (result == 0)
             {
                 throw new InvalidOperationException("Failed to create ProductDate in the database");
@@ -36,7 +30,7 @@ namespace TravelPlanner.BLL
                 throw new ArgumentException("ProductDate Id must be positive", nameof(id));
             }
 
-            return await _db.ProductDates.FirstOrDefaultAsync(pd => pd.Id == id);
+            return await db.ProductDates.FirstOrDefaultAsync(pd => pd.Id == id);
         }
 
         public async Task UpdateProductDateAsync(ProductDate productDate)
@@ -51,7 +45,7 @@ namespace TravelPlanner.BLL
                 throw new ArgumentException("ProductDate must have a valid Id", nameof(productDate));
             }
 
-            var result = await _db.UpdateAsync(productDate);
+            var result = await db.UpdateAsync(productDate);
             if (result == 0)
             {
                 throw new InvalidOperationException("Failed to update ProductDate");
@@ -60,11 +54,11 @@ namespace TravelPlanner.BLL
 
         public async Task<IEnumerable<ProductDate>> GetAllActiveProductDatesAsync()
         {
-            var productDates = await _db.ProductDates
+            var productDates = await db.ProductDates
                                   .Where(pd => pd.IsActive)
                                   .ToListAsync();
 
-            if (productDates == null || !productDates.Any())
+            if (productDates is not {Count: < 1})
             {
                 throw new InvalidOperationException("No active ProductDates found");
             }
@@ -72,7 +66,7 @@ namespace TravelPlanner.BLL
             return productDates;
         }
 
-        public async Task SoftDeleteProductDateAsync(int id)
+        public async Task<bool> SoftDeleteProductDateAsync(int id)
         {
             if (id <= 0)
             {
@@ -91,7 +85,45 @@ namespace TravelPlanner.BLL
             }
 
             productDate.IsActive = false;
-            await UpdateProductDateAsync(productDate);
+            try
+            {
+                await UpdateProductDateAsync(productDate);
+                return true;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+            
+        }
+
+        public async Task<bool> Restore(int id)
+        {
+            if (id <= 0)
+            {
+                throw new ArgumentException("Invalid product Id", nameof(id));
+            }
+
+            var product = await GetProductDateByIdAsync(id);
+            if (product == null)
+            {
+                throw new InvalidOperationException("Product does not exist");
+            }
+
+            if (product.IsActive)
+            {
+                throw new InvalidOperationException("Product is already restored");
+            }
+
+            product.IsActive = true;
+
+            var result = await db.UpdateAsync(product);
+            if (result == 0)
+            {
+                throw new InvalidOperationException("Failed to restore product");
+            }
+            return true;
         }
     }
 }

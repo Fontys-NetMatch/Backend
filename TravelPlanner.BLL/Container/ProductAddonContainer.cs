@@ -4,19 +4,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using LinqToDB;
 using TravelPlanner.DB;
+using TravelPlanner.Domain.Interfaces.BLL.Container;
 using TravelPlanner.Domain.Models.Entities.Product;
 
-namespace TravelPlanner.BLL
+namespace TravelPlanner.BLL.Container
 {
-    public class ProductAddonContainer
+    public class ProductAddonContainer(DbManager db) : IProductAddonContainer
     {
-        private readonly DbManager _db;
-
-        public ProductAddonContainer(DbManager db)
-        {
-            _db = db;
-        }
-
         public async Task<int> CreateProductAddon(ProductAddon productAddon)
         {
             if (productAddon == null)
@@ -24,7 +18,7 @@ namespace TravelPlanner.BLL
                 throw new ArgumentNullException(nameof(productAddon), "ProductAddon cannot be null");
             }
 
-            var result = await _db.InsertWithInt32IdentityAsync(productAddon);
+            var result = await db.InsertWithInt32IdentityAsync(productAddon);
             if (result == 0)
             {
                 throw new InvalidOperationException("Failed to create ProductAddon in the database");
@@ -40,7 +34,7 @@ namespace TravelPlanner.BLL
                 throw new ArgumentException("ProductAddon Id must be positive", nameof(id));
             }
 
-            return await _db.ProductAddons.FirstOrDefaultAsync(pa => pa.Id == id);
+            return await db.ProductAddons.FirstOrDefaultAsync(pa => pa.Id == id);
         }
 
         public async Task UpdateProductAddon(ProductAddon productAddon)
@@ -54,9 +48,8 @@ namespace TravelPlanner.BLL
             {
                 throw new ArgumentException("ProductAddon must have a valid Id");
             }
-
-            var result = await _db.UpdateAsync(productAddon);
-            if (result == 0)
+            
+            if (await db.UpdateAsync(productAddon) == 0)
             {
                 throw new InvalidOperationException("Failed to update ProductAddon");
             }
@@ -64,11 +57,11 @@ namespace TravelPlanner.BLL
 
         public async Task<IEnumerable<ProductAddon>> GetAllActiveProductAddonsAsync()
         {
-            var productAddons = await _db.ProductAddons
+            var productAddons = await db.ProductAddons
                                   .Where(pa => pa.IsActive)
                                   .ToListAsync();
 
-            if (productAddons == null || !productAddons.Any())
+            if (productAddons is not {Count: < 1})
             {
                 throw new InvalidOperationException("No active ProductAddons found");
             }
@@ -86,7 +79,7 @@ namespace TravelPlanner.BLL
             var productAddon = await GetProductAddonByIdAsync(id);
             if (productAddon == null)
             {
-                throw new InvalidOperationException("ProductAddon does not exist and cannot be soft-deleted");
+                throw new InvalidOperationException("ProductAddon does not exist");
             }
 
             if (!productAddon.IsActive)

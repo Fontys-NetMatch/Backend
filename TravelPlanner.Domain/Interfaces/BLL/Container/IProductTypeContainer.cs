@@ -8,7 +8,7 @@ using TravelPlanner.Domain.Models.Entities.Products;
 using TravelPlanner.Domain.Models.Request.Product;
 using TravelPlanner.Domain.Models.Request.ProductType;
 
-namespace TravelPlanner.Domain.Interfaces.BLL
+namespace TravelPlanner.Domain.Interfaces.BLL.Container
 {
     public interface IProductTypeContainer
     {
@@ -18,7 +18,8 @@ namespace TravelPlanner.Domain.Interfaces.BLL
         Task<ProductType?> GetById(int id);
         Task Create(ProductTypeData product);
         Task Update(int id, ProductTypeData product);
-        Task SoftDelete(int id);
+        Task<bool> SoftDelete(int id);
+        Task<bool> Restore(int id);
 
     }
 }
