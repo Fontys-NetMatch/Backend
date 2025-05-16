@@ -131,7 +131,7 @@ public class QuotationContainer(DbManager db, IPDFService pdf) : IQuotationConta
         await db.UpdateAsync(quotation);
     }
 
-    public async Task<List<Quotation>> GetAllQuotations()
+    public async Task<List<Quotation>> GetAllQuotations(QuotationFiltersData filter)
     {
         var quotations = await db.Quotations
                                   .LoadWith(q => q.Customer)

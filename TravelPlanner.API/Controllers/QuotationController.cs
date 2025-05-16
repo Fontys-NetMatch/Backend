@@ -81,18 +81,18 @@ namespace TravelPlanner.API.Controllers
                 .WithTags("Quotation")
                 .WithOpenApi();
 
-            // Get all Active Quotations
-            app.MapGet("/quotations/active", (
-                HttpContext context,
-                [FromServices] QuotationController controller
-            ) => controller.GetAllActiveQuotations(context))
-                .WithName("GetAllActiveQuotations")
-                .WithDescription("Get all active quotations")
-                .Produces<QuotationsResponse>()
-                .Produces<ErrorResponse>(StatusCodes.Status500InternalServerError)
-                .RequiresJwtToken()
-                .WithTags("Quotation")
-                .WithOpenApi();
+            //// Get all Active Quotations
+            //app.MapGet("/quotations/active", (
+            //    HttpContext context,
+            //    [FromServices] QuotationController controller
+            //) => controller.GetAllActiveQuotations(context))
+            //    .WithName("GetAllActiveQuotations")
+            //    .WithDescription("Get all active quotations")
+            //    .Produces<QuotationsResponse>()
+            //    .Produces<ErrorResponse>(StatusCodes.Status500InternalServerError)
+            //    .RequiresJwtToken()
+            //    .WithTags("Quotation")
+            //    .WithOpenApi();
 
             // Get flat commision quotation price
             app.MapPost("/quotations/{id}/flatcommision", (
@@ -254,31 +254,31 @@ namespace TravelPlanner.API.Controllers
             }
         }
 
-        private BaseResponse GetAllActiveQuotations(HttpContext? context)
-        {
-            try
-            {
-                var quotations = _container.GetAllActiveQuotations().Result;
-                if (quotations.Count == 0)
-                {
-                    return new NoContentResponse();
-                }
+        //private BaseResponse GetAllActiveQuotations(HttpContext? context)
+        //{
+        //    try
+        //    {
+        //        var quotations = _container.GetAllActiveQuotations().Result;
+        //        if (quotations.Count == 0)
+        //        {
+        //            return new NoContentResponse();
+        //        }
 
-                // Convert each Quotation to a QuotationResponse
-                var quotationResponses = quotations.Select(quotation => new QuotationResponse(
-                    id: quotation.Id,
-                    name: quotation.Name,
-                    status: quotation.Status,
-                    customerId: quotation.CustomerId
-                )).ToList();
+        //        // Convert each Quotation to a QuotationResponse
+        //        var quotationResponses = quotations.Select(quotation => new QuotationResponse(
+        //            id: quotation.Id,
+        //            name: quotation.Name,
+        //            status: quotation.Status,
+        //            customerId: quotation.CustomerId
+        //        )).ToList();
 
-                return new QuotationsResponse(quotationResponses);
-            }
-            catch (Exception ex)
-            {
-                return new ErrorResponse(ex.Message);
-            }
-        }
+        //        return new QuotationsResponse(quotationResponses);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return new ErrorResponse(ex.Message);
+        //    }
+        //}
         private BaseResponse GetQuotationValueFlat(HttpContext? context, int Id, double Commision)
         {
             try
