@@ -5,7 +5,7 @@ using TravelPlanner.Domain.New_Models.Entities.Media;
 using TravelPlanner.Domain.New_Models.Entities.Program;
 using TravelPlanner.Domain.New_Models.Entities.Transport;
 using TravelPlanner.Domain.New_Models.Enums;
-using ProductType = TravelPlanner.Domain.Models.Entities.Products.ProductType;
+using ProductType = TravelPlanner.Domain.New_Models.Enums.ProductType;
 
 namespace TravelPlanner.Domain.New_Models.Entities.Product;
 
@@ -36,7 +36,8 @@ public class ProductInformation
     public ProductCharacteristics Characteristics { get; set; }
     public List<DistanceInformation> Distances { get; set; }
     
-    public ProductInformation(ProductType type, List<ProductCode> codes, ContentSupplier contentSupplier, HotelLocationAndContactInformation locationAndContactInformation, MediaContext media, Errata errata, ProductCharacteristics characteristics, List<DistanceInformation> distances)
+    public ProductInformation(ProductType type, List<ProductCode> codes, ContentSupplier contentSupplier, HotelLocationAndContactInformation locationAndContactInformation, MediaContext media,
+        Errata errata, ProductCharacteristics characteristics, List<DistanceInformation> distances)
     {
         Type = type;
         Codes = codes;
@@ -48,7 +49,13 @@ public class ProductInformation
         Distances = distances;
     }
     
-    public ProductInformation(int? giataId, ProductType type, List<ProductCode> codes, string? name, string? subTitles, ContentSupplier contentSupplier, List<ProductDescription>? descriptions, List<UniqueSellingPoint>? uniqueSellingPoints, List<string>? tips, HotelLocationAndContactInformation locationAndContactInformation, double? starRating, List<FacilityInformation>? facilities, MediaContext media, DayToDayProgram? dayToDayProgramInformation, List<ProductChildServices>? childServices, Discountinformation? discountInformation, Errata errata, int? minimumAmountOfTripParticipants, int? maximumAmountOfTripParticipants, List<TransportInformation>? transportInformation, ProductCharacteristics characteristics, List<DistanceInformation> distances)
+    public ProductInformation(int? giataId, ProductType type, List<ProductCode> codes, string? name, string? subTitles, ContentSupplier contentSupplier, 
+        List<ProductDescription>? descriptions, List<UniqueSellingPoint>? uniqueSellingPoints, List<string>? tips, 
+        HotelLocationAndContactInformation locationAndContactInformation, double? starRating, List<FacilityInformation>? facilities, 
+        MediaContext media, DayToDayProgram? dayToDayProgramInformation, List<ProductChildServices>? childServices, 
+        Discountinformation? discountInformation, Errata errata, int? minimumAmountOfTripParticipants, 
+        int? maximumAmountOfTripParticipants, List<TransportInformation>? transportInformation,
+        ProductCharacteristics characteristics, List<DistanceInformation> distances)
     {
         GiataId = giataId;
         Type = type;
