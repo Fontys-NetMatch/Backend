@@ -7,7 +7,7 @@ namespace TravelPlanner.BLL.Container
 {
     public class ProductImageContainer(DbManager db) : IProductImageContainer
     {
-        public async Task<int> CreateProductImageAsync(ProductImage productImage)
+        public async Task<int> CreateProductImage(ProductImage productImage)
         {
             if (productImage == null)
             {
@@ -23,7 +23,7 @@ namespace TravelPlanner.BLL.Container
             return result;
         }
 
-        public async Task<ProductImage?> GetProductImageByIdAsync(int id)
+        public async Task<ProductImage?> GetProductImageById(int id)
         {
             if (id <= 0)
             {
@@ -33,7 +33,7 @@ namespace TravelPlanner.BLL.Container
             return await db.ProductImages.FirstOrDefaultAsync(pi => pi.Id == id);
         }
 
-        public async Task UpdateProductImageAsync(ProductImage productImage)
+        public async Task UpdateProductImage(ProductImage productImage)
         {
             if (productImage == null)
             {
@@ -52,7 +52,7 @@ namespace TravelPlanner.BLL.Container
             }
         }
 
-        public async Task<IEnumerable<ProductImage>> GetAllActiveProductImagesAsync()
+        public async Task<IEnumerable<ProductImage>> GetAllActiveProductImages()
         {
             var productImages = await db.ProductImages
                                   .Where(pi => pi.DeletedAt == null)
@@ -66,14 +66,14 @@ namespace TravelPlanner.BLL.Container
             return productImages;
         }
 
-        public async Task<bool> SoftDeleteProductImageAsync(int id)
+        public async Task<bool> SoftDelete(int id)
         {
             if (id <= 0)
             {
                 throw new ArgumentException("ProductImage Id must be positive", nameof(id));
             }
 
-            var productImage = await GetProductImageByIdAsync(id);
+            var productImage = await GetProductImageById(id);
             if (productImage == null)
             {
                 throw new InvalidOperationException("ProductImage does not exist and cannot be soft-deleted");
@@ -87,7 +87,7 @@ namespace TravelPlanner.BLL.Container
             productImage.DeletedAt = DateTime.UtcNow;
             try
             {
-                await UpdateProductImageAsync(productImage);
+                await UpdateProductImage(productImage);
                 return true;
             }
             catch (Exception e)
@@ -104,7 +104,7 @@ namespace TravelPlanner.BLL.Container
                 throw new ArgumentException("Invalid product Id", nameof(id));
             }
 
-            var product = await GetProductImageByIdAsync(id);
+            var product = await GetProductImageById(id);
             if (product == null)
             {
                 throw new InvalidOperationException("Product does not exist");

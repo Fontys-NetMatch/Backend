@@ -7,7 +7,7 @@ namespace TravelPlanner.BLL.Container
 {
     public class ProductDateContainer(DbManager db) : IProductDateContainer
     {
-        public async Task<int> CreateProductDateAsync(ProductDate productDate)
+        public async Task<int> CreateProductDate(ProductDate productDate)
         {
             if (productDate == null)
             {
@@ -23,7 +23,7 @@ namespace TravelPlanner.BLL.Container
             return result;
         }
 
-        public async Task<ProductDate?> GetProductDateByIdAsync(int id)
+        public async Task<ProductDate?> GetProductDateById(int id)
         {
             if (id <= 0)
             {
@@ -33,7 +33,7 @@ namespace TravelPlanner.BLL.Container
             return await db.ProductDates.FirstOrDefaultAsync(pd => pd.Id == id);
         }
 
-        public async Task UpdateProductDateAsync(ProductDate productDate)
+        public async Task UpdateProductDate(ProductDate productDate)
         {
             if (productDate == null)
             {
@@ -52,7 +52,7 @@ namespace TravelPlanner.BLL.Container
             }
         }
 
-        public async Task<IEnumerable<ProductDate>> GetAllActiveProductDatesAsync()
+        public async Task<IEnumerable<ProductDate>> GetAllActiveProductDates()
         {
             var productDates = await db.ProductDates
                                   .Where(pd => pd.IsActive)
@@ -66,14 +66,14 @@ namespace TravelPlanner.BLL.Container
             return productDates;
         }
 
-        public async Task<bool> SoftDeleteProductDateAsync(int id)
+        public async Task<bool> SoftDelete(int id)
         {
             if (id <= 0)
             {
                 throw new ArgumentException("ProductDate Id must be positive", nameof(id));
             }
 
-            var productDate = await GetProductDateByIdAsync(id);
+            var productDate = await GetProductDateById(id);
             if (productDate == null)
             {
                 throw new InvalidOperationException("ProductDate does not exist and cannot be soft-deleted");
@@ -87,7 +87,7 @@ namespace TravelPlanner.BLL.Container
             productDate.IsActive = false;
             try
             {
-                await UpdateProductDateAsync(productDate);
+                await UpdateProductDate(productDate);
                 return true;
             }
             catch (Exception e)
@@ -105,7 +105,7 @@ namespace TravelPlanner.BLL.Container
                 throw new ArgumentException("Invalid product Id", nameof(id));
             }
 
-            var product = await GetProductDateByIdAsync(id);
+            var product = await GetProductDateById(id);
             if (product == null)
             {
                 throw new InvalidOperationException("Product does not exist");

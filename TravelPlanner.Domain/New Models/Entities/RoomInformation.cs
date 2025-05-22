@@ -11,7 +11,6 @@ public class RoomInformation
     public string? HotelProvider { get; set; }
     public string? HotelCode { get; set; }
     public string? PeakworkIdentifier { get; set; }
-    public string? Key { get; }
     public List<string>? Keys { get; set; }
     public string? SubCode { get; set; }
     public MediaContext? Media { get; set; }
