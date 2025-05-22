@@ -1,4 +1,5 @@
 ﻿using System.Reflection.PortableExecutable;
+using TravelPlanner.Domain.Models.Entities;
 using TravelPlanner.Domain.Models.Entities.Products;
 using TravelPlanner.Domain.New_Models.Entities.Facility;
 using TravelPlanner.Domain.New_Models.Entities.Media;
