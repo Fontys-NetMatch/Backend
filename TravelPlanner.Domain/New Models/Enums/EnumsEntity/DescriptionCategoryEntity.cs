@@ -2,8 +2,8 @@
 
 namespace TravelPlanner.Domain.Models.Entities
 {
-    [Table(Name = "ContentSuppliers")]
-    public class ContentSupplierEntity
+    [Table(Name = "DescriptionCategories")]
+    public class DescriptionCategoryEntity
     {
         [Column, PrimaryKey] 
         public int Id { get; set; }
