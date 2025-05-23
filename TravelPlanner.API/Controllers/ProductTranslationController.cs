@@ -98,7 +98,7 @@ namespace TravelPlanner.API.Controllers
         {
             try
             {
-                _container.Delete(translationId).Wait();
+                _container.SoftDelete(translationId).Wait();
                 return new SuccessResponse("Product translation updated successfully");
             }
             catch (Exception e)

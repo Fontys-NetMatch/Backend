@@ -1,4 +1,6 @@
-﻿namespace TravelPlanner.Domain.Exceptions;
+﻿using System;
+
+namespace TravelPlanner.Domain.Exceptions;
 
 public class BllException : Exception
 {

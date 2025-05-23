@@ -11,4 +11,9 @@
       <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.3.0" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="New Models\GenerationModels\" />
+      <Folder Include="New Models\Request\" />
+    </ItemGroup>
+
 </Project>

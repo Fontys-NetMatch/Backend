@@ -116,7 +116,7 @@ public class ProductTranslationContainer(DbManager db) : IProductTranslationCont
         }
     }
 
-    public async Task<bool> Delete(int translationId)
+    public async Task<bool> SoftDelete(int translationId)
     {
         if (translationId <= 0)
         {
@@ -128,8 +128,8 @@ public class ProductTranslationContainer(DbManager db) : IProductTranslationCont
         {
             throw new InvalidOperationException("Product translation does not exist");
         }
-        
-        if (await db.DeleteAsync(existingTranslation) == 0)
+        existingTranslation.IsActive = false;
+        if (await db.UpdateAsync(existingTranslation) == 0)
         {
             throw new InvalidOperationException("Failed to delete product translation");
         }
