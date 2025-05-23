@@ -9,9 +9,9 @@ namespace TravelPlanner.Domain.Interfaces.BLL
 {
     public interface ICustomerContainer
     {
-        Task CreateAsync(Customer customer);
-        Task<Customer?> GetByIdAsync(int id);
-        Task UpdateAsync(Customer customer);
-        Task<List<Customer>> GetAllAsync();
+        void CreateCustomer(Customer customer);
+        Task<Customer?> GetCustomerById(int id);
+        Task UpdateCustomer(Customer customer);
+        Task<List<Customer>> GetAllCustomers();
     }
 }

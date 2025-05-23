@@ -8,112 +8,176 @@ using TravelPlanner.Domain.Interfaces.PDF;
 using TravelPlanner.Domain.Models.Entities;
 using TravelPlanner.Domain.Models.Entities.Products;
 using TravelPlanner.Domain.Models.Request.Quotation;
-using TravelPlanner.Infrastructure.Repositories;
 
 namespace TravelPlanner.BLL.Container;
 
-public class QuotationContainer: IQuotationContainer
+public class QuotationContainer(DbManager db, IPDFService pdf) : IQuotationContainer
 {
-    private readonly QuotationRepository _repository;
-    private readonly IPDFService _pdf;
-
-    public QuotationContainer(QuotationRepository repository, IPDFService pdf)
+    public void CreateQuotation(QuotationData quotation)
     {
-        _repository = repository;
-        _pdf = pdf;
-    }
-
-    public async Task<int> CreateQuotation(QuotationData data, int userId)
-    {
-        if (data == null)
-            throw new ArgumentNullException(nameof(data));
-        if (string.IsNullOrWhiteSpace(data.Name))
-            throw new ArgumentException("Quotation name is required");
-        if (data.CustomerId <= 0)
-            throw new ArgumentException("Invalid Customer Id");
-        if (userId <= 0)
-            throw new ArgumentException("Invalid User Id");
-
-        var quotation = new Quotation
+        if (quotation == null)
         {
-            Name = data.Name,
-            CustomerId = data.CustomerId,
-            UserId = userId,
-            Status = QuotationStatus.Open
-        };
+            throw new ArgumentNullException(nameof(quotation), "Quotation cannot be null");
+        }
 
-        var result = await _repository.CreateAsync(quotation);
-        if (result <= 0)
-            throw new InvalidOperationException("Failed to create quotation");
+        if (string.IsNullOrEmpty(quotation.Name))
+        {
+            throw new ArgumentException("Quotation name cannot be null or empty");
+        }
 
-        return result;
+        if (quotation.CustomerId <= 0)
+        {
+            throw new ArgumentException("Invalid Customer Id");
+        }
+        
+        if (db.InsertWithInt32Identity(quotation) <= 0)
+        {
+            throw new InvalidOperationException("Failed to create quotation in the database");
+        }
     }
 
-
-    public Task<Quotation?> GetQuotationById(int id)
+    public async Task<Quotation?> GetQuotationById(int id)
     {
         if (id <= 0)
-            throw new ArgumentException("Invalid quotation Id");
-        return _repository.GetByIdAsync(id);
+        {
+            throw new ArgumentException("Quotation Id must be positive", nameof(id));
+        }
+
+        try
+        {
+            // Attempt to load the quotation with the associated customer
+            var quotation = await db.Quotations
+                .LoadWith(q => q.Customer)  // Load related customer data
+                .FirstOrDefaultAsync(q => q.Id == id);  // Query for the specific id
+
+            if (quotation == null)
+            {
+                // Handle case where no quotation is found (optional)
+                Console.WriteLine("No quotation found with the provided ID.");
+            }
+
+            return quotation;
+        }
+        catch (LinqToDBException ex)
+        {
+            // Handle specific LINQ to DB exceptions
+            Console.Error.WriteLine($"An error occurred while querying the database: {ex.Message}");
+            // Optionally, you can rethrow or return null
+            throw;
+        }
+        catch (Exception ex)
+        {
+            // Catch any other unexpected exceptions
+            Console.Error.WriteLine($"An unexpected error occurred: {ex.Message}");
+            // Optionally, you can rethrow or return null
+            throw;
+        }
     }
 
-    public async Task<List<Quotation>> GetAllQuotations()
+
+    public async Task<List<ProductDate>> GetQuotationProducts(int quotationId)
     {
-        var list = await _repository.GetAllAsync();
-        if (list.Count == 0)
-            throw new InvalidOperationException("No quotations found");
-        return list;
+        var results = await db.QuotationProductDates
+        .LoadWith(qpd => qpd.ProductDate)
+        .Where(qpd => qpd.QuotationId == quotationId)
+        .ToListAsync();
+
+        return results.Select(qpd => qpd.ProductDate).ToList();
     }
 
-    public async Task<List<Quotation>> GetAllActiveQuotations()
+    public async Task UpdateQuotation(QuotationUpdateData quotation)
     {
-        var list = await _repository.GetAllActiveAsync();
-        if (list.Count == 0)
-            throw new InvalidOperationException("No active quotations found");
-        return list;
-    }
+        if (quotation == null)
+        {
+            throw new ArgumentNullException(nameof(quotation), "Quotation cannot be null");
+        }
 
-    public async Task UpdateQuotation(QuotationUpdateData data)
-    {
-        if (data == null || data.Id <= 0)
-            throw new ArgumentException("Invalid quotation data");
+        if (quotation.Id <= 0)
+        {
+            throw new ArgumentException("Quotation must have a valid Id");
+        }
 
-        var existing = await _repository.GetByIdAsync(data.Id)
-                         ?? throw new InvalidOperationException("Quotation does not exist");
-
-        existing.Name = data.Name;
-        existing.CustomerId = data.CustomerId;
-        existing.Status = data.Status;
-
-        if (await _repository.UpdateAsync(existing) == 0)
+        var existingQuotation = await GetQuotationById(quotation.Id);
+        if (existingQuotation == null)
+        {
+            throw new InvalidOperationException("Quotation does not exist and cannot be updated");
+        }
+        
+        if (await db.UpdateAsync(quotation) == 0)
+        {
             throw new InvalidOperationException("Failed to update quotation");
+        }
     }
 
     public async Task SoftDeleteQuotation(int id)
     {
-        var quotation = await _repository.GetByIdAsync(id)
-                         ?? throw new InvalidOperationException("Quotation does not exist");
+        if (id <= 0)
+        {
+            throw new ArgumentException("Quotation Id must be positive", nameof(id));
+        }
+
+        var quotation = await GetQuotationById(id);
+        if (quotation == null)
+        {
+            throw new InvalidOperationException("Quotation does not exist and cannot be soft-deleted");
+        }
 
         if (quotation.Status == QuotationStatus.Archived)
-            throw new InvalidOperationException("Quotation already archived");
+        {
+            throw new InvalidOperationException("Quotation is already inactive");
+        }
 
         quotation.Status = QuotationStatus.Archived;
-
-        if (await _repository.UpdateAsync(quotation) == 0)
-            throw new InvalidOperationException("Failed to archive quotation");
+        await db.UpdateAsync(quotation);
     }
 
-    public async Task<List<ProductDate>> GetQuotationProducts(int quotationId)
+    public async Task<List<Quotation>> GetAllQuotations()
     {
-        return await _repository.GetQuotationProductsAsync(quotationId);
+        var quotations = await db.Quotations
+                                  .LoadWith(q => q.Customer)
+                                  .ToListAsync();
+        if (quotations.Count == 0)
+        {
+            throw new InvalidOperationException("No active quotations found.");
+        }
+        return quotations;
     }
 
+    public async Task<List<Quotation>> GetAllActiveQuotations()
+    {
+        var quotations = await db.Quotations
+            .LoadWith(q => q.Customer)
+            .Where(q => q.Status != QuotationStatus.Archived)
+            .ToListAsync();
+
+        if (quotations.Count == 0)
+        {
+            throw new InvalidOperationException("No active quotations found.");
+        }
+        return quotations;
+    }
+    
     public async Task<FileContentResult?> GeneratePdfAsync(int id)
     {
-        var quotation = await _repository.GetByIdAsync(id);
-        if (quotation == null) return null;
+        // Get the quotation (or return null if not found)
+        var quotation = await GetQuotationById(id);
 
-        return await _pdf.GenerateQuotation(quotation);
+        // Return null if the quotation is not found
+        if (quotation == null)
+        {
+            return null;
+        }
+
+        // Proceed with generating the PDF if the quotation exists
+        try
+        {
+            return await pdf.GenerateQuotation(quotation);
+        }
+        catch (Exception ex)
+        {
+            // Log the error and rethrow or handle accordingly
+            Console.Error.WriteLine($"Error generating PDF for Quotation ID {id}: {ex.Message}");
+            return null; // You could also return an error-specific result if needed
+        }
     }
 }
-

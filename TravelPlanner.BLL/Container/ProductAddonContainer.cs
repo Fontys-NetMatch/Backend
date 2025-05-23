@@ -4,73 +4,91 @@ using System.Linq;
 using System.Threading.Tasks;
 using LinqToDB;
 using TravelPlanner.DB;
-using TravelPlanner.DB.Interfaces;
-using TravelPlanner.DB.Repositories;
 using TravelPlanner.Domain.Interfaces.BLL.Container;
 using TravelPlanner.Domain.Models.Entities.Product;
 
 namespace TravelPlanner.BLL.Container
 {
-    public class ProductAddonContainer : IProductAddonContainer
+    public class ProductAddonContainer(DbManager db) : IProductAddonContainer
     {
-        private readonly IProductAddonRepository _repository;
-
-        public ProductAddonContainer(IProductAddonRepository repository)
+        public async Task<int> CreateProductAddon(ProductAddon productAddon)
         {
-            _repository = repository;
-        }
+            if (productAddon == null)
+            {
+                throw new ArgumentNullException(nameof(productAddon), "ProductAddon cannot be null");
+            }
 
-        public async Task<ProductAddon?> GetByIdAsync(int id)
-        {
-            if (id <= 0)
-                throw new ArgumentException("ProductAddon Id must be positive", nameof(id));
-
-            return await _repository.GetByIdAsync(id);
-        }
-
-        public async Task<int> CreateAsync(ProductAddon addon)
-        {
-            if (addon == null)
-                throw new ArgumentNullException(nameof(addon), "ProductAddon cannot be null");
-
-            var result = await _repository.CreateAsync(addon);
-            if (result <= 0)
+            var result = await db.InsertWithInt32IdentityAsync(productAddon);
+            if (result == 0)
+            {
                 throw new InvalidOperationException("Failed to create ProductAddon in the database");
+            }
 
             return result;
         }
 
-        public async Task UpdateAsync(ProductAddon addon)
+        public async Task<ProductAddon?> GetProductAddonByIdAsync(int id)
         {
-            if (addon == null)
-                throw new ArgumentNullException(nameof(addon), "ProductAddon cannot be null");
+            if (id <= 0)
+            {
+                throw new ArgumentException("ProductAddon Id must be positive", nameof(id));
+            }
 
-            if (addon.Id <= 0)
+            return await db.ProductAddons.FirstOrDefaultAsync(pa => pa.Id == id);
+        }
+
+        public async Task UpdateProductAddon(ProductAddon productAddon)
+        {
+            if (productAddon == null)
+            {
+                throw new ArgumentNullException(nameof(productAddon), "ProductAddon cannot be null");
+            }
+
+            if (productAddon.Id <= 0)
+            {
                 throw new ArgumentException("ProductAddon must have a valid Id");
-
-            var result = await _repository.UpdateAsync(addon);
-            if (result == 0)
+            }
+            
+            if (await db.UpdateAsync(productAddon) == 0)
+            {
                 throw new InvalidOperationException("Failed to update ProductAddon");
+            }
         }
 
-        public async Task<List<ProductAddon>> GetAllActiveAsync()
+        public async Task<IEnumerable<ProductAddon>> GetAllActiveProductAddonsAsync()
         {
-            var addons = await _repository.GetAllActiveAsync();
-            if (addons is not { Count: > 0 })
+            var productAddons = await db.ProductAddons
+                                  .Where(pa => pa.IsActive)
+                                  .ToListAsync();
+
+            if (productAddons is not {Count: < 1})
+            {
                 throw new InvalidOperationException("No active ProductAddons found");
+            }
 
-            return addons;
+            return productAddons;
         }
 
-        public async Task SoftDeleteAsync(int id)
+        public async Task SoftDeleteProductAddon(int id)
         {
-            var addon = await GetByIdAsync(id) ?? throw new InvalidOperationException("ProductAddon does not exist");
+            if (id <= 0)
+            {
+                throw new ArgumentException("ProductAddon Id must be positive", nameof(id));
+            }
 
-            if (!addon.IsActive)
+            var productAddon = await GetProductAddonByIdAsync(id);
+            if (productAddon == null)
+            {
+                throw new InvalidOperationException("ProductAddon does not exist");
+            }
+
+            if (!productAddon.IsActive)
+            {
                 throw new InvalidOperationException("ProductAddon is already inactive");
+            }
 
-            addon.IsActive = false;
-            await UpdateAsync(addon);
+            productAddon.IsActive = false;
+            await UpdateProductAddon(productAddon);
         }
     }
 }

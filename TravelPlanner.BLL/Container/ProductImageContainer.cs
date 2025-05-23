@@ -1,99 +1,128 @@
 ﻿using LinqToDB;
 using TravelPlanner.DB;
-using TravelPlanner.DB.Interfaces;
-using TravelPlanner.DB.Repositories;
 using TravelPlanner.Domain.Interfaces.BLL.Container;
 using TravelPlanner.Domain.Models.Entities.Products;
 
 namespace TravelPlanner.BLL.Container
 {
-    public class ProductImageContainer : IProductImageContainer
+    public class ProductImageContainer(DbManager db) : IProductImageContainer
     {
-        private readonly IProductImageRepository _repository;
-
-        public ProductImageContainer(IProductImageRepository repository)
+        public async Task<int> CreateProductImageAsync(ProductImage productImage)
         {
-            _repository = repository;
-        }
+            if (productImage == null)
+            {
+                throw new ArgumentNullException(nameof(productImage), "ProductImage cannot be null");
+            }
 
-        public async Task<int> CreateAsync(ProductImage image)
-        {
-            if (image == null)
-                throw new ArgumentNullException(nameof(image), "ProductImage cannot be null");
-
-            var result = await _repository.CreateAsync(image);
+            var result = await db.InsertWithInt32IdentityAsync(productImage);
             if (result == 0)
+            {
                 throw new InvalidOperationException("Failed to create ProductImage in the database");
+            }
 
             return result;
         }
 
-        public async Task<ProductImage?> GetByIdAsync(int id)
+        public async Task<ProductImage?> GetProductImageByIdAsync(int id)
         {
             if (id <= 0)
+            {
                 throw new ArgumentException("ProductImage Id must be positive", nameof(id));
+            }
 
-            return await _repository.GetByIdAsync(id);
+            return await db.ProductImages.FirstOrDefaultAsync(pi => pi.Id == id);
         }
 
-        public async Task UpdateAsync(ProductImage image)
+        public async Task UpdateProductImageAsync(ProductImage productImage)
         {
-            if (image == null)
-                throw new ArgumentNullException(nameof(image), "ProductImage cannot be null");
+            if (productImage == null)
+            {
+                throw new ArgumentNullException(nameof(productImage), "ProductImage cannot be null");
+            }
 
-            if (image.Id <= 0)
-                throw new ArgumentException("ProductImage must have a valid Id", nameof(image));
+            if (productImage.Id <= 0)
+            {
+                throw new ArgumentException("ProductImage must have a valid Id", nameof(productImage));
+            }
 
-            var result = await _repository.UpdateAsync(image);
+            var result = await db.UpdateAsync(productImage);
             if (result == 0)
+            {
                 throw new InvalidOperationException("Failed to update ProductImage");
+            }
         }
 
-        public async Task<List<ProductImage>> GetAllActiveAsync()
+        public async Task<IEnumerable<ProductImage>> GetAllActiveProductImagesAsync()
         {
-            var list = await _repository.GetAllActiveAsync();
-            if (list == null || list.Count == 0)
+            var productImages = await db.ProductImages
+                                  .Where(pi => pi.DeletedAt == null)
+                                  .ToListAsync();
+
+            if (productImages is not {Count: < 1})
+            {
                 throw new InvalidOperationException("No active ProductImages found");
+            }
 
-            return list;
+            return productImages;
         }
 
-        public async Task<List<ProductImage>> GetImagesByProductIdAsync(int productId)
+        public async Task<bool> SoftDeleteProductImageAsync(int id)
         {
-            return await _repository.GetByProductIdAsync(productId);
-        }
+            if (id <= 0)
+            {
+                throw new ArgumentException("ProductImage Id must be positive", nameof(id));
+            }
 
-        public async Task<bool> SoftDeleteAsync(int id)
-        {
-            var image = await GetByIdAsync(id)
-                         ?? throw new InvalidOperationException("ProductImage does not exist");
+            var productImage = await GetProductImageByIdAsync(id);
+            if (productImage == null)
+            {
+                throw new InvalidOperationException("ProductImage does not exist and cannot be soft-deleted");
+            }
 
-            if (image.DeletedAt != null)
+            if (productImage.DeletedAt == null)
+            {
                 throw new InvalidOperationException("ProductImage is already soft-deleted");
+            }
 
-            image.DeletedAt = DateTime.UtcNow;
-            var result = await _repository.UpdateAsync(image);
-            if (result == 0)
-                throw new InvalidOperationException("Failed to soft-delete ProductImage");
-
-            return true;
+            productImage.DeletedAt = DateTime.UtcNow;
+            try
+            {
+                await UpdateProductImageAsync(productImage);
+                return true;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw new InvalidOperationException("Failed to delete product");
+            }
         }
 
         public async Task<bool> Restore(int id)
         {
-            var image = await GetByIdAsync(id)
-                         ?? throw new InvalidOperationException("ProductImage does not exist");
+            if (id <= 0)
+            {
+                throw new ArgumentException("Invalid product Id", nameof(id));
+            }
 
-            if (image.DeletedAt == null)
-                throw new InvalidOperationException("ProductImage is already restored");
+            var product = await GetProductImageByIdAsync(id);
+            if (product == null)
+            {
+                throw new InvalidOperationException("Product does not exist");
+            }
 
-            image.DeletedAt = null;
-            var result = await _repository.UpdateAsync(image);
-            if (result == 0)
-                throw new InvalidOperationException("Failed to restore ProductImage");
+            if (product.DeletedAt == null)
+            {
+                throw new InvalidOperationException("Product is already restored");
+            }
+
+            product.DeletedAt = null;
+            
+            if (await db.UpdateAsync(product) == 0)
+            {
+                throw new InvalidOperationException("Failed to restore product");
+            }
 
             return true;
         }
-
     }
 }
