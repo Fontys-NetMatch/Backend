@@ -7,160 +7,121 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using TravelPlanner.Domain.Interfaces.BLL.Container;
-using TravelPlanner.Domain.Models.Entities.Products;
 using TravelPlanner.Domain.Models.Entities.Translations;
-using TravelPlanner.Domain.Models.Request.Product;
 using TravelPlanner.Domain.Models.Request.ProductTranslation;
+using TravelPlanner.DB.Interfaces;
 
 namespace TravelPlanner.BLL.Container;
 
-public class ProductTranslationContainer(DbManager db) : IProductTranslationContainer
+public class ProductTranslationContainer: IProductTranslationContainer
 {
+    private readonly IProductTranslationRepository _repository;
+
+    public ProductTranslationContainer(IProductTranslationRepository repository)
+    {
+        _repository = repository;
+    }
+
     public async Task<ProductTranslation?> GetById(int id)
     {
         if (id <= 0)
-        {
             throw new ArgumentException("Invalid product translation Id", nameof(id));
-        }
 
-        return await db.ProductTranslations.FirstOrDefaultAsync(p => p.Id == id);
+        return await _repository.GetByIdAsync(id);
     }
 
     public async Task<ProductTranslation?> GetByIdAndIso(int id, string isoCode)
     {
         if (id <= 0)
-        {
             throw new ArgumentException("Invalid product translation Id", nameof(id));
-        }
-        if (isoCode == null)
-        {
-            throw new ArgumentException("Ïnvalid IsoCode", nameof(isoCode));
-        }
-        return await db.ProductTranslations
-            .Where(p => p.Id == id && p.LangIsoCode == isoCode)
-            .FirstOrDefaultAsync();
+        if (string.IsNullOrWhiteSpace(isoCode))
+            throw new ArgumentException("Invalid ISO code", nameof(isoCode));
 
+        return await _repository.GetByIdAndIsoAsync(id, isoCode);
     }
 
     public async Task<List<ProductTranslation>> GetAll(string isoCode)
     {
-        var translations = await db.ProductTranslations
-            .Where(p => p.LangIsoCode == isoCode)
-            .ToListAsync();
-        if (translations == null)
-        {
+        var list = await _repository.GetAllAsync(isoCode);
+        if (list == null || list.Count == 0)
             throw new InvalidOperationException("No product translations found");
-        }
 
-        return translations;
+        return list;
     }
 
     public async Task<List<ProductTranslation>> GetAllActive(string isoCode)
     {
-        var translations = await db.ProductTranslations
-            .Where(p => p.IsActive && p.LangIsoCode == isoCode)
-            .ToListAsync();
-        if (translations == null)
-        {
-            throw new InvalidOperationException("No product translations found");
-        }
+        var list = await _repository.GetAllActiveAsync(isoCode);
+        if (list == null || list.Count == 0)
+            throw new InvalidOperationException("No active product translations found");
 
-        return translations;
+        return list;
     }
 
     public async Task Create(int productId, ProductTranslationData data)
     {
-        if (string.IsNullOrEmpty(data.Name) || string.IsNullOrEmpty(data.Description))
-        {
+        if (string.IsNullOrWhiteSpace(data.Name) || string.IsNullOrWhiteSpace(data.Description))
             throw new ArgumentException("Invalid product translation data");
-        }
 
-        var translationId = await db.InsertWithInt32IdentityAsync(new ProductTranslation()
+        var translation = new ProductTranslation
         {
             ProductId = productId,
             LangIsoCode = data.LangIsoCode,
             Name = data.Name,
             Description = data.Description,
             IsActive = data.IsActive
-        });
-        if (translationId <= 0)
-        {
+        };
+
+        var result = await _repository.CreateAsync(translation);
+        if (result <= 0)
             throw new InvalidOperationException("Failed to create product translation");
-        }
     }
 
-    public async Task Update(int translationId, ProductTranslationUpdateData data)
+    public async Task Update(int id, ProductTranslationUpdateData data)
     {
-        if (translationId <= 0)
-        {
-            throw new ArgumentException("Invalid product translation Id");
-        }
-        if (string.IsNullOrEmpty(data.Name) || string.IsNullOrEmpty(data.Description))
-        {
+        if (id <= 0)
+            throw new ArgumentException("Invalid translation Id");
+        if (string.IsNullOrWhiteSpace(data.Name) || string.IsNullOrWhiteSpace(data.Description))
             throw new ArgumentException("Invalid product translation data");
-        }
 
-        var existingTranslation = await GetById(translationId);
-        if (existingTranslation == null)
-        {
+        var existing = await _repository.GetByIdAsync(id);
+        if (existing == null)
             throw new InvalidOperationException("Product translation does not exist");
-        }
 
-        existingTranslation.Name = data.Name;
-        existingTranslation.Description = data.Description;
-        existingTranslation.IsActive = data.IsActive;
-        
-        if (await db.UpdateAsync(existingTranslation) == 0)
-        {
+        existing.Name = data.Name;
+        existing.Description = data.Description;
+        existing.IsActive = data.IsActive;
+
+        var result = await _repository.UpdateAsync(existing);
+        if (result == 0)
             throw new InvalidOperationException("Failed to update product translation");
-        }
     }
 
-    public async Task<bool> Delete(int translationId)
+    public async Task<bool> Delete(int id)
     {
-        if (translationId <= 0)
-        {
-            throw new ArgumentException("Invalid product translation Id");
-        }
-
-        var existingTranslation = await GetById(translationId);
-        if (existingTranslation == null)
-        {
+        var existing = await _repository.GetByIdAsync(id);
+        if (existing == null)
             throw new InvalidOperationException("Product translation does not exist");
-        }
-        
-        if (await db.DeleteAsync(existingTranslation) == 0)
-        {
+
+        var result = await _repository.DeleteAsync(existing);
+        if (result == 0)
             throw new InvalidOperationException("Failed to delete product translation");
-        }
+
         return true;
     }
 
     public async Task<bool> Restore(int id)
     {
-        if (id <= 0)
-        {
-            throw new ArgumentException("Invalid product Id", nameof(id));
-        }
+        var translation = await _repository.GetByIdAsync(id)
+                           ?? throw new InvalidOperationException("Product does not exist");
 
-        var product = await GetById(id);
-        if (product == null)
-        {
-            throw new InvalidOperationException("Product does not exist");
-        }
-
-        if (product.IsActive)
-        {
+        if (translation.IsActive)
             throw new InvalidOperationException("Product is already restored");
-        }
 
-        product.IsActive = true;
+        translation.IsActive = true;
 
-        var result = await db.UpdateAsync(product);
-        if (result == 0)
-        {
-            throw new InvalidOperationException("Failed to restore product");
-        }
+        if (await _repository.UpdateAsync(translation) == 0)
+            throw new InvalidOperationException("Failed to restore product translation");
 
         return true;
     }

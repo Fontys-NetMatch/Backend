@@ -76,7 +76,7 @@ namespace TravelPlanner.API.Controllers
         {
             try
             {
-                var customer = _container.GetCustomerById(id).Result;
+                var customer = _container.GetByIdAsync(id).Result;
                 return customer == null
                     ? new ErrorResponse("Customer not found")
                     : new CustomerResponse(customer);
@@ -92,7 +92,7 @@ namespace TravelPlanner.API.Controllers
         {
             try
             {
-                var customers = _container.GetAllCustomers().Result;
+                var customers = _container.GetAllAsync().Result;
                 return new CustomersResponse(customers);
             }
             catch (Exception e)
@@ -105,7 +105,7 @@ namespace TravelPlanner.API.Controllers
         {
             try
             {
-                _container.CreateCustomer(customer);
+                _container.CreateAsync(customer);
                 return new SuccessResponse("Customer created successfully");
             }
             catch (Exception e)
@@ -119,7 +119,7 @@ namespace TravelPlanner.API.Controllers
             try
             {
                 customer.Id = id;
-                _container.UpdateCustomer(customer).Wait();
+                _container.UpdateAsync(customer).Wait();
                 return new SuccessResponse("Customer updated successfully");
             }
             catch (Exception e)
