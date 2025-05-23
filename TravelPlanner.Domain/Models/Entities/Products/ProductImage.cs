@@ -7,24 +7,24 @@ namespace TravelPlanner.Domain.Models.Entities.Products;
 [Table("ProductImages")]
 public record ProductImage
 {
-    public ProductImage(string path)
-    {
-        Path = path;
-    }
-
     [Column, PrimaryKey, Identity]
     public int Id { get; set; }
 
-    [Column(Length = 500), NotNull]
-    public string Path { get; set; }
+    [Column(Length = 100), NotNull]
+    public string Supplier { get; set; } = null!;  // e.g., "Corendon"
 
-    [Column(DataType = DataType.Int32), NotNull]
+    [Column(Length = 100), NotNull]
+    public string ImageIdentifier { get; set; } = null!;  // e.g., "abc123"
+
+    [Column(Length = 500), NotNull]
+    public string? Description { get; set; }  // Optional
+
+    [Column(DataType = DataType.DateTime)]
     public DateTime? DeletedAt { get; set; }
 
     [Column, NotNull]
-    public required int ProductId { get; set; }
+    public int ProductId { get; set; }
 
-    [Association(ThisKey = nameof(ProductId), OtherKey = nameof(Product.Id), CanBeNull = false)]
+    [Association(ThisKey = nameof(ProductId), OtherKey = nameof(Product.Id))]
     public Product Product { get; set; } = null!;
-
 }

@@ -28,6 +28,7 @@ public static class ServicesProvider
         services.AddTransient<ProductTranslationController>();
         services.AddTransient<ProductTypeController>();
         services.AddTransient<QuotationController>();
+        services.AddTransient <ProductImageController>();
 
         // Containers
         services.AddSingleton<IAddonDateContainer, AddonDateContainer>();
@@ -51,7 +52,7 @@ public static class ServicesProvider
         services.AddSingleton<IQuotationService, QuotationService>();
         services.AddSingleton<IProductRestoreService, ProductRestoreService>();
         services.AddSingleton<IProductDeleteService, ProductDeleteService>();
-        
+
 
     }
 

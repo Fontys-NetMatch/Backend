@@ -17,7 +17,8 @@ public static class Router
 
         QuotationController.Register(app);
         CustomerController.Register(app);
-       
+        ProductImageController.Register(app);
+
     }
 
 }
