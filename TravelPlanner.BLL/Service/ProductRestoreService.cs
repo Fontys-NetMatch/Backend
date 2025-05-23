@@ -27,9 +27,9 @@ public class ProductRestoreService(
         catch (Exception e)
         {
             if (producttype) await ProductTypeService.SoftDelete(id);
-            if (producttranslation) await ProductTranslationService.Delete(id);
-            if (productimage) await ProductImageService.SoftDeleteProductImageAsync(id);
-            if (productdate) await ProductDateService.SoftDeleteProductDateAsync(id);
+            if (producttranslation) await ProductTranslationService.SoftDelete(id);
+            if (productimage) await ProductImageService.SoftDelete(id);
+            if (productdate) await ProductDateService.SoftDelete(id);
             if (product) await ProductService.SoftDelete(id);
             throw new Exception("Failed to restore product. Rollback attempted.", e);
         }

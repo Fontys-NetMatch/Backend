@@ -27,6 +27,8 @@ namespace TravelPlanner.BLL.Service
         private async Task<double> Calculate(int id)
         {
             var products = await service.GetQuotationProducts(id);
+            if (products == null || !products.Any())
+                return 0;
             return products.Sum(p => p.Price);
         }
         

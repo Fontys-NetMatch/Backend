@@ -10,6 +10,12 @@ namespace TravelPlanner.BLL.Container
     public class ProductImageContainer : IProductImageContainer
     {
         private readonly IProductImageRepository _repository;
+        public async Task<int> CreateProductImage(ProductImage productImage)
+        {
+            if (productImage == null)
+            {
+                throw new ArgumentNullException(nameof(productImage), "ProductImage cannot be null");
+            }
 
         public ProductImageContainer(IProductImageRepository repository)
         {
@@ -28,7 +34,7 @@ namespace TravelPlanner.BLL.Container
             return result;
         }
 
-        public async Task<ProductImage?> GetByIdAsync(int id)
+        public async Task<ProductImage?> GetProductImageById(int id)
         {
             if (id <= 0)
                 throw new ArgumentException("ProductImage Id must be positive", nameof(id));
@@ -37,6 +43,7 @@ namespace TravelPlanner.BLL.Container
         }
 
         public async Task UpdateAsync(ProductImage image)
+        public async Task UpdateProductImage(ProductImage productImage)
         {
             if (image == null)
                 throw new ArgumentNullException(nameof(image), "ProductImage cannot be null");
@@ -49,7 +56,7 @@ namespace TravelPlanner.BLL.Container
                 throw new InvalidOperationException("Failed to update ProductImage");
         }
 
-        public async Task<List<ProductImage>> GetAllActiveAsync()
+        public async Task<IEnumerable<ProductImage>> GetAllActiveProductImages()
         {
             var list = await _repository.GetAllActiveAsync();
             if (list == null || list.Count == 0)
@@ -58,25 +65,31 @@ namespace TravelPlanner.BLL.Container
             return list;
         }
 
-        public async Task<List<ProductImage>> GetImagesByProductIdAsync(int productId)
+        public async Task<bool> SoftDelete(int id)
         {
             return await _repository.GetByProductIdAsync(productId);
         }
 
-        public async Task<bool> SoftDeleteAsync(int id)
-        {
-            var image = await GetByIdAsync(id)
-                         ?? throw new InvalidOperationException("ProductImage does not exist");
+            var productImage = await GetProductImageById(id);
+            if (productImage == null)
+            {
+                throw new InvalidOperationException("ProductImage does not exist and cannot be soft-deleted");
+            }
 
             if (image.DeletedAt != null)
                 throw new InvalidOperationException("ProductImage is already soft-deleted");
 
-            image.DeletedAt = DateTime.UtcNow;
-            var result = await _repository.UpdateAsync(image);
-            if (result == 0)
-                throw new InvalidOperationException("Failed to soft-delete ProductImage");
-
-            return true;
+            productImage.DeletedAt = DateTime.UtcNow;
+            try
+            {
+                await UpdateProductImage(productImage);
+                return true;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw new InvalidOperationException("Failed to delete product");
+            }
         }
 
         public async Task<bool> Restore(int id)
@@ -84,8 +97,11 @@ namespace TravelPlanner.BLL.Container
             var image = await GetByIdAsync(id)
                          ?? throw new InvalidOperationException("ProductImage does not exist");
 
-            if (image.DeletedAt == null)
-                throw new InvalidOperationException("ProductImage is already restored");
+            var product = await GetProductImageById(id);
+            if (product == null)
+            {
+                throw new InvalidOperationException("Product does not exist");
+            }
 
             image.DeletedAt = null;
             var result = await _repository.UpdateAsync(image);

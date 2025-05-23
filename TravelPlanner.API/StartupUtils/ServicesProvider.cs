@@ -7,6 +7,7 @@ using TravelPlanner.DB;
 using TravelPlanner.DB.Lib;
 using TravelPlanner.Domain.Interfaces.BLL;
 using TravelPlanner.Domain.Interfaces.BLL.Container;
+using TravelPlanner.Domain.Interfaces.BLL.MockGeneration;
 using TravelPlanner.Domain.Interfaces.BLL.Service;
 using TravelPlanner.Domain.Interfaces.PDF;
 
@@ -29,6 +30,7 @@ public static class ServicesProvider
         services.AddTransient<ProductTypeController>();
         services.AddTransient<QuotationController>();
         services.AddTransient <ProductImageController>();
+        services.AddScoped<MockController>();
 
         // Containers
         services.AddSingleton<IAddonDateContainer, AddonDateContainer>();
@@ -52,8 +54,8 @@ public static class ServicesProvider
         services.AddSingleton<IQuotationService, QuotationService>();
         services.AddSingleton<IProductRestoreService, ProductRestoreService>();
         services.AddSingleton<IProductDeleteService, ProductDeleteService>();
-
-
+        
+        // Mock Generation
+        services.AddScoped<IProductInformationFactory, ProductInformationFactory>();
     }
-
 }

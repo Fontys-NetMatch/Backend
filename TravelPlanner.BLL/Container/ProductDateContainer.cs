@@ -16,7 +16,7 @@ namespace TravelPlanner.BLL.Container
             _repository = repository;
         }
 
-        public async Task<int> CreateProductDateAsync(ProductDate productDate)
+        public async Task<int> CreateProductDate(ProductDate productDate)
         {
             if (productDate == null)
                 throw new ArgumentNullException(nameof(productDate), "ProductDate cannot be null");
@@ -28,7 +28,7 @@ namespace TravelPlanner.BLL.Container
             return result;
         }
 
-        public async Task<ProductDate?> GetProductDateByIdAsync(int id)
+        public async Task<ProductDate?> GetProductDateById(int id)
         {
             if (id <= 0)
                 throw new ArgumentException("ProductDate Id must be positive", nameof(id));
@@ -36,7 +36,7 @@ namespace TravelPlanner.BLL.Container
             return await _repository.GetByIdAsync(id);
         }
 
-        public async Task UpdateProductDateAsync(ProductDate productDate)
+        public async Task UpdateProductDate(ProductDate productDate)
         {
             if (productDate == null)
                 throw new ArgumentNullException(nameof(productDate), "ProductDate cannot be null");
@@ -49,7 +49,7 @@ namespace TravelPlanner.BLL.Container
                 throw new InvalidOperationException("Failed to update ProductDate");
         }
 
-        public async Task<List<ProductDate>> GetAllActiveProductDatesAsync()
+        public async Task<IEnumerable<ProductDate>> GetAllActiveProductDates()
         {
             var list = await _repository.GetAllActiveAsync();
             if (list == null || list.Count == 0)
@@ -58,18 +58,34 @@ namespace TravelPlanner.BLL.Container
             return list;
         }
 
-        public async Task<bool> SoftDeleteProductDateAsync(int id)
+        public async Task<bool> SoftDelete(int id)
         {
-            var productDate = await GetProductDateByIdAsync(id)
-                              ?? throw new InvalidOperationException("ProductDate does not exist and cannot be soft-deleted");
+            if (id <= 0)
+            {
+                throw new ArgumentException("ProductDate Id must be positive", nameof(id));
+            }
+
+            var productDate = await GetProductDateById(id);
+            if (productDate == null)
+            {
+                throw new InvalidOperationException("ProductDate does not exist and cannot be soft-deleted");
+            }
 
             if (!productDate.IsActive)
                 throw new InvalidOperationException("ProductDate is already inactive");
 
             productDate.IsActive = false;
-
-            var result = await _repository.UpdateAsync(productDate);
-            return result > 0;
+            try
+            {
+                await UpdateProductDate(productDate);
+                return true;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+            
         }
 
         public async Task<bool> Restore(int id)
@@ -77,7 +93,14 @@ namespace TravelPlanner.BLL.Container
             var productDate = await GetProductDateByIdAsync(id)
                               ?? throw new InvalidOperationException("Product does not exist");
 
-            if (productDate.IsActive)
+            var product = await GetProductDateById(id);
+            if (product == null)
+            {
+                throw new InvalidOperationException("Product does not exist");
+            }
+
+            if (product.IsActive)
+            {
                 throw new InvalidOperationException("Product is already restored");
 
             productDate.IsActive = true;

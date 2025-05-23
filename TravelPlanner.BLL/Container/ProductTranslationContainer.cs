@@ -97,17 +97,22 @@ public class ProductTranslationContainer: IProductTranslationContainer
             throw new InvalidOperationException("Failed to update product translation");
     }
 
-    public async Task<bool> Delete(int id)
+    public async Task<bool> SoftDelete(int translationId)
     {
         var existing = await _repository.GetByIdAsync(id);
         if (existing == null)
             throw new InvalidOperationException("Product translation does not exist");
-
-        var result = await _repository.DeleteAsync(existing);
-        if (result == 0)
+        }
+        existingTranslation.IsActive = false;
+        if (await db.UpdateAsync(existingTranslation) == 0)
+        {
             throw new InvalidOperationException("Failed to delete product translation");
 
         return true;
+    }
+    else
+    {
+        return false;
     }
 
     public async Task<bool> Restore(int id)
