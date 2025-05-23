@@ -1,6 +1,6 @@
 ﻿using TravelPlanner.Domain.Models.Entities.Products;
 using TravelPlanner.Domain.Models.Request.Product;
-using EntityProductData = TravelPlanner.Domain.Models.Entities.Products.Productdata;
+using EntityProductData = TravelPlanner.Domain.Models.Entities.Products;
 
 namespace TravelPlanner.Domain.Interfaces.BLL.Container
 {
