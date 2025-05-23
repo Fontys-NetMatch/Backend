@@ -4,11 +4,11 @@ namespace  TravelPlanner.Domain.Interfaces.BLL.Container;
 
 public interface IProductImageContainer
 {
-    public Task<int> CreateProductImage(ProductImage productImage);
+    public Task<int> Create(ProductImage productImage);
 
     public Task<ProductImage?> GetProductImageById(int id);
 
-    public Task UpdateProductImage(ProductImage productImage);
+    public Task Update(ProductImage productImage);
 
     public Task<IEnumerable<ProductImage>> GetAllActiveProductImages();
     public Task<bool> SoftDelete(int id);

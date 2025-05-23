@@ -106,7 +106,7 @@ public class ProductImageController : Controller
                 Description = request.Description
             };
 
-            _imageContainer.CreateAsync(image).Wait();
+            _imageContainer.Create(image).Wait();
             return new SuccessResponse("Image added successfully");
         }
         catch (Exception e)
@@ -121,7 +121,7 @@ public class ProductImageController : Controller
     {
         try
         {
-            _imageContainer.SoftDeleteAsync(imageId).Wait();
+            _imageContainer.SoftDelete(imageId).Wait();
             return new SuccessResponse("Image deleted successfully");
         }
         catch (Exception e)

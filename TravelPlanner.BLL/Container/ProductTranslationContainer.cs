@@ -99,20 +99,15 @@ public class ProductTranslationContainer: IProductTranslationContainer
 
     public async Task<bool> SoftDelete(int translationId)
     {
-        var existing = await _repository.GetByIdAsync(id);
+        var existing = await _repository.GetByIdAsync(translationId);
         if (existing == null)
             throw new InvalidOperationException("Product translation does not exist");
-        }
-        existingTranslation.IsActive = false;
-        if (await db.UpdateAsync(existingTranslation) == 0)
+        existing.IsActive = false;
+        if (await _repository.UpdateAsync(existing) == 0)
         {
             throw new InvalidOperationException("Failed to delete product translation");
-
+        }
         return true;
-    }
-    else
-    {
-        return false;
     }
 
     public async Task<bool> Restore(int id)

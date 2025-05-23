@@ -85,30 +85,29 @@ namespace TravelPlanner.BLL.Container
                 Console.WriteLine(e);
                 throw;
             }
-            
+
         }
 
         public async Task<bool> Restore(int id)
         {
-            var productDate = await GetProductDateByIdAsync(id)
-                              ?? throw new InvalidOperationException("Product does not exist");
-
-            var product = await GetProductDateById(id);
-            if (product == null)
-            {
-                throw new InvalidOperationException("Product does not exist");
-            }
+            var product = await GetProductDateById(id)
+                          ?? throw new InvalidOperationException("Product does not exist");
 
             if (product.IsActive)
             {
                 throw new InvalidOperationException("Product is already restored");
+            }
 
-            productDate.IsActive = true;
+            product.IsActive = true;
 
-            var result = await _repository.UpdateAsync(productDate);
+            var result = await _repository.UpdateAsync(product);
             if (result == 0)
+            {
                 throw new InvalidOperationException("Failed to restore product");
+            }
 
             return true;
         }
+
     }
+}

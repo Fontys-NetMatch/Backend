@@ -1,4 +1,5 @@
 ﻿using LinqToDB;
+using LinqToDB.Common;
 using TravelPlanner.DB;
 using TravelPlanner.DB.Interfaces;
 using TravelPlanner.DB.Repositories;
@@ -10,19 +11,13 @@ namespace TravelPlanner.BLL.Container
     public class ProductImageContainer : IProductImageContainer
     {
         private readonly IProductImageRepository _repository;
-        public async Task<int> CreateProductImage(ProductImage productImage)
-        {
-            if (productImage == null)
-            {
-                throw new ArgumentNullException(nameof(productImage), "ProductImage cannot be null");
-            }
-
+       
         public ProductImageContainer(IProductImageRepository repository)
         {
             _repository = repository;
         }
 
-        public async Task<int> CreateAsync(ProductImage image)
+        public async Task<int> Create(ProductImage image)
         {
             if (image == null)
                 throw new ArgumentNullException(nameof(image), "ProductImage cannot be null");
@@ -42,8 +37,8 @@ namespace TravelPlanner.BLL.Container
             return await _repository.GetByIdAsync(id);
         }
 
-        public async Task UpdateAsync(ProductImage image)
-        public async Task UpdateProductImage(ProductImage productImage)
+
+        public async Task Update(ProductImage image)
         {
             if (image == null)
                 throw new ArgumentNullException(nameof(image), "ProductImage cannot be null");
@@ -67,11 +62,9 @@ namespace TravelPlanner.BLL.Container
 
         public async Task<bool> SoftDelete(int id)
         {
-            return await _repository.GetByProductIdAsync(productId);
-        }
-
-            var productImage = await GetProductImageById(id);
-            if (productImage == null)
+        
+            var image = await _repository.GetByIdAsync(id);
+            if (image == null)
             {
                 throw new InvalidOperationException("ProductImage does not exist and cannot be soft-deleted");
             }
@@ -79,10 +72,10 @@ namespace TravelPlanner.BLL.Container
             if (image.DeletedAt != null)
                 throw new InvalidOperationException("ProductImage is already soft-deleted");
 
-            productImage.DeletedAt = DateTime.UtcNow;
+            image.DeletedAt = DateTime.UtcNow;
             try
             {
-                await UpdateProductImage(productImage);
+                await _repository.UpdateAsync(image);
                 return true;
             }
             catch (Exception e)
@@ -94,7 +87,7 @@ namespace TravelPlanner.BLL.Container
 
         public async Task<bool> Restore(int id)
         {
-            var image = await GetByIdAsync(id)
+            var image = await _repository.GetByIdAsync(id)
                          ?? throw new InvalidOperationException("ProductImage does not exist");
 
             var product = await GetProductImageById(id);
@@ -111,5 +104,14 @@ namespace TravelPlanner.BLL.Container
             return true;
         }
 
+        public async Task<List<ProductImage>> GetImagesByProductIdAsync(int productId)
+        {
+            var imagelist = await  _repository.GetByProductIdAsync(productId);
+            if (imagelist.IsNullOrEmpty())
+            {
+                throw new InvalidOperationException("No images found for the Product");
+            }
+            return imagelist;
+        }
     }
 }

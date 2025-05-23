@@ -39,7 +39,9 @@ public class QuotationContainer: IQuotationContainer
             Name = data.Name,
             CustomerId = data.CustomerId,
             UserId = userId,
-            Status = QuotationStatus.Open
+            Status = QuotationStatus.Open,
+            Customer = null,//fix this
+            User = null
         };
 
         var result = await _repository.CreateAsync(quotation);
