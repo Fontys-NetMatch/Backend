@@ -1,24 +1,30 @@
 ﻿using LinqToDB;
+using LinqToDB.Common;
 using TravelPlanner.DB;
+using TravelPlanner.DB.Interfaces;
+using TravelPlanner.DB.Repositories;
 using TravelPlanner.Domain.Interfaces.BLL.Container;
 using TravelPlanner.Domain.Models.Entities.Products;
 
 namespace TravelPlanner.BLL.Container
 {
-    public class ProductImageContainer(DbManager db) : IProductImageContainer
+    public class ProductImageContainer : IProductImageContainer
     {
-        public async Task<int> CreateProductImage(ProductImage productImage)
+        private readonly IProductImageRepository _repository;
+       
+        public ProductImageContainer(IProductImageRepository repository)
         {
-            if (productImage == null)
-            {
-                throw new ArgumentNullException(nameof(productImage), "ProductImage cannot be null");
-            }
+            _repository = repository;
+        }
 
-            var result = await db.InsertWithInt32IdentityAsync(productImage);
+        public async Task<int> Create(ProductImage image)
+        {
+            if (image == null)
+                throw new ArgumentNullException(nameof(image), "ProductImage cannot be null");
+
+            var result = await _repository.CreateAsync(image);
             if (result == 0)
-            {
                 throw new InvalidOperationException("Failed to create ProductImage in the database");
-            }
 
             return result;
         }
@@ -26,68 +32,50 @@ namespace TravelPlanner.BLL.Container
         public async Task<ProductImage?> GetProductImageById(int id)
         {
             if (id <= 0)
-            {
                 throw new ArgumentException("ProductImage Id must be positive", nameof(id));
-            }
 
-            return await db.ProductImages.FirstOrDefaultAsync(pi => pi.Id == id);
+            return await _repository.GetByIdAsync(id);
         }
 
-        public async Task UpdateProductImage(ProductImage productImage)
+
+        public async Task Update(ProductImage image)
         {
-            if (productImage == null)
-            {
-                throw new ArgumentNullException(nameof(productImage), "ProductImage cannot be null");
-            }
+            if (image == null)
+                throw new ArgumentNullException(nameof(image), "ProductImage cannot be null");
 
-            if (productImage.Id <= 0)
-            {
-                throw new ArgumentException("ProductImage must have a valid Id", nameof(productImage));
-            }
+            if (image.Id <= 0)
+                throw new ArgumentException("ProductImage must have a valid Id", nameof(image));
 
-            var result = await db.UpdateAsync(productImage);
+            var result = await _repository.UpdateAsync(image);
             if (result == 0)
-            {
                 throw new InvalidOperationException("Failed to update ProductImage");
-            }
         }
 
         public async Task<IEnumerable<ProductImage>> GetAllActiveProductImages()
         {
-            var productImages = await db.ProductImages
-                                  .Where(pi => pi.DeletedAt == null)
-                                  .ToListAsync();
-
-            if (productImages is not {Count: < 1})
-            {
+            var list = await _repository.GetAllActiveAsync();
+            if (list == null || list.Count == 0)
                 throw new InvalidOperationException("No active ProductImages found");
-            }
 
-            return productImages;
+            return list;
         }
 
         public async Task<bool> SoftDelete(int id)
         {
-            if (id <= 0)
-            {
-                throw new ArgumentException("ProductImage Id must be positive", nameof(id));
-            }
-
-            var productImage = await GetProductImageById(id);
-            if (productImage == null)
+        
+            var image = await _repository.GetByIdAsync(id);
+            if (image == null)
             {
                 throw new InvalidOperationException("ProductImage does not exist and cannot be soft-deleted");
             }
 
-            if (productImage.DeletedAt == null)
-            {
+            if (image.DeletedAt != null)
                 throw new InvalidOperationException("ProductImage is already soft-deleted");
-            }
 
-            productImage.DeletedAt = DateTime.UtcNow;
+            image.DeletedAt = DateTime.UtcNow;
             try
             {
-                await UpdateProductImage(productImage);
+                await _repository.UpdateAsync(image);
                 return true;
             }
             catch (Exception e)
@@ -99,10 +87,8 @@ namespace TravelPlanner.BLL.Container
 
         public async Task<bool> Restore(int id)
         {
-            if (id <= 0)
-            {
-                throw new ArgumentException("Invalid product Id", nameof(id));
-            }
+            var image = await _repository.GetByIdAsync(id)
+                         ?? throw new InvalidOperationException("ProductImage does not exist");
 
             var product = await GetProductImageById(id);
             if (product == null)
@@ -110,19 +96,22 @@ namespace TravelPlanner.BLL.Container
                 throw new InvalidOperationException("Product does not exist");
             }
 
-            if (product.DeletedAt == null)
-            {
-                throw new InvalidOperationException("Product is already restored");
-            }
-
-            product.DeletedAt = null;
-            
-            if (await db.UpdateAsync(product) == 0)
-            {
-                throw new InvalidOperationException("Failed to restore product");
-            }
+            image.DeletedAt = null;
+            var result = await _repository.UpdateAsync(image);
+            if (result == 0)
+                throw new InvalidOperationException("Failed to restore ProductImage");
 
             return true;
+        }
+
+        public async Task<List<ProductImage>> GetImagesByProductIdAsync(int productId)
+        {
+            var imagelist = await  _repository.GetByProductIdAsync(productId);
+            if (imagelist.IsNullOrEmpty())
+            {
+                throw new InvalidOperationException("No images found for the Product");
+            }
+            return imagelist;
         }
     }
 }

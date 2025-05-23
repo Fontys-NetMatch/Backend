@@ -1,24 +1,29 @@
 ﻿using LinqToDB;
 using TravelPlanner.DB;
+using TravelPlanner.DB.Interfaces;
+using TravelPlanner.DB.Repositories;
 using TravelPlanner.Domain.Interfaces.BLL.Container;
 using TravelPlanner.Domain.Models.Entities.Products;
 
 namespace TravelPlanner.BLL.Container
 {
-    public class ProductDateContainer(DbManager db) : IProductDateContainer
+    public class ProductDateContainer : IProductDateContainer
     {
+        private readonly IProductDateRepository _repository;
+
+        public ProductDateContainer(IProductDateRepository repository)
+        {
+            _repository = repository;
+        }
+
         public async Task<int> CreateProductDate(ProductDate productDate)
         {
             if (productDate == null)
-            {
                 throw new ArgumentNullException(nameof(productDate), "ProductDate cannot be null");
-            }
 
-            var result = await db.InsertWithInt32IdentityAsync(productDate);
+            var result = await _repository.CreateAsync(productDate);
             if (result == 0)
-            {
                 throw new InvalidOperationException("Failed to create ProductDate in the database");
-            }
 
             return result;
         }
@@ -26,44 +31,31 @@ namespace TravelPlanner.BLL.Container
         public async Task<ProductDate?> GetProductDateById(int id)
         {
             if (id <= 0)
-            {
                 throw new ArgumentException("ProductDate Id must be positive", nameof(id));
-            }
 
-            return await db.ProductDates.FirstOrDefaultAsync(pd => pd.Id == id);
+            return await _repository.GetByIdAsync(id);
         }
 
         public async Task UpdateProductDate(ProductDate productDate)
         {
             if (productDate == null)
-            {
                 throw new ArgumentNullException(nameof(productDate), "ProductDate cannot be null");
-            }
 
             if (productDate.Id <= 0)
-            {
-                throw new ArgumentException("ProductDate must have a valid Id", nameof(productDate));
-            }
+                throw new ArgumentException("ProductDate must have a valid Id");
 
-            var result = await db.UpdateAsync(productDate);
+            var result = await _repository.UpdateAsync(productDate);
             if (result == 0)
-            {
                 throw new InvalidOperationException("Failed to update ProductDate");
-            }
         }
 
         public async Task<IEnumerable<ProductDate>> GetAllActiveProductDates()
         {
-            var productDates = await db.ProductDates
-                                  .Where(pd => pd.IsActive)
-                                  .ToListAsync();
-
-            if (productDates is not {Count: < 1})
-            {
+            var list = await _repository.GetAllActiveAsync();
+            if (list == null || list.Count == 0)
                 throw new InvalidOperationException("No active ProductDates found");
-            }
 
-            return productDates;
+            return list;
         }
 
         public async Task<bool> SoftDelete(int id)
@@ -80,9 +72,7 @@ namespace TravelPlanner.BLL.Container
             }
 
             if (!productDate.IsActive)
-            {
                 throw new InvalidOperationException("ProductDate is already inactive");
-            }
 
             productDate.IsActive = false;
             try
@@ -95,21 +85,13 @@ namespace TravelPlanner.BLL.Container
                 Console.WriteLine(e);
                 throw;
             }
-            
+
         }
 
         public async Task<bool> Restore(int id)
         {
-            if (id <= 0)
-            {
-                throw new ArgumentException("Invalid product Id", nameof(id));
-            }
-
-            var product = await GetProductDateById(id);
-            if (product == null)
-            {
-                throw new InvalidOperationException("Product does not exist");
-            }
+            var product = await GetProductDateById(id)
+                          ?? throw new InvalidOperationException("Product does not exist");
 
             if (product.IsActive)
             {
@@ -118,12 +100,14 @@ namespace TravelPlanner.BLL.Container
 
             product.IsActive = true;
 
-            var result = await db.UpdateAsync(product);
+            var result = await _repository.UpdateAsync(product);
             if (result == 0)
             {
                 throw new InvalidOperationException("Failed to restore product");
             }
+
             return true;
         }
+
     }
 }

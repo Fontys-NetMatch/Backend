@@ -26,11 +26,12 @@ namespace TravelPlanner.API.Controllers
         public static void Register(WebApplication app)
         {
             // Create Quotation
-            app.MapPost("/quotation/", (
+            app.MapPost("/quotation/{id}", (
                 HttpContext context,
+                [FromRoute] int id,
                 [FromBody] QuotationData quotation,
                 [FromServices] QuotationController controller
-            ) => controller.CreateQuotation(context, quotation))
+            ) => controller.CreateQuotation(context, quotation, id))
                 .WithName("CreateQuotation")
                 .WithDescription("Create a new quotation")
                 .Produces<SuccessResponse>()
@@ -191,11 +192,11 @@ namespace TravelPlanner.API.Controllers
 
 
 
-        private BaseResponse CreateQuotation(HttpContext? context, QuotationData quotation)
+        private BaseResponse CreateQuotation(HttpContext? context, QuotationData quotation, int userid)
         {
             try
             {
-                _container.CreateQuotation(quotation);
+                _container.CreateQuotation(quotation, userid);
                 return new SuccessResponse("Quotation created successfully");
             }
             catch (Exception ex)

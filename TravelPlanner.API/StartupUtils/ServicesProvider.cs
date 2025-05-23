@@ -29,6 +29,7 @@ public static class ServicesProvider
         services.AddTransient<ProductTranslationController>();
         services.AddTransient<ProductTypeController>();
         services.AddTransient<QuotationController>();
+        services.AddTransient <ProductImageController>();
         services.AddScoped<MockController>();
 
         // Containers
@@ -36,7 +37,6 @@ public static class ServicesProvider
         services.AddSingleton<IAuthContainer, AuthContainer>();
         services.AddSingleton<ICustomerContainer, CustomerContainer>();
         services.AddSingleton<IProductAddonContainer, ProductAddonContainer>();
-        services.AddSingleton<IProductAddonTranslationContainer, ProductAddonTranslationContainer>();
         services.AddSingleton<IProductContainer, ProductContainer>();
         services.AddSingleton<IProductDateContainer, ProductDateContainer>();
         services.AddSingleton<IProductImageContainer, ProductImageContainer>();
