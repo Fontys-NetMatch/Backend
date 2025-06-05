@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using TravelPlanner.DB.Lib.MigrationsManager;
 using TravelPlanner.DB.Lib;
 using TravelPlanner.Domain.Models.Entities;
+using TravelPlanner.Domain.New_Models.Entities.Media;
 
 namespace TravelPlanner.DB.Migrations
 {

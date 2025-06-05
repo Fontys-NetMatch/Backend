@@ -8,7 +8,6 @@ using TravelPlanner.Domain.New_Models.Entities.Media;
 using TravelPlanner.Domain.New_Models.Entities.Program;
 using TravelPlanner.Domain.New_Models.Enums;
 using ProductType = TravelPlanner.Domain.New_Models.Enums.ProductType;
-using TransportInformation = TravelPlanner.Domain.New_Models.Entities.Transport.TransportInformation;
 
 namespace TravelPlanner.Domain.New_Models.Entities.Product;
 

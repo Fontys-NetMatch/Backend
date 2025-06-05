@@ -16,4 +16,9 @@ public class MediaSourceEntity
         Id = id;
         Name = name ?? throw new ArgumentNullException(nameof(name));
     }
+
+    public MediaSourceEntity()
+    {
+
+    }
 }

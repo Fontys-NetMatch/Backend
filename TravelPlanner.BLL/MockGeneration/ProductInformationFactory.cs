@@ -36,17 +36,16 @@ public class ProductInformationFactory : IProductInformationFactory
             phoneNumber: $"+{_random.Next(1, 100)}-{_random.Next(1000000, 9999999)}"
         );
 
+        MediaType mediatype = (MediaType)_random.Next(1, 2); 
+        MediaSource mediasoure = (MediaSource)_random.Next(1, 2);
         var media = new MediaContext(
+            id: _random.Next(1,10000),
             identifier: Guid.NewGuid().ToString(),
             description: GetRandomString(15),
             title: GetRandomString(10),
             category: GetRandomString(8),
-            mediaTypeId: _random.Next(1,1000000),
-            mediaType:GetRandomString(8),GetRandomString(8) ,
-            mediaSourceId: _random.Next(1, 1000000),
-            mediaSource: _random.Next(1,10000000), GetRandomString(8),
-            dayProgramId: _random.Next(1, 1000000),
-            dayProgram:
+            mediaType: mediatype,
+            mediaSource: mediasoure
         );
 
         var errata = new Errata(

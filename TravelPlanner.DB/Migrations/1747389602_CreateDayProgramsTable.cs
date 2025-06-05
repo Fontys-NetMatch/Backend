@@ -4,6 +4,7 @@ using TravelPlanner.DB.Lib.MigrationsManager;
 using TravelPlanner.Domain.Models.Entities;
 using TravelPlanner.Domain.New_Models.Entities.Media;
 using TravelPlanner.Domain.New_Models.Entities;
+using TravelPlanner.Domain.New_Models.Entities.Program;
 
 namespace TravelPlanner.DB.Migrations
 {
