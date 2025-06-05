@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using LinqToDB;
 using TravelPlanner.DB;
+using TravelPlanner.DB.Repositories;
 using TravelPlanner.Domain.Interfaces.BLL;
 using TravelPlanner.Domain.Models.Entities;
 
@@ -11,19 +12,20 @@ namespace TravelPlanner.BLL.Container;
 
 public class CustomerContainer : ICustomerContainer
 {
-    private readonly DbManager _db;
+    
+   
 
-    public CustomerContainer(DbManager db)
+    private readonly CustomerRepository _repository;
+
+    public CustomerContainer(CustomerRepository repository)
     {
-        _db = db;
+        _repository = repository;
     }
 
-    public void CreateCustomer(Customer customer)
+    public async Task CreateCustomer(Customer customer)
     {
         if (customer == null)
-        {
             throw new ArgumentNullException(nameof(customer), "Customer cannot be null");
-        }
 
         var missingFields = new List<string>();
 
@@ -37,60 +39,44 @@ public class CustomerContainer : ICustomerContainer
                 throw new ArgumentException($"Missing customer data: {string.Join(", ", missingFields)}");
         }
 
-        var existingCustomer = _db.Customers.FirstOrDefault(c => c.Email == customer.Email);
-        if (existingCustomer != null)
-        {
+        if (_repository.GetByEmail(customer.Email) != null)
             throw new InvalidOperationException($"A customer with the email {customer.Email} already exists.");
-        }
-        
-        if (_db.InsertWithInt32Identity(customer) <= 0)
-        {
+
+        if (_repository.Create(customer) <= 0)
             throw new InvalidOperationException("Failed to create customer in the database");
-        }
     }
 
     public async Task<Customer?> GetCustomerById(int id)
     {
         if (id <= 0)
-        {
             throw new ArgumentException("Customer Id must be positive", nameof(id));
-        }
 
-        return await _db.Customers.FirstOrDefaultAsync(c => c.Id == id);
+        return await _repository.GetByIdAsync(id);
     }
 
     public async Task UpdateCustomer(Customer customer)
     {
         if (customer == null)
-        {
             throw new ArgumentNullException(nameof(customer), "Customer cannot be null");
-        }
 
         if (customer.Id <= 0)
-        {
             throw new ArgumentException("Customer must have a valid Id");
-        }
 
-        var existingCustomer = await GetCustomerById(customer.Id);
-        if (existingCustomer == null)
-        {
+        var existing = await _repository.GetByIdAsync(customer.Id);
+        if (existing == null)
             throw new InvalidOperationException("Customer does not exist and cannot be updated");
-        }
-        
-        if (await _db.UpdateAsync(customer) == 0)
-        {
+
+        if (await _repository.UpdateAsync(customer) == 0)
             throw new InvalidOperationException("Failed to update customer");
-        }
     }
 
     public async Task<List<Customer>> GetAllCustomers()
     {
-        var customers = await _db.Customers
-                        .ToListAsync();
+        var customers = await _repository.GetAllAsync();
+
         if (customers is not { Count: > 0 })
-        {
             throw new InvalidOperationException("No customers found");
-        }
+
         return customers;
     }
 }
