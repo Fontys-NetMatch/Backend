@@ -12,7 +12,7 @@ namespace TravelPlanner.Domain.Interfaces.BLL.Container
 {
     public interface IQuotationContainer
     {
-        void CreateQuotation(QuotationData quotation);
+        Task<int> CreateQuotation(QuotationData data, int userId);
         Task<List<Quotation>> GetAllQuotations();
         Task<List<Quotation>> GetAllActiveQuotations();
         Task<Quotation?> GetQuotationById(int id);

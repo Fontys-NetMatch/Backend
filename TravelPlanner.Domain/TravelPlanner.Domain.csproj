@@ -9,6 +9,12 @@
     <ItemGroup>
       <PackageReference Include="linq2db" Version="5.4.1" />
       <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.3.0" />
+      <PackageReference Include="Moq" Version="4.20.72" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="New Models\GenerationModels\" />
+      <Folder Include="New Models\Request\" />
     </ItemGroup>
 
 </Project>

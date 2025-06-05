@@ -27,19 +27,25 @@ public class QuotationContainer: IQuotationContainer
     {
         if (data == null)
             throw new ArgumentNullException(nameof(data));
-        if (string.IsNullOrWhiteSpace(data.Name))
-            throw new ArgumentException("Quotation name is required");
-        if (data.CustomerId <= 0)
-            throw new ArgumentException("Invalid Customer Id");
-        if (userId <= 0)
-            throw new ArgumentException("Invalid User Id");
 
+        var error = (data.Name, data.CustomerId, userId) switch
+        {
+            var (name, _, _) when string.IsNullOrWhiteSpace(name) => "Quotation name is required",
+            var (_, customerId, _) when customerId <= 0 => "Invalid Customer Id",
+            var (_, _, id) when id <= 0 => "Invalid User Id",
+            _ => null
+        };
+
+        if (error is not null)
+            throw new ArgumentException(error);
         var quotation = new Quotation
         {
             Name = data.Name,
             CustomerId = data.CustomerId,
             UserId = userId,
-            Status = QuotationStatus.Open
+            Status = QuotationStatus.Open,
+            Customer = null,//fix this
+            User = null
         };
 
         var result = await _repository.CreateAsync(quotation);

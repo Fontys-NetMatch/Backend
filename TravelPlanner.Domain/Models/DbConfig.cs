@@ -1,4 +1,5 @@
-﻿using TravelPlanner.Domain.Interfaces;
+﻿using System;
+using TravelPlanner.Domain.Interfaces;
 
 namespace TravelPlanner.Domain.Models;
 

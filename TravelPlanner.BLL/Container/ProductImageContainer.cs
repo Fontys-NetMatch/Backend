@@ -1,4 +1,5 @@
 ﻿using LinqToDB;
+using LinqToDB.Common;
 using TravelPlanner.DB;
 using TravelPlanner.DB.Interfaces;
 using TravelPlanner.DB.Repositories;
@@ -10,13 +11,13 @@ namespace TravelPlanner.BLL.Container
     public class ProductImageContainer : IProductImageContainer
     {
         private readonly IProductImageRepository _repository;
-
+       
         public ProductImageContainer(IProductImageRepository repository)
         {
             _repository = repository;
         }
 
-        public async Task<int> CreateAsync(ProductImage image)
+        public async Task<int> Create(ProductImage image)
         {
             if (image == null)
                 throw new ArgumentNullException(nameof(image), "ProductImage cannot be null");
@@ -28,7 +29,7 @@ namespace TravelPlanner.BLL.Container
             return result;
         }
 
-        public async Task<ProductImage?> GetByIdAsync(int id)
+        public async Task<ProductImage?> GetProductImageById(int id)
         {
             if (id <= 0)
                 throw new ArgumentException("ProductImage Id must be positive", nameof(id));
@@ -36,7 +37,8 @@ namespace TravelPlanner.BLL.Container
             return await _repository.GetByIdAsync(id);
         }
 
-        public async Task UpdateAsync(ProductImage image)
+
+        public async Task Update(ProductImage image)
         {
             if (image == null)
                 throw new ArgumentNullException(nameof(image), "ProductImage cannot be null");
@@ -49,7 +51,7 @@ namespace TravelPlanner.BLL.Container
                 throw new InvalidOperationException("Failed to update ProductImage");
         }
 
-        public async Task<List<ProductImage>> GetAllActiveAsync()
+        public async Task<IEnumerable<ProductImage>> GetAllActiveProductImages()
         {
             var list = await _repository.GetAllActiveAsync();
             if (list == null || list.Count == 0)
@@ -58,34 +60,41 @@ namespace TravelPlanner.BLL.Container
             return list;
         }
 
-        public async Task<List<ProductImage>> GetImagesByProductIdAsync(int productId)
+        public async Task<bool> SoftDelete(int id)
         {
-            return await _repository.GetByProductIdAsync(productId);
-        }
-
-        public async Task<bool> SoftDeleteAsync(int id)
-        {
-            var image = await GetByIdAsync(id)
-                         ?? throw new InvalidOperationException("ProductImage does not exist");
+        
+            var image = await _repository.GetByIdAsync(id);
+            if (image == null)
+            {
+                throw new InvalidOperationException("ProductImage does not exist and cannot be soft-deleted");
+            }
 
             if (image.DeletedAt != null)
                 throw new InvalidOperationException("ProductImage is already soft-deleted");
 
             image.DeletedAt = DateTime.UtcNow;
-            var result = await _repository.UpdateAsync(image);
-            if (result == 0)
-                throw new InvalidOperationException("Failed to soft-delete ProductImage");
-
-            return true;
+            try
+            {
+                await _repository.UpdateAsync(image);
+                return true;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw new InvalidOperationException("Failed to delete product");
+            }
         }
 
         public async Task<bool> Restore(int id)
         {
-            var image = await GetByIdAsync(id)
+            var image = await _repository.GetByIdAsync(id)
                          ?? throw new InvalidOperationException("ProductImage does not exist");
 
-            if (image.DeletedAt == null)
-                throw new InvalidOperationException("ProductImage is already restored");
+            var product = await GetProductImageById(id);
+            if (product == null)
+            {
+                throw new InvalidOperationException("Product does not exist");
+            }
 
             image.DeletedAt = null;
             var result = await _repository.UpdateAsync(image);
@@ -95,5 +104,14 @@ namespace TravelPlanner.BLL.Container
             return true;
         }
 
+        public async Task<List<ProductImage>> GetImagesByProductIdAsync(int productId)
+        {
+            var imagelist = await  _repository.GetByProductIdAsync(productId);
+            if (imagelist.IsNullOrEmpty())
+            {
+                throw new InvalidOperationException("No images found for the Product");
+            }
+            return imagelist;
+        }
     }
 }

@@ -7,86 +7,102 @@ using TravelPlanner.DB;
 using TravelPlanner.Domain.Models.Entities;
 using TravelPlanner.Domain.Interfaces.BLL;
 using TravelPlanner.Domain.Interfaces.BLL.Container;
-using TravelPlanner.DB.Repositories;
-using TravelPlanner.DB.Interfaces;
 
 namespace TravelPlanner.BLL.Container;
 
-public class UserContainer : IUserContainer
+public class UserContainer(DbManager db) : IUserContainer
 {
-    private readonly IUserRepository _repository;
-
-    public UserContainer(IUserRepository repository)
-    {
-        _repository = repository;
-    }
-
     public void CreateUser(User user)
     {
         if (user == null)
-            throw new ArgumentNullException(nameof(user));
-
-        if (string.IsNullOrWhiteSpace(user.Email) ||
-            string.IsNullOrWhiteSpace(user.Firstname) ||
-            string.IsNullOrWhiteSpace(user.Surname))
         {
-            throw new ArgumentException("Firstname, Surname and Email are required");
+            throw new ArgumentNullException(nameof(user), "User cannot be null");
         }
 
-        var existing = _repository.GetByEmail(user.Email);
-        if (existing != null)
+        if (string.IsNullOrEmpty(user.Email) || string.IsNullOrEmpty(user.Firstname) || string.IsNullOrEmpty(user.Surname))
         {
-            throw new InvalidOperationException($"A user with email {user.Email} already exists.");
+            throw new ArgumentException("Essential user data (Email, Firstname, or Surname) is missing");
         }
 
-        if (_repository.Create(user) <= 0)
-            throw new InvalidOperationException("Failed to create user");
+        var existingUser = db.Users.FirstOrDefault(u => u.Email == user.Email);
+        if (existingUser != null)
+        {
+            throw new InvalidOperationException($"A user with the email {user.Email} already exists.");
+        }
+
+        var result = db.InsertWithInt32Identity(user);
+        if (result == 0)
+        {
+            throw new InvalidOperationException("Failed to create user in the database");
+        }
     }
 
     public async Task<User?> GetUserByIdAsync(int id)
     {
         if (id <= 0)
-            throw new ArgumentException("Invalid user ID");
+        {
+            throw new ArgumentException("User Id must be positive", nameof(id));
+        }
 
-        return await _repository.GetByIdAsync(id);
+        return await db.Users.FirstOrDefaultAsync(u => u.Id == id);
     }
 
     public async Task UpdateUser(User user)
     {
-        if (user == null || user.Id <= 0)
-            throw new ArgumentException("Invalid user");
+        if (user == null)
+        {
+            throw new ArgumentNullException(nameof(user), "User cannot be null");
+        }
 
-        var existing = await _repository.GetByIdAsync(user.Id);
-        if (existing == null)
-            throw new InvalidOperationException("User does not exist");
+        if (user.Id <= 0)
+        {
+            throw new ArgumentException("User must have a valid Id");
+        }
 
-        if (await _repository.UpdateAsync(user) == 0)
+        var existingUser = await GetUserByIdAsync(user.Id);
+        if (existingUser == null)
+        {
+            throw new InvalidOperationException("User does not exist and cannot be updated");
+        }
+        
+        if (await db.UpdateAsync(user) == 0)
+        {
             throw new InvalidOperationException("Failed to update user");
+        }
     }
 
     public async Task SoftDeleteUser(int id)
     {
         if (id <= 0)
-            throw new ArgumentException("Invalid user ID");
+        {
+            throw new ArgumentException("User Id must be positive", nameof(id));
+        }
 
-        var user = await _repository.GetByIdAsync(id)
-                   ?? throw new InvalidOperationException("User not found");
+        var user = await GetUserByIdAsync(id);
+        if (user == null)
+        {
+            throw new InvalidOperationException("User does not exist and cannot be soft-deleted");
+        }
 
         if (!user.IsActive)
-            throw new InvalidOperationException("User already inactive");
+        {
+            throw new InvalidOperationException("User is already inactive");
+        }
 
         user.IsActive = false;
+        await UpdateUser(user);
 
-        if (await _repository.UpdateAsync(user) == 0)
-            throw new InvalidOperationException("Failed to soft-delete user");
     }
 
     public async Task<List<User>> GetAllActiveUsersAsync()
     {
-        var users = await _repository.GetAllActiveAsync();
-        if (users.Count == 0)
+        var users = await db.Users
+                        .Where(u => u.IsActive)
+                        .ToListAsync();
+        if (users == null || !users.Any())
+        {
             throw new InvalidOperationException("No active users found");
-
+        }
         return users;
     }
 }

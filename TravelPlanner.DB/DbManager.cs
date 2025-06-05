@@ -3,8 +3,11 @@ using TravelPlanner.DB.Lib;
 using TravelPlanner.Domain.Models.Entities;
 using TravelPlanner.Domain.Models.Entities.Product;
 using TravelPlanner.Domain.Models.Entities.Products;
+using EntityProductData = TravelPlanner.Domain.Models.Entities.Products.Productdata;
 using TravelPlanner.Domain.Models.Entities.Translations;
 using ProductAddonTranslation = TravelPlanner.Domain.Models.Entities.Translations.ProductAddonTranslation;
+using TravelPlanner.Domain.Models.Entities.UniqueSellingPoints;
+using TravelPlanner.Domain.Models.Entities.Transport;
 
 namespace TravelPlanner.DB;
 
@@ -24,5 +27,15 @@ public class DbManager : DbContext
     public ITable<AddonDate> AddonDates => this.GetTable<AddonDate>();
     public ITable<Quotation> Quotations => this.GetTable<Quotation>();
     public ITable<QuotationProductDate> QuotationProductDates => this.GetTable<QuotationProductDate>();
+
+    public ITable<EntityProductData> ProductDatas => this.GetTable<EntityProductData>();
+    public ITable<UniqueSellingPoint> UniqueSellingPoints => this.GetTable<UniqueSellingPoint>();
+    public ITable<TransportTypeValueEntity> TransportTypeValues => this.GetTable<TransportTypeValueEntity>();
+    public ITable<TransportSegment> TransportSegments => this.GetTable<TransportSegment>();
+    public ITable<TransportInformationDescription> TransportInformationDescriptions => this.GetTable<TransportInformationDescription>();
+    public ITable<TransportInformation> TransportInformations => this.GetTable<TransportInformation>();
+    public ITable<RoomTypeEntity> RoomTypes => this.GetTable<RoomTypeEntity>();
+    public ITable<ProductSubTitle> ProductSubTitles => this.GetTable<ProductSubTitle>();
+
 
 }

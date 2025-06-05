@@ -8,96 +8,132 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using TravelPlanner.Domain.Interfaces.BLL.Container;
 using TravelPlanner.Domain.Models.Entities.Products;
+using TravelPlanner.Domain.Models.Entities.Translations;
+using TravelPlanner.Domain.Models.Request.Product;
 using TravelPlanner.Domain.Models.Request.ProductType;
-using TravelPlanner.DB.Interfaces;
 
 namespace TravelPlanner.BLL.Container;
 
-public class ProductTypeContainer : IProductTypeContainer
+public class ProductTypeContainer(DbManager db) : IProductTypeContainer
 {
-    private readonly IProductTypeRepository _repository;
-
-    public ProductTypeContainer(IProductTypeRepository repository)
-    {
-        _repository = repository;
-    }
-
     public async Task<ProductType?> GetById(int id)
     {
         if (id <= 0)
+        {
             throw new ArgumentException("Invalid product Id", nameof(id));
+        }
 
-        return await _repository.GetByIdAsync(id);
+        return await db.ProductTypes
+            .LoadWith(p => p.Translations)
+            .FirstOrDefaultAsync(p => p.Id == id);
     }
 
     public async Task<List<ProductType>> GetAll()
     {
-        var products = await _repository.GetAllAsync();
-        return products.Count == 0
-            ? throw new InvalidOperationException("No products found")
-            : products;
+        var products = await db.ProductTypes
+            .LoadWith(p => p.Translations)
+            .ToListAsync();
+        if (products == null)
+        {
+            throw new InvalidOperationException("No products found");
+        }
+
+        return products;
     }
 
     public async Task<List<ProductType>> GetAllActive()
     {
-        var products = await _repository.GetAllActiveAsync();
-        return products.Count == 0
-            ? throw new InvalidOperationException("No active products found")
-            : products;
+        var products = await db.ProductTypes
+            .Where(p => p.IsActive)
+            .LoadWith(p => p.Translations)
+            .ToListAsync();
+        if (products == null)
+        {
+            throw new InvalidOperationException("No products found");
+        }
+
+        return products;
     }
 
     public async Task Create(ProductTypeData data)
     {
-        var productType = new ProductType
+        var productId = await db.InsertWithInt32IdentityAsync(new ProductType
         {
             IsActive = data.IsActive
-        };
-
-        var id = await _repository.CreateAsync(productType);
-        if (id <= 0)
+        });
+        if (productId <= 0)
+        {
             throw new InvalidOperationException("Failed to create product");
+        }
     }
 
     public async Task Update(int id, ProductTypeData data)
     {
         if (id <= 0)
+        {
             throw new ArgumentException("Invalid product Id");
+        }
 
-        var existing = await _repository.GetByIdAsync(id);
-        if (existing == null)
+        var existingProduct = await GetById(id);
+        if (existingProduct == null)
+        {
             throw new InvalidOperationException("Product does not exist");
+        }
 
-        existing.IsActive = data.IsActive;
-
-        if (await _repository.UpdateAsync(existing) == 0)
+        existingProduct.IsActive = data.IsActive;
+        
+        if (await db.UpdateAsync(existingProduct) == 0)
+        {
             throw new InvalidOperationException("Failed to update product");
+        }
     }
 
     public async Task<bool> SoftDelete(int id)
     {
-        var product = await _repository.GetByIdAsync(id)
-                      ?? throw new InvalidOperationException("Product does not exist");
+        if (id <= 0)
+        {
+            throw new ArgumentException("Invalid product Id", nameof(id));
+        }
+
+        var product = await GetById(id);
+        if (product == null)
+        {
+            throw new InvalidOperationException("Product does not exist");
+        }
 
         product.IsActive = false;
-
-        if (await _repository.UpdateAsync(product) == 0)
+        
+        if (await db.UpdateAsync(product) == 0)
+        {
             throw new InvalidOperationException("Failed to delete product");
+        }
         return true;
     }
 
     public async Task<bool> Restore(int id)
     {
-        var product = await _repository.GetByIdAsync(id)
-                      ?? throw new InvalidOperationException("Product does not exist");
+        if (id <= 0)
+        {
+            throw new ArgumentException("Invalid product Id", nameof(id));
+        }
+
+        var product = await GetById(id);
+        if (product == null)
+        {
+            throw new InvalidOperationException("Product does not exist");
+        }
 
         if (product.IsActive)
+        {
             throw new InvalidOperationException("Product is already restored");
+        }
 
         product.IsActive = true;
-
-        if (await _repository.UpdateAsync(product) == 0)
+        
+        if (await db.UpdateAsync(product) == 0)
+        {
             throw new InvalidOperationException("Failed to restore product");
-
+        }
         return true;
     }
 }
