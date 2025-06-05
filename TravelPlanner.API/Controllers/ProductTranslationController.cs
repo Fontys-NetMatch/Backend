@@ -94,7 +94,7 @@ namespace TravelPlanner.API.Controllers
             }
         }
 
-        private object Delete(int translationId)
+        private BaseResponse Delete(int translationId)
         {
             try
             {

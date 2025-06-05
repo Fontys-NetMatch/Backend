@@ -46,7 +46,7 @@ public class ProductImageController : Controller
         .WithTags("Product Images")
         .WithOpenApi();
 
-
+        
         app.MapDelete("/product/images/{imageId:int}", (
             [FromRoute] int imageId,
             [FromServices] ProductImageController controller

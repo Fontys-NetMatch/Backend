@@ -30,7 +30,7 @@ public static class ServicesProvider
         services.AddTransient<ProductTypeController>();
         services.AddTransient<QuotationController>();
         services.AddTransient <ProductImageController>();
-        services.AddScoped<MockController>();
+        services.AddTransient<MockController>();
 
         // Containers
         services.AddSingleton<IAddonDateContainer, AddonDateContainer>();
@@ -46,9 +46,9 @@ public static class ServicesProvider
         services.AddSingleton<IUserContainer, UserContainer>();
 
         // Services
+        services.AddRazorPages();
         services.AddSingleton<IRazorViewToStringRenderer, RazorViewToStringRenderer>();
         services.AddSingleton<IRazorViewEngine, RazorViewEngine>();
-        services.AddRazorPages();
         services.AddSingleton<IPDFService, PDFService>();
         services.AddSingleton<IQuotationService, QuotationService>();
         services.AddSingleton<IProductRestoreService, ProductRestoreService>();

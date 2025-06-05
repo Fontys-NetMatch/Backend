@@ -25,9 +25,16 @@ public class CustomerContainer : ICustomerContainer
             throw new ArgumentNullException(nameof(customer), "Customer cannot be null");
         }
 
-        if (string.IsNullOrEmpty(customer.Email) || string.IsNullOrEmpty(customer.Firstname) || string.IsNullOrEmpty(customer.Surname))
+        var missingFields = new List<string>();
+
+        if (string.IsNullOrEmpty(customer.Email)) missingFields.Add("Email");
+        if (string.IsNullOrEmpty(customer.Firstname)) missingFields.Add("Firstname");
+        if (string.IsNullOrEmpty(customer.Surname)) missingFields.Add("Surname");
+
+        switch (missingFields.Count)
         {
-            throw new ArgumentException("Essential customer data (Email, Firstname, or Surname) is missing");
+            case > 0:
+                throw new ArgumentException($"Missing customer data: {string.Join(", ", missingFields)}");
         }
 
         var existingCustomer = _db.Customers.FirstOrDefault(c => c.Email == customer.Email);
