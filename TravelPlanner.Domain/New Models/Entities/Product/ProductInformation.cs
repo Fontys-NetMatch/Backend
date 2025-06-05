@@ -6,7 +6,6 @@ using TravelPlanner.Domain.Models.Entities.UniqueSellingPoints;
 using TravelPlanner.Domain.New_Models.Entities.Facility;
 using TravelPlanner.Domain.New_Models.Entities.Media;
 using TravelPlanner.Domain.New_Models.Entities.Program;
-using TravelPlanner.Domain.New_Models.Entities.Transport;
 using TravelPlanner.Domain.New_Models.Enums;
 using ProductType = TravelPlanner.Domain.Models.Entities.Products.ProductType;
 
@@ -31,7 +30,7 @@ public class ProductInformation
     public MediaContext Media { get; set; }
     public DayToDayProgram? DayToDayProgramInformation { get; set; }
     public List<ProductChildServices>? ChildServices { get; set; }
-    public Discountinformation? DiscountInformation { get; set; }
+    public DiscountInformation? DiscountInformation { get; set; }
     public Errata Errata { get; set; }
     public int? MinimumAmountOfTripParticipants { get; set; }
     public int? MaximumAmountOfTripParticipants { get; set; }
