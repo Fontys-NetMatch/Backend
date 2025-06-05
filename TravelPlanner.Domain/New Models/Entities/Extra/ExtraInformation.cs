@@ -1,14 +1,35 @@
-﻿using TravelPlanner.Domain.New_Models.Entities.Media;
+﻿using System;
+using System.Collections.Generic;
+using LinqToDB.Mapping;
+using TravelPlanner.Domain.New_Models.Entities.Media;
 
-namespace TravelPlanner.Domain.New_Models.Entities.Extra;
-
-public class ExtraInformation
+namespace TravelPlanner.Domain.Models.Entities
 {
-    public string? Code { get; set; }
-    public string? Name { get; set; }
-    public string? ContentTitle { get; set; }
-    public string? Description { get; set; }
-    public List<MediaContext>? Media { get; set; }
-    public string Category { get; set; }
-    public List<ExtraOption>? Options { get; set; } 
+    [Table("ExtraInformations")]
+    public class ExtraInformation
+    {
+        [PrimaryKey, Identity]
+        public int Id { get; set; }
+
+        [Column(DataType = LinqToDB.DataType.VarChar, Length = 100), Nullable]
+        public string? Code { get; set; }
+
+        [Column(DataType = LinqToDB.DataType.VarChar, Length = 255), Nullable]
+        public string? Name { get; set; }
+
+        [Column(DataType = LinqToDB.DataType.VarChar, Length = 255), Nullable]
+        public string? ContentTitle { get; set; }
+
+        [Column(DataType = LinqToDB.DataType.Text), Nullable]
+        public string? Description { get; set; }
+
+        [Column(DataType = LinqToDB.DataType.VarChar, Length = 100), Nullable]
+        public string? Category { get; set; }
+
+        [Association(ThisKey = nameof(Id), OtherKey = nameof(MediaContext.Id), CanBeNull = true)]
+        public List<MediaContext>? Images { get; set; }
+
+        [Association(ThisKey = nameof(Id), OtherKey = nameof(ExtraOption.Id), CanBeNull = true)]
+        public List<ExtraOption>? Options { get; set; }
+    }
 }

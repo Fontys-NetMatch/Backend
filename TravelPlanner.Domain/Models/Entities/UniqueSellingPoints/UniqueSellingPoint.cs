@@ -1,4 +1,5 @@
 ﻿using LinqToDB.Mapping;
+using TravelPlanner.Domain.New_Models.Enums;
 
 namespace TravelPlanner.Domain.Models.Entities.UniqueSellingPoints
 {
@@ -9,12 +10,8 @@ namespace TravelPlanner.Domain.Models.Entities.UniqueSellingPoints
         public int Id { get; set; }
 
         [Column, NotNull]
-        public string Type { get; set; } = null!; // ✅ enum as string
-
+        public UniqueSellingPointType Type { get; set; } 
         [Column, Nullable]
-        public string? Value { get; set; } // Tekst van de USP (optioneel)
-
-        [Column, NotNull]
-        public int ProductId { get; set; } // FK naar Product
+        public string? Value { get; set; } 
     }
 }

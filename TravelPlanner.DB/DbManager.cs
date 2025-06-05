@@ -8,6 +8,9 @@ using TravelPlanner.Domain.Models.Entities.Translations;
 using ProductAddonTranslation = TravelPlanner.Domain.Models.Entities.Translations.ProductAddonTranslation;
 using TravelPlanner.Domain.Models.Entities.UniqueSellingPoints;
 using TravelPlanner.Domain.Models.Entities.Transport;
+using TravelPlanner.Domain.New_Models.Entities.Facility;
+using TravelPlanner.Domain.New_Models.Enums.EnumsEntity;
+using TravelPlanner.Domain.New_Models.Entities.Product;
 
 namespace TravelPlanner.DB;
 
@@ -36,6 +39,13 @@ public class DbManager : DbContext
     public ITable<TransportInformation> TransportInformations => this.GetTable<TransportInformation>();
     public ITable<RoomTypeEntity> RoomTypes => this.GetTable<RoomTypeEntity>();
     public ITable<ProductSubTitle> ProductSubTitles => this.GetTable<ProductSubTitle>();
+    //public ITable<FacilityInformation> FacilityInformations => this.GetTable<FacilityInformation>();
+    public ITable<FacilityTypeEntity> FacilityTypes => this.GetTable<FacilityTypeEntity>();
+    public ITable<ProductCharacteristics> ProductCharacteristics => this.GetTable<ProductCharacteristics>();
+    public ITable<IdentifierTypeEntity> IdentifierTypes => this.GetTable<IdentifierTypeEntity>();
+
+
+
 
 
 }

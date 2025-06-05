@@ -4,11 +4,10 @@ namespace TravelPlanner.Domain.Interfaces.BLL.Container
 {
     public interface IProductAddonContainer
     {
-        Task<int> CreateAsync(ProductAddon addon);
-        Task<List<ProductAddon>> GetAllActiveAsync();
-        Task<ProductAddon?> GetByIdAsync(int id);
-        Task SoftDeleteAsync(int id);
-        Task UpdateAsync(ProductAddon addon);
-
+        Task<int> CreateProductAddon(ProductAddon productAddon);
+        Task<ProductAddon?> GetProductAddonByIdAsync(int id);
+        Task UpdateProductAddon(ProductAddon productAddon);
+        Task<IEnumerable<ProductAddon>> GetAllActiveProductAddonsAsync();
+        Task SoftDeleteProductAddon(int id);
     }
 }

@@ -1,13 +1,13 @@
-﻿using TravelPlanner.Domain.Models.Entities.Translations;
+﻿using TravelPlanner.Domain.Models.Entities;
+using TravelPlanner.Domain.Models.Entities.Translations;
 
-namespace TravelPlanner.Domain.Interfaces.BLL.Container
+namespace TravelPlanner.Domain.Interfaces.BLL.Container;
+
+public interface IProductAddonTranslationContainer
 {
-    public interface IProductAddonTranslationContainer
-    {
-        Task<int> CreateAsync(ProductAddonTranslation translation);
-        Task DeleteAsync(int id);
-        Task<ProductAddonTranslation?> GetByIdAsync(int id);
-        Task<List<ProductAddonTranslation>> GetByLangIsoCodeAsync(string langIsoCode);
-        Task UpdateAsync(ProductAddonTranslation translation);
-    }
+    Task<int> CreateProductAddonTranslationAsync(ProductAddonTranslation productAddonTranslation);
+    Task<ProductAddonTranslation?> GetProductAddonTranslationByIdAsync(int id);
+    Task UpdateProductAddonTranslationAsync(ProductAddonTranslation productAddonTranslation);
+    Task<IEnumerable<ProductAddonTranslation>> GetAllTranslationsByLangIsoCodeAsync(string langIsoCode);
+    Task DeleteProductAddonTranslationAsync(int id);
 }
