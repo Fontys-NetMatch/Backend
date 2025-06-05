@@ -1,8 +1,9 @@
 ﻿using LinqToDB.Mapping;
-using TravelPlanner.Domain.New_Models.Entities.Media;
+using TravelPlanner.Domain.New_Models.Entities.Program;
+using TravelPlanner.Domain.New_Models.Enums;
+using TravelPlanner.Domain.New_Models.Enums.Enums;
 
-namespace TravelPlanner.Domain.Models.Entities;
-
+namespace TravelPlanner.Domain.New_Models.Entities.Media;
 [Table(Name = "MediaContexts")]
 public class MediaContext
 {
@@ -22,20 +23,28 @@ public class MediaContext
     public string? Category { get; set; }
 
     [Column, NotNull]
-    public int MediaTypeId { get; set; }
-
-    [Association(ThisKey = nameof(MediaTypeId), OtherKey = nameof(MediaTypeEntity.Id), CanBeNull = false)]
-    public MediaTypeEntity MediaType { get; set; } = null!;
+    public MediaType MediaType { get; set; }
 
     [Column, NotNull]
-    public int MediaSourceId { get; set; }
+    public MediaSource MediaSource { get; set; }
 
-    [Association(ThisKey = nameof(MediaSourceId), OtherKey = nameof(MediaSourceEntity.Id), CanBeNull = false)]
-    public MediaSourceEntity MediaSource { get; set; } = null!;
-
-    [Column, Nullable]
-    public int DayProgramId { get; set; }
-
-    [Association(ThisKey = nameof(DayProgramId), OtherKey = nameof(DayProgram.Id), CanBeNull = true)]
-    public DayProgram DayProgram { get; set; } = null!;
+    
+    public MediaContext(
+        int id,
+        string? identifier,
+        string? description,
+        string? title,
+        string? category,
+        MediaType mediaType,
+        MediaSource mediaSource)
+    {
+        Id = id;
+        Identifier = identifier;
+        Description = description;
+        Title = title;
+        Category = category;
+        MediaType = mediaType;
+        MediaSource = mediaSource;
+    }
+    
 }

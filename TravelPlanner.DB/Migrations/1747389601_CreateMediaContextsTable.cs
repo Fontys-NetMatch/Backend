@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using TravelPlanner.DB.Lib.MigrationsManager;
 using TravelPlanner.DB.Lib;
 using TravelPlanner.Domain.Models.Entities;
+using TravelPlanner.Domain.New_Models.Entities.Media;
 
 namespace TravelPlanner.DB.Migrations
 {
@@ -15,22 +16,6 @@ namespace TravelPlanner.DB.Migrations
         public void Up(DbContext dbContext)
         {
             dbContext.CreateTable<MediaContext>(tableOptions: TableOptions.CheckExistence);
-
-            DbUtils.GenerateForeignKey(
-                dbContext,
-                "MediaContexts",
-                "MediaTypeId",
-                "MediaTypes",
-                "Id"
-                );
-
-            DbUtils.GenerateForeignKey(
-                dbContext,
-                "MediaContexts",
-                "MediaSourceId",
-                "MediaSources",
-                "Id"
-                );
         }
     }
 

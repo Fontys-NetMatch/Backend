@@ -1,8 +1,10 @@
 ﻿using TravelPlanner.Domain.Interfaces.BLL.MockGeneration;
+using TravelPlanner.Domain.Models.Entities;
 using TravelPlanner.Domain.New_Models.Entities;
 using TravelPlanner.Domain.New_Models.Entities.Media;
 using TravelPlanner.Domain.New_Models.Entities.Product;
 using TravelPlanner.Domain.New_Models.Enums;
+using TravelPlanner.Domain.New_Models.Enums.Enums;
 
 public class ProductInformationFactory : IProductInformationFactory
 {
@@ -34,13 +36,16 @@ public class ProductInformationFactory : IProductInformationFactory
             phoneNumber: $"+{_random.Next(1, 100)}-{_random.Next(1000000, 9999999)}"
         );
 
+        MediaType mediatype = (MediaType)_random.Next(1, 2); 
+        MediaSource mediasoure = (MediaSource)_random.Next(1, 2);
         var media = new MediaContext(
+            id: _random.Next(1,10000),
             identifier: Guid.NewGuid().ToString(),
             description: GetRandomString(15),
             title: GetRandomString(10),
             category: GetRandomString(8),
-            mediaType: GetRandomEnum<Mediatype>(),
-            mediaSource: GetRandomEnum<MediaSource>()
+            mediaType: mediatype,
+            mediaSource: mediasoure
         );
 
         var errata = new Errata(

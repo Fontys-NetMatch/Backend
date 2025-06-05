@@ -10,4 +10,15 @@ public class MediaTypeEntity
 
     [Column, NotNull]
     public string Name { get; set; } = null!;
+    
+    public MediaTypeEntity(int id, string name)
+    {
+        Id = id;
+        Name = name ?? throw new ArgumentNullException(nameof(name));
+    }
+
+    public MediaTypeEntity()
+    {
+        
+    }
 }

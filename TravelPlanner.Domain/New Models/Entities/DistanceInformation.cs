@@ -1,8 +1,7 @@
 ﻿using LinqToDB.Mapping;
 
-namespace TravelPlanner.Domain.Models.Entities
+namespace TravelPlanner.Domain.New_Models.Entities
 {
-    [Table("DistanceInformations")]
     public class DistanceInformation
     {
         [PrimaryKey, Identity]
@@ -19,5 +18,17 @@ namespace TravelPlanner.Domain.Models.Entities
 
         [Column(DataType = LinqToDB.DataType.Text), Nullable]
         public string? Description { get; set; }
+
+        public DistanceInformation(
+            string? pointOfInterestType = null,
+            string? pointOfInterest = null,
+            double? distance = null,
+            string? description = null)
+        {
+            PointOfInterestType = pointOfInterestType;
+            PointOfInterest = pointOfInterest;
+            Distance = distance;
+            Description = description;
+        }
     }
 }

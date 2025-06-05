@@ -1,4 +1,4 @@
-﻿/*namespace TravelPlanner.Domain.New_Models.Entities.Product;
+﻿namespace TravelPlanner.Domain.New_Models.Entities.Product;
 
 public class ProductCharacteristics
 {
@@ -26,49 +26,5 @@ public class ProductCharacteristics
         EventsAllowed = eventsAllowed;
         MinimumAge = minimumAge;
         MaxBabyBeds = maxBabyBeds;
-    }
-    
-}*/
-
-
-using LinqToDB.Mapping;
-
-namespace TravelPlanner.Domain.New_Models.Entities.Product
-{
-    [Table("ProductCharacteristics")]
-    public class ProductCharacteristics
-    {
-        [PrimaryKey, Identity]
-        public int Id { get; set; }
-
-        [Column, Nullable]
-        public int? NumberOfBedrooms { get; set; }
-
-        [Column, Nullable]
-        public int? NumberOfBathrooms { get; set; }
-
-        [Column, Nullable]
-        public double? Size { get; set; }
-
-        [Column, Nullable]
-        public string? CheckInFrom { get; set; }
-
-        [Column, Nullable]
-        public string? CheckInUntil { get; set; }
-
-        [Column, Nullable]
-        public string? CheckOut { get; set; }
-
-        [Column, Nullable]
-        public int? NumberOfPets { get; set; }
-
-        [Column, Nullable]
-        public bool? EventsAllowed { get; set; }
-
-        [Column, Nullable]
-        public int? MinimumAge { get; set; }
-
-        [Column, Nullable]
-        public int? MaxBabyBeds { get; set; }
     }
 }

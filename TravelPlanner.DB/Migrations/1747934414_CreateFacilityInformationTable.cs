@@ -2,15 +2,15 @@
 using TravelPlanner.DB.Lib;
 using TravelPlanner.DB.Lib.MigrationsManager;
 using TravelPlanner.Domain.Models.Entities;
-using TravelPlanner.Domain.New_Models.Entities;
+using TravelPlanner.Domain.New_Models.Entities.Facility;
 
 namespace TravelPlanner.DB.Migrations
 {
-    public class CreateDistanceInformationTable : IMigration
+    public class CreateFacilityInformationTable : IMigration
     {
         public void Up(DbContext dbContext)
         {
-            dbContext.CreateTable<DistanceInformation>(tableOptions: TableOptions.CheckExistence);
+            dbContext.CreateTable<FacilityInformation>(tableOptions: TableOptions.CheckExistence);
         }
     }
 }
