@@ -25,11 +25,7 @@ namespace TravelPlanner.Domain.Models.Entities
 
         [Column(DataType = LinqToDB.DataType.VarChar, Length = 100), Nullable]
         public string? Category { get; set; }
-
-        [Association(ThisKey = nameof(Id), OtherKey = nameof(MediaContext.Id), CanBeNull = true)]
         public List<MediaContext>? Images { get; set; }
-
-        [Association(ThisKey = nameof(Id), OtherKey = nameof(ExtraOption.Id), CanBeNull = true)]
         public List<ExtraOption>? Options { get; set; }
     }
 }

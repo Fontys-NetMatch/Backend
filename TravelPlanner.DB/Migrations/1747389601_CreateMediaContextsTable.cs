@@ -15,22 +15,6 @@ namespace TravelPlanner.DB.Migrations
         public void Up(DbContext dbContext)
         {
             dbContext.CreateTable<MediaContext>(tableOptions: TableOptions.CheckExistence);
-
-            DbUtils.GenerateForeignKey(
-                dbContext,
-                "MediaContexts",
-                "MediaTypeId",
-                "MediaTypes",
-                "Id"
-                );
-
-            DbUtils.GenerateForeignKey(
-                dbContext,
-                "MediaContexts",
-                "MediaSourceId",
-                "MediaSources",
-                "Id"
-                );
         }
     }
 
