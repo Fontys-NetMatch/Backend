@@ -114,7 +114,7 @@ public class ProductContainer : IProductContainer
         return products;
     }
 
-    public async Task Create(ProductData data)
+    /*public async Task Create(ProductData data)
     {
         if (data.ProductTypeId <= 0)
         {
@@ -132,7 +132,31 @@ public class ProductContainer : IProductContainer
         {
             throw new InvalidOperationException("Failed to create product");
         }
+    }*/
+
+    public async Task<int> Create(ProductData data)
+    {
+        if (data.ProductTypeId <= 0)
+        {
+            throw new ArgumentException("Invalid product type Id");
+        }
+
+        var productId = await _db.InsertWithInt32IdentityAsync(new Product
+        {
+            StartLocation = data.StartLocation,
+            EndLocation = data.EndLocation,
+            DeletedAt = data.DeletedAt,
+            ProductTypeId = data.ProductTypeId
+        });
+
+        if (productId <= 0)
+        {
+            throw new InvalidOperationException("Failed to create product");
+        }
+
+        return productId;
     }
+
 
     public async Task Update(int id, ProductData data)
     {

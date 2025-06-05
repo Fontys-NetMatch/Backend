@@ -245,12 +245,24 @@ namespace TravelPlanner.API.Controllers
             }
         }
 
-        private BaseResponse CreateProduct(ProductData data)
+        /*private BaseResponse CreateProduct(ProductData data)
         {
             try
             {
                 _container.Create(data).Wait();
                 return new SuccessResponse("Product created successfully");
+            }
+            catch (Exception e)
+            {
+                return new ErrorResponse(e.Message);
+            }
+        }*/
+        private BaseResponse CreateProduct(ProductData data)
+        {
+            try
+            {
+                var productId = _container.Create(data).Result;
+                return new SuccessResponseWithId("Product created successfully", productId);
             }
             catch (Exception e)
             {
