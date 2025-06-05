@@ -6,7 +6,6 @@ using TravelPlanner.Domain.Models.Entities.UniqueSellingPoints;
 using TravelPlanner.Domain.New_Models.Entities.Facility;
 using TravelPlanner.Domain.New_Models.Entities.Media;
 using TravelPlanner.Domain.New_Models.Entities.Program;
-using TravelPlanner.Domain.New_Models.Entities.Transport;
 using TravelPlanner.Domain.New_Models.Enums;
 using ProductType = TravelPlanner.Domain.New_Models.Enums.ProductType;
 using TransportInformation = TravelPlanner.Domain.New_Models.Entities.Transport.TransportInformation;

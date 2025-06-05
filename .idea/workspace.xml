@@ -5,9 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5099d7a6-8b02-485a-8878-9f585802c48f" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/TravelPlanner.API/Controllers/ProductController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/TravelPlanner.API/Controllers/ProductController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TravelPlanner.API/Response/Success/ProductTranslation/ProductTranslationResponse.cs" beforeDir="false" afterPath="$PROJECT_DIR$/TravelPlanner.API/Response/Success/ProductTranslation/ProductTranslationResponse.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TravelPlanner.BLL/Container/ProductContainer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/TravelPlanner.BLL/Container/ProductContainer.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TravelPlanner.API/Controllers/QuotationController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/TravelPlanner.API/Controllers/QuotationController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TravelPlanner.BLL/Container/QuotationContainer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/TravelPlanner.BLL/Container/QuotationContainer.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -75,6 +75,7 @@
       <workItem from="1743493889781" duration="1298000" />
       <workItem from="1743579125518" duration="322000" />
       <workItem from="1744889157971" duration="78000" />
+      <workItem from="1747380003650" duration="628000" />
     </task>
     <servers />
   </component>

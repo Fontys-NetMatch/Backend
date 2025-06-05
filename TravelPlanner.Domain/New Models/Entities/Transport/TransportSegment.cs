@@ -1,11 +1,30 @@
-﻿using TravelPlanner.Domain.New_Models.Enums;
+﻿using LinqToDB.Mapping;
+using LinqToDB.Data;
 
-public class TransportSegment
+namespace TravelPlanner.Domain.Models.Entities.Transport
 {
- public string? DepartureTime { get; set; }
- public string? ArrivalTime { get; set; }
- public string? ArrivalPointName { get; set; }
- public string? ArrivalPointAddress { get; set; }
- public string? DeparturePointName { get; set; }
- public string? DeparturePointAddress { get; set; }
+    [Table("TransportSegments")]
+    public class TransportSegment
+    {
+        [PrimaryKey, Identity]
+        public int Id { get; set; }
+
+        [Column(DataType = LinqToDB.DataType.VarChar, Length = 50), Nullable]
+        public string? DepartureTime { get; set; }
+
+        [Column(DataType = LinqToDB.DataType.VarChar, Length = 50), Nullable]
+        public string? ArrivalTime { get; set; }
+
+        [Column(DataType = LinqToDB.DataType.Text), Nullable]
+        public string? ArrivalPointName { get; set; }
+
+        [Column(DataType = LinqToDB.DataType.Text), Nullable]
+        public string? ArrivalPointAddress { get; set; }
+
+        [Column(DataType = LinqToDB.DataType.Text), Nullable]
+        public string? DeparturePointName { get; set; }
+
+        [Column(DataType = LinqToDB.DataType.Text), Nullable]
+        public string? DeparturePointAddress { get; set; }
+    }
 }

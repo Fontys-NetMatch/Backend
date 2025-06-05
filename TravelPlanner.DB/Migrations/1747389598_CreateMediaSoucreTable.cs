@@ -8,23 +8,23 @@ using TravelPlanner.Domain.New_Models.Enums;
 
 namespace TravelPlanner.DB.Migrations
 {
-    public class CreateMediaTypeTable : IMigration
+    public class CreateMediaSourceTable : IMigration
     {
         public void Up(DbContext dbContext)
         {
-            dbContext.CreateTable<MediaTypeEntity>(tableOptions: TableOptions.CheckExistence);
+            dbContext.CreateTable<MediaSourceEntity>(tableOptions: TableOptions.CheckExistence);
 
-            var types = Enum.GetValues(typeof(MediaType))
-                                .Cast<MediaType>()
-                                .Select(e => new MediaTypeEntity
+            var sources = Enum.GetValues(typeof(MediaSource))
+                                .Cast<MediaSource>()
+                                .Select(e => new MediaSourceEntity
                                 {
                                     Id = (int)e,
                                     Name = e.ToString()
                                 });
 
-            foreach (var type in types)
+            foreach (var source in sources)
             {
-                dbContext.Insert(type);
+                dbContext.Insert(source);
             }
         }
     }

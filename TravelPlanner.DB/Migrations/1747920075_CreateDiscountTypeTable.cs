@@ -8,15 +8,15 @@ using TravelPlanner.Domain.New_Models.Enums;
 
 namespace TravelPlanner.DB.Migrations
 {
-    public class CreateMediaTypeTable : IMigration
+    public class DiscountTypes : IMigration
     {
         public void Up(DbContext dbContext)
         {
-            dbContext.CreateTable<MediaTypeEntity>(tableOptions: TableOptions.CheckExistence);
+            dbContext.CreateTable<DiscountTypeEntity>(tableOptions: TableOptions.CheckExistence);
 
-            var types = Enum.GetValues(typeof(MediaType))
-                                .Cast<MediaType>()
-                                .Select(e => new MediaTypeEntity
+            var types = Enum.GetValues(typeof(DiscountType))
+                                .Cast<DiscountType>()
+                                .Select(e => new DiscountTypeEntity
                                 {
                                     Id = (int)e,
                                     Name = e.ToString()

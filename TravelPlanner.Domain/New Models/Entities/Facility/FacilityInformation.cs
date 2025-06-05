@@ -1,22 +1,25 @@
-﻿using System.Collections.Generic;
+﻿using LinqToDB.Mapping;
+using LinqToDB.Data;
 using TravelPlanner.Domain.New_Models.Enums;
 
-namespace TravelPlanner.Domain.New_Models.Entities.Facility;
-
-public class FacilityInformation
+namespace TravelPlanner.Domain.New_Models.Entities.Facility
 {
-
-
-    public string? Id { get; set; }
-    public FacilityType FacilityType { get; set; }
-    public string? Value { get; set; }
-    public List<string>? Values { get; set; }
-    
-    public FacilityInformation(string? id = null, FacilityType facilityType = default, string? value = null, List<string>? values = null)
+    [Table("FacilityInformations")]
+    public class FacilityInformation
     {
-        Id = id;
-        FacilityType = facilityType;
-        Value = value;
-        Values = values;
+        [PrimaryKey]
+        [Column(DataType = LinqToDB.DataType.VarChar, Length = 191), NotNull]
+        public string Id { get; set; } = null!;
+
+        [Column, NotNull]
+        public FacilityType FacilityType { get; set; }
+
+        [Column(DataType = LinqToDB.DataType.Text), Nullable]
+        public string? Value { get; set; }
+
+        [Column(DataType = LinqToDB.DataType.Text), Nullable]
+        public List<string>? Values { get; set; }
+
     }
 }
+

@@ -1,6 +1,6 @@
 ﻿namespace TravelPlanner.Domain.New_Models.Enums.Enums;
 
-public enum Mediatype
+public enum MediaType
 {
     Image, 
     Video

@@ -10,7 +10,7 @@ namespace TravelPlanner.Domain.Models.Entities.Products
         public int Id { get; set; }
 
         [Column, NotNull]
-        public int TransportTypeId { get; set; }
+        public int TransportTypeValueId { get; set; }
 
         [Column(DataType = LinqToDB.DataType.Text), Nullable]
         public string? SubTitle { get; set; }

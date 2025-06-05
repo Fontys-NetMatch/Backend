@@ -1,18 +1,16 @@
 ﻿using LinqToDB;
-using LinqToDB.Data;
-using TravelPlanner.DB;
 using TravelPlanner.DB.Lib;
 using TravelPlanner.DB.Lib.MigrationsManager;
 using TravelPlanner.Domain.Models.Entities;
-using TravelPlanner.Domain.Models.Entities.Transport;
+using TravelPlanner.Domain.New_Models.Entities.Facility;
 
 namespace TravelPlanner.DB.Migrations
 {
-    public class CreateTransportSegmentTable : IMigration
+    public class CreateFacilityInformationTable : IMigration
     {
         public void Up(DbContext dbContext)
         {
-            dbContext.CreateTable<TransportSegment>(tableOptions: TableOptions.CheckExistence);
+            dbContext.CreateTable<FacilityInformation>(tableOptions: TableOptions.CheckExistence);
         }
     }
 }
