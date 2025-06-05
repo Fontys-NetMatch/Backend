@@ -1,4 +1,5 @@
 ﻿using TravelPlanner.Domain.Models.Entities;
+using TravelPlanner.Domain.Models.Entities.Translations;
 
 namespace TravelPlanner.Domain.Interfaces.BLL.Container;
 
