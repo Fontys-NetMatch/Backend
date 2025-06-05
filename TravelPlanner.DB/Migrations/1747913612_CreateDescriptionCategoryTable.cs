@@ -14,7 +14,7 @@ namespace TravelPlanner.DB.Migrations
         {
             dbContext.CreateTable<DescriptionCategoryEntity>(tableOptions: TableOptions.CheckExistence);
 
-            var types = Enum.GetValues(typeof(DescriptionCategory))
+            var categories = Enum.GetValues(typeof(DescriptionCategory))
                                 .Cast<DescriptionCategory>()
                                 .Select(e => new DescriptionCategoryEntity
                                 {
@@ -22,9 +22,9 @@ namespace TravelPlanner.DB.Migrations
                                     Name = e.ToString()
                                 });
 
-            foreach (var type in types)
+            foreach (var category in categories)
             {
-                dbContext.Insert(type);
+                dbContext.Insert(category);
             }
         }
     }
