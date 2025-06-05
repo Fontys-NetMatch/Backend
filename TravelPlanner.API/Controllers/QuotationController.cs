@@ -26,11 +26,12 @@ namespace TravelPlanner.API.Controllers
         public static void Register(WebApplication app)
         {
             // Create Quotation
-            app.MapPost("/quotation/", (
+            app.MapPost("/quotation/{id}", (
                 HttpContext context,
+                [FromRoute] int id,
                 [FromBody] QuotationData quotation,
                 [FromServices] QuotationController controller
-            ) => controller.CreateQuotation(context, quotation))
+            ) => controller.CreateQuotation(context, quotation, id))
                 .WithName("CreateQuotation")
                 .WithDescription("Create a new quotation")
                 .Produces<SuccessResponse>()
@@ -125,77 +126,69 @@ namespace TravelPlanner.API.Controllers
                 .WithOpenApi();
 
             // Download Quotation as PDF
-            app.MapGet("/quotations/{id}/pdf", async (
+            app.MapGet("/quotations/{id}/pdf", (
                     int id, HttpContext context, [FromServices] QuotationController controller) =>
                 {
-                    // Call the service layer to generate the PDF
-                    var result = await controller.GetQuotationPdf(id); // This now returns IResult
-
-                    // Handle IResult as a return type directly
-                    if (result is FileContentResult fileContentResult)
+                    var response = controller.GetQuotationPdf(id); // Now returns QuotationPdfResponse
+                    if (response.Base64Pdf is not null && response.FileName is not null && response.ContentType is not null)
                     {
-                        return Results.File(fileContentResult.FileContents, fileContentResult.ContentType,
-                            fileContentResult.FileDownloadName);
+                        var fileBytes = Convert.FromBase64String(response.Base64Pdf);
+                        return Results.File(fileBytes, response.ContentType, response.FileName);
                     }
-
-                    // If not a valid result, return the result (e.g., 404 or 500)
-                    return result;
+                    
+                    return response.GetResults();
                 })
                 .WithName("DownloadQuotationPdf")
                 .WithDescription("Download the quotation as a PDF")
                 .Produces(StatusCodes.Status200OK, contentType: "application/pdf")
-                .Produces<ErrorResponse>(StatusCodes.Status500InternalServerError)
+                .Produces<QuotationPdfResponse>(StatusCodes.Status400BadRequest)
+                .Produces<QuotationPdfResponse>(StatusCodes.Status404NotFound)
+                .Produces<QuotationPdfResponse>(StatusCodes.Status500InternalServerError)
                 .RequiresJwtToken()
                 .WithTags("Quotation")
                 .WithOpenApi();
         }
 
-        private async Task<IResult> GetQuotationPdf(int id)
+        private QuotationPdfResponse  GetQuotationPdf(int id)
         {
             try
             {
-                // Check if the ID is valid (positive number)
                 if (id <= 0)
                 {
-                    return Results.BadRequest("Invalid Quotation ID. It must be a positive integer.");
+                    return QuotationPdfResponse.ErrorResponse(400, "Invalid Quotation ID. It must be a positive integer.");
                 }
-                // Call the service layer to generate the PDF
-                var pdfResult = await _container.GeneratePdfAsync(id);
-
-                // If no PDF is returned (i.e., the quotation was not found), return a 404 Not Found response
+                var pdfResult = _container.GeneratePdfAsync(id).GetAwaiter().GetResult();
                 if (pdfResult == null)
                 {
-                    return Results.NotFound($"Quotation with ID {id} not found.");
+                    return QuotationPdfResponse.ErrorResponse(404, $"Quotation with ID {id} not found.");
                 }
 
-                // If pdfResult is a valid FileContentResult, return it directly as a IResult (using Results.File)
                 if (pdfResult is FileContentResult fileContentResult)
                 {
-                    // Return the generated PDF using Results.File with its content, content type, and download name
-                    return Results.File(fileContentResult.FileContents, fileContentResult.ContentType, fileContentResult.FileDownloadName);
+                    return QuotationPdfResponse.SuccessResponse(
+                        fileContentResult.FileContents,
+                        fileContentResult.ContentType,
+                        fileContentResult.FileDownloadName
+                    );
                 }
-
-                // If pdfResult is not a FileContentResult, handle unexpected types
-                return Results.StatusCode(500);
+                return QuotationPdfResponse.ErrorResponse(500, "Unexpected result type.");
             }
             catch (Exception ex)
             {
-                // Log the exception (you can use a logging framework such as Serilog, NLog, or the built-in ILogger)
                 Console.Error.WriteLine($"Error generating PDF for Quotation ID {id}: {ex.Message}");
-
-                // Return an Internal Server Error response if something went wrong
-                return Results.StatusCode(500);
+                return QuotationPdfResponse.ErrorResponse(500, "An error occurred while generating the PDF.");
             }
         }
 
 
 
 
-        private BaseResponse CreateQuotation(HttpContext? context, QuotationData quotation)
+
+        private BaseResponse CreateQuotation(HttpContext? context, QuotationData quotation, int userid)
         {
             try
             {
-                _container.CreateQuotation(quotation);
+                _container.CreateQuotation(quotation, userid);
                 return new SuccessResponse("Quotation created successfully");
             }
             catch (Exception ex)

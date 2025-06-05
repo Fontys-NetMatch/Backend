@@ -7,6 +7,7 @@ using TravelPlanner.DB;
 using TravelPlanner.DB.Lib;
 using TravelPlanner.Domain.Interfaces.BLL;
 using TravelPlanner.Domain.Interfaces.BLL.Container;
+using TravelPlanner.Domain.Interfaces.BLL.MockGeneration;
 using TravelPlanner.Domain.Interfaces.BLL.Service;
 using TravelPlanner.Domain.Interfaces.PDF;
 
@@ -28,13 +29,14 @@ public static class ServicesProvider
         services.AddTransient<ProductTranslationController>();
         services.AddTransient<ProductTypeController>();
         services.AddTransient<QuotationController>();
+        services.AddTransient <ProductImageController>();
+        services.AddTransient<MockController>();
 
         // Containers
         services.AddSingleton<IAddonDateContainer, AddonDateContainer>();
         services.AddSingleton<IAuthContainer, AuthContainer>();
         services.AddSingleton<ICustomerContainer, CustomerContainer>();
         services.AddSingleton<IProductAddonContainer, ProductAddonContainer>();
-        services.AddSingleton<IProductAddonTranslationContainer, ProductAddonTranslationContainer>();
         services.AddSingleton<IProductContainer, ProductContainer>();
         services.AddSingleton<IProductDateContainer, ProductDateContainer>();
         services.AddSingleton<IProductImageContainer, ProductImageContainer>();
@@ -44,15 +46,15 @@ public static class ServicesProvider
         services.AddSingleton<IUserContainer, UserContainer>();
 
         // Services
+        services.AddRazorPages();
         services.AddSingleton<IRazorViewToStringRenderer, RazorViewToStringRenderer>();
         services.AddSingleton<IRazorViewEngine, RazorViewEngine>();
-        services.AddRazorPages();
         services.AddSingleton<IPDFService, PDFService>();
         services.AddSingleton<IQuotationService, QuotationService>();
         services.AddSingleton<IProductRestoreService, ProductRestoreService>();
         services.AddSingleton<IProductDeleteService, ProductDeleteService>();
         
-
+        // Mock Generation
+        services.AddScoped<IProductInformationFactory, ProductInformationFactory>();
     }
-
 }

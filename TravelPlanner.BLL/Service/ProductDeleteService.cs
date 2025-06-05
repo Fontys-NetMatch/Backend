@@ -20,9 +20,9 @@ public class ProductDeleteService(
         try
         {
             product = await ProductService.SoftDelete(id);
-            productdate = await ProductDateService.SoftDeleteProductDateAsync(id);
-            productimage = await ProductImageService.SoftDeleteProductImageAsync(id);
-            producttranslation = await ProductTranslationService.Delete(id);
+            productdate = await ProductDateService.SoftDelete(id);
+            productimage = await ProductImageService.SoftDelete(id);
+            producttranslation = await ProductTranslationService.SoftDelete(id);
             producttype = await ProductTypeService.SoftDelete(id);
         }
         catch (Exception e)

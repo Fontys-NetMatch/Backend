@@ -19,7 +19,7 @@ namespace TravelPlanner.Domain.Interfaces.BLL.Container
         Task<ProductTranslation?> GetByIdAndIso(int id, string isoCode);
         Task Create(int productId, ProductTranslationData product);
         Task Update(int translationId, ProductTranslationUpdateData product);
-        Task<bool> Delete(int translationId);
+        Task<bool> SoftDelete(int translationId);
         Task<bool> Restore(int translationId);
     }
 }

@@ -94,11 +94,11 @@ namespace TravelPlanner.API.Controllers
             }
         }
 
-        private object Delete(int translationId)
+        private BaseResponse Delete(int translationId)
         {
             try
             {
-                _container.Delete(translationId).Wait();
+                _container.SoftDelete(translationId).Wait();
                 return new SuccessResponse("Product translation updated successfully");
             }
             catch (Exception e)
