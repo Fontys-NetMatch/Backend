@@ -5,9 +5,9 @@ namespace TravelPlanner.Domain.Interfaces.BLL.Container;
 
 public interface IProductAddonTranslationContainer
 {
-    Task<int> CreateProductAddonTranslationAsync(ProductAddonTranslation productAddonTranslation);
-    Task<ProductAddonTranslation?> GetProductAddonTranslationByIdAsync(int id);
-    Task UpdateProductAddonTranslationAsync(ProductAddonTranslation productAddonTranslation);
-    Task<IEnumerable<ProductAddonTranslation>> GetAllTranslationsByLangIsoCodeAsync(string langIsoCode);
-    Task DeleteProductAddonTranslationAsync(int id);
+    Task<int> CreateAsync(ProductAddonTranslation translation);
+    Task<ProductAddonTranslation?> GetByIdAsync(int id);
+    Task UpdateAsync(ProductAddonTranslation translation);
+    Task<List<ProductAddonTranslation>> GetByLangIsoCodeAsync(string langIsoCode);
+    Task DeleteAsync(int id);
 }
