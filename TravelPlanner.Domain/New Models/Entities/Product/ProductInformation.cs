@@ -9,6 +9,7 @@ using TravelPlanner.Domain.New_Models.Entities.Program;
 using TravelPlanner.Domain.New_Models.Entities.Transport;
 using TravelPlanner.Domain.New_Models.Enums;
 using ProductType = TravelPlanner.Domain.New_Models.Enums.ProductType;
+using TransportInformation = TravelPlanner.Domain.New_Models.Entities.Transport.TransportInformation;
 
 namespace TravelPlanner.Domain.New_Models.Entities.Product;
 
@@ -31,7 +32,7 @@ public class ProductInformation
     public MediaContext Media { get; set; }
     public DayToDayProgram? DayToDayProgramInformation { get; set; }
     public List<ProductChildServices>? ChildServices { get; set; }
-    public Discountinformation? DiscountInformation { get; set; }
+    public DiscountInformation? DiscountInformation { get; set; }
     public Errata Errata { get; set; }
     public int? MinimumAmountOfTripParticipants { get; set; }
     public int? MaximumAmountOfTripParticipants { get; set; }

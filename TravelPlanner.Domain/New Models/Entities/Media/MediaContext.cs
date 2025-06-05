@@ -1,21 +1,25 @@
-﻿using TravelPlanner.Domain.New_Models.Enums;
+﻿using LinqToDB.Mapping;
+using TravelPlanner.Domain.New_Models.Entities.Program;
+using TravelPlanner.Domain.New_Models.Enums;
 
 namespace TravelPlanner.Domain.New_Models.Entities.Media;
 
 public class MediaContext
 {
+    [Column, PrimaryKey, Identity]
+    public int Id { get; set; }
 
-
+    [Column, Nullable]
     public string? Identifier { get; set; }
+
+    [Column, Nullable]
     public string? Description { get; set; }
+
+    [Column, Nullable]
     public string? Title { get; set; }
+
+    [Column, Nullable]
     public string? Category { get; set; }
-<<<<<<< Updated upstream
-    public Mediatype MediaType { get; set; }
-    public MediaSource MediaSource { get; set; }
-    
-    public MediaContext(string? identifier = null, string? description = null, string? title = null, string? category = null, Mediatype mediaType = default, MediaSource mediaSource = default)
-=======
 
     [Column, NotNull]
     public int MediaTypeId { get; set; }
@@ -25,8 +29,16 @@ public class MediaContext
 
     [Column, NotNull]
     public int MediaSourceId { get; set; }
-    
-    
+
+    [Association(ThisKey = nameof(MediaSourceId), OtherKey = nameof(MediaSourceEntity.Id), CanBeNull = false)]
+    public MediaSourceEntity MediaSource { get; set; } = null!;
+
+    [Column, Nullable]
+    public int DayProgramId { get; set; }
+
+    [Association(ThisKey = nameof(DayProgramId), OtherKey = nameof(DayProgram.Id), CanBeNull = true)]
+    public DayProgram DayProgram { get; set; } = null!;
+
     public MediaContext(
         string? identifier,
         string? description,
@@ -38,18 +50,11 @@ public class MediaContext
         MediaSourceEntity mediaSource,
         int dayProgramId,
         DayProgram dayProgram)
->>>>>>> Stashed changes
     {
         Identifier = identifier;
         Description = description;
         Title = title;
         Category = category;
-<<<<<<< Updated upstream
-        MediaType = mediaType;
-        MediaSource = mediaSource;
-    }
-}
-=======
         MediaTypeId = mediaTypeId;
         MediaType = mediaType ?? throw new ArgumentNullException(nameof(mediaType));
         MediaSourceId = mediaSourceId;
@@ -58,4 +63,3 @@ public class MediaContext
         DayProgram = dayProgram ?? throw new ArgumentNullException(nameof(dayProgram));
     }
 }
->>>>>>> Stashed changes

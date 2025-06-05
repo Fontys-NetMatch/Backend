@@ -46,7 +46,7 @@ public class ProductInformationFactory : IProductInformationFactory
             mediaSourceId: _random.Next(1, 1000000),
             mediaSource: _random.Next(1,10000000), GetRandomString(8),
             dayProgramId: _random.Next(1, 1000000),
-            dayProgram: dayProgram
+            dayProgram:
         );
 
         var errata = new Errata(
