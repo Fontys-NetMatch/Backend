@@ -1,19 +1,36 @@
-﻿namespace TravelPlanner.Domain.New_Models.Entities;
+﻿using System;
+using LinqToDB.Mapping;
 
-public class Errata
+namespace TravelPlanner.Domain.Models.Entities
 {
-
-
-    public string? Title { get; set; }
-    public string? Content { get; set; }
-    public DateTime? StartDate { get; set; }
-    public DateTime? EndDate { get; set; }
-    
-    public Errata(string? title = null, string? content = null, DateTime? startDate = null, DateTime? endDate = null)
+    [Table("Errata")]
+    public class Errata
     {
-        Title = title;
-        Content = content;
-        StartDate = startDate;
-        EndDate = endDate;
+        [PrimaryKey, Identity]
+        public int Id { get; set; }
+
+        [Column(DataType = LinqToDB.DataType.VarChar, Length = 255), Nullable]
+        public string? Title { get; set; }
+
+        [Column(DataType = LinqToDB.DataType.Text), Nullable]
+        public string? Content { get; set; }
+
+        [Column(DataType = LinqToDB.DataType.DateTime), Nullable]
+        public DateTime? StartDate { get; set; }
+
+        [Column(DataType = LinqToDB.DataType.DateTime), Nullable]
+        public DateTime? EndDate { get; set; }
+        
+        public Errata(
+            string? title,
+            string? content,
+            DateTime? startDate,
+            DateTime? endDate)
+        {
+            Title = title;
+            Content = content;
+            StartDate = startDate;
+            EndDate = endDate;
+        }
     }
 }

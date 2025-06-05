@@ -28,4 +28,76 @@ public class ProductCharacteristics
         MaxBabyBeds = maxBabyBeds;
     }
     
+<<<<<<< Updated upstream
 }
+=======
+}*/
+
+
+using LinqToDB.Mapping;
+
+namespace TravelPlanner.Domain.New_Models.Entities.Product
+{
+    [Table("ProductCharacteristics")]
+    public class ProductCharacteristics
+    {
+        [PrimaryKey, Identity]
+        public int Id { get; set; }
+
+        [Column, Nullable]
+        public int? NumberOfBedrooms { get; set; }
+
+        [Column, Nullable]
+        public int? NumberOfBathrooms { get; set; }
+
+        [Column, Nullable]
+        public double? Size { get; set; }
+
+        [Column, Nullable]
+        public string? CheckInFrom { get; set; }
+
+        [Column, Nullable]
+        public string? CheckInUntil { get; set; }
+
+        [Column, Nullable]
+        public string? CheckOut { get; set; }
+
+        [Column, Nullable]
+        public int? NumberOfPets { get; set; }
+
+        [Column, Nullable]
+        public bool? EventsAllowed { get; set; }
+
+        [Column, Nullable]
+        public int? MinimumAge { get; set; }
+
+        [Column, Nullable]
+        public int? MaxBabyBeds { get; set; }
+        
+        public ProductCharacteristics(
+            int? numberOfBedrooms,
+            int? numberOfBathrooms,
+            double? size,
+            string? checkInFrom,
+            string? checkInUntil,
+            string? checkOut,
+            int? numberOfPets,
+            bool? eventsAllowed,
+            int? minimumAge,
+            int? maxBabyBeds)
+        {
+            NumberOfBedrooms = numberOfBedrooms;
+            NumberOfBathrooms = numberOfBathrooms;
+            Size = size;
+            CheckInFrom = checkInFrom;
+            CheckInUntil = checkInUntil;
+            CheckOut = checkOut;
+            NumberOfPets = numberOfPets;
+            EventsAllowed = eventsAllowed;
+            MinimumAge = minimumAge;
+            MaxBabyBeds = maxBabyBeds;
+        }
+
+    }
+}
+>>>>>>> Stashed changes

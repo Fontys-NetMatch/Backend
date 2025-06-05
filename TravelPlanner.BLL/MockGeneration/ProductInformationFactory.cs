@@ -1,8 +1,10 @@
 ﻿using TravelPlanner.Domain.Interfaces.BLL.MockGeneration;
+using TravelPlanner.Domain.Models.Entities;
 using TravelPlanner.Domain.New_Models.Entities;
 using TravelPlanner.Domain.New_Models.Entities.Media;
 using TravelPlanner.Domain.New_Models.Entities.Product;
 using TravelPlanner.Domain.New_Models.Enums;
+using TravelPlanner.Domain.New_Models.Enums.Enums;
 
 public class ProductInformationFactory : IProductInformationFactory
 {
@@ -39,8 +41,12 @@ public class ProductInformationFactory : IProductInformationFactory
             description: GetRandomString(15),
             title: GetRandomString(10),
             category: GetRandomString(8),
-            mediaType: GetRandomEnum<Mediatype>(),
-            mediaSource: GetRandomEnum<MediaSource>()
+            mediaTypeId: _random.Next(1,1000000),
+            mediaType:GetRandomString(8),GetRandomString(8) ,
+            mediaSourceId: _random.Next(1, 1000000),
+            mediaSource: _random.Next(1,10000000), GetRandomString(8),
+            dayProgramId: _random.Next(1, 1000000),
+            dayProgram: dayProgram
         );
 
         var errata = new Errata(

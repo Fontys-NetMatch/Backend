@@ -1,5 +1,8 @@
 ﻿using System.Reflection.PortableExecutable;
+using TravelPlanner.Domain.Models.Entities;
 using TravelPlanner.Domain.Models.Entities.Products;
+using TravelPlanner.Domain.Models.Entities.Transport;
+using TravelPlanner.Domain.Models.Entities.UniqueSellingPoints;
 using TravelPlanner.Domain.New_Models.Entities.Facility;
 using TravelPlanner.Domain.New_Models.Entities.Media;
 using TravelPlanner.Domain.New_Models.Entities.Program;
@@ -53,7 +56,7 @@ public class ProductInformation
         List<ProductDescription>? descriptions, List<UniqueSellingPoint>? uniqueSellingPoints, List<string>? tips, 
         HotelLocationAndContactInformation locationAndContactInformation, double? starRating, List<FacilityInformation>? facilities, 
         MediaContext media, DayToDayProgram? dayToDayProgramInformation, List<ProductChildServices>? childServices, 
-        Discountinformation? discountInformation, Errata errata, int? minimumAmountOfTripParticipants, 
+        DiscountInformation? discountInformation, Errata errata, int? minimumAmountOfTripParticipants, 
         int? maximumAmountOfTripParticipants, List<TransportInformation>? transportInformation,
         ProductCharacteristics characteristics, List<DistanceInformation> distances)
     {
