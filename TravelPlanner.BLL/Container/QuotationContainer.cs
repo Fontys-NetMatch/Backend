@@ -54,6 +54,7 @@ public class QuotationContainer: IQuotationContainer
 
         return result;
     }
+    
 
 
     public Task<Quotation?> GetQuotationById(int id)
@@ -63,7 +64,7 @@ public class QuotationContainer: IQuotationContainer
         return _repository.GetByIdAsync(id);
     }
 
-    public async Task<List<Quotation>> GetAllQuotations(QuotationFiltersData filter)
+    public async Task<List<Quotation>> GetAllQuotations()
     {
         var list = await _repository.GetAllAsync();
         if (list.Count == 0)

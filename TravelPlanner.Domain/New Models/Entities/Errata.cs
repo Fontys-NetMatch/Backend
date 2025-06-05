@@ -20,5 +20,17 @@ namespace TravelPlanner.Domain.Models.Entities
 
         [Column(DataType = LinqToDB.DataType.DateTime), Nullable]
         public DateTime? EndDate { get; set; }
+        
+        public Errata(
+            string? title,
+            string? content,
+            DateTime? startDate,
+            DateTime? endDate)
+        {
+            Title = title;
+            Content = content;
+            StartDate = startDate;
+            EndDate = endDate;
+        }
     }
 }

@@ -1,9 +1,9 @@
 ﻿using LinqToDB.Mapping;
-using TravelPlanner.Domain.New_Models.Entities.Media;
+using TravelPlanner.Domain.New_Models.Entities.Program;
 using TravelPlanner.Domain.New_Models.Enums;
+using TravelPlanner.Domain.New_Models.Enums.Enums;
 
-namespace TravelPlanner.Domain.Models.Entities;
-
+namespace TravelPlanner.Domain.New_Models.Entities.Media;
 [Table(Name = "MediaContexts")]
 public class MediaContext
 {
@@ -28,4 +28,23 @@ public class MediaContext
     [Column, NotNull]
     public MediaSource MediaSource { get; set; }
 
+    
+    public MediaContext(
+        int id,
+        string? identifier,
+        string? description,
+        string? title,
+        string? category,
+        MediaType mediaType,
+        MediaSource mediaSource)
+    {
+        Id = id;
+        Identifier = identifier;
+        Description = description;
+        Title = title;
+        Category = category;
+        MediaType = mediaType;
+        MediaSource = mediaSource;
+    }
+    
 }
