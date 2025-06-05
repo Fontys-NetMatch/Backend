@@ -9,9 +9,6 @@ namespace TravelPlanner.Domain.Models.Entities.Transport
         [PrimaryKey, Identity]
         public int Id { get; set; }
 
-        [Column, NotNull]
-        public int TransportInformationId { get; set; } // FK naar TransportInformation
-
         [Column(DataType = LinqToDB.DataType.Text), Nullable]
         public string? Title { get; set; }
 

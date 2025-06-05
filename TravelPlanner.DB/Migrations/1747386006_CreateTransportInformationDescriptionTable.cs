@@ -12,12 +12,6 @@ namespace TravelPlanner.DB.Migrations
         public void Up(DbContext dbContext)
         {
             dbContext.CreateTable<TransportInformationDescription>(tableOptions: TableOptions.CheckExistence);
-
-            dbContext.Execute(@"
-                ALTER TABLE TransportInformationDescriptions
-                ADD CONSTRAINT FK_TransportInformationDescriptions_TransportInformations
-                FOREIGN KEY (TransportInformationId) REFERENCES TransportInformations(Id)
-            ");
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using TravelPlanner.Domain.New_Models.Entities.Media;
+﻿using TravelPlanner.Domain.Models.Entities;
+using TravelPlanner.Domain.New_Models.Entities.Media;
 using TravelPlanner.Domain.New_Models.Enums;
 
 namespace TravelPlanner.Domain.New_Models.Entities.Product;

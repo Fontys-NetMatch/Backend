@@ -1,4 +1,5 @@
-﻿using TravelPlanner.Domain.New_Models.Entities.Media;
+﻿using TravelPlanner.Domain.Models.Entities;
+using TravelPlanner.Domain.New_Models.Entities.Media;
 
 namespace TravelPlanner.Domain.New_Models.Entities.Extra;
 

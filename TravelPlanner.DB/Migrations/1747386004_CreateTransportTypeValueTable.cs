@@ -4,6 +4,7 @@ using TravelPlanner.DB.Lib;
 using TravelPlanner.DB.Lib.MigrationsManager;
 using TravelPlanner.Domain.Enums;
 using TravelPlanner.Domain.Models.Entities.Transport;
+using TravelPlanner.Domain.New_Models.Enums;
 
 namespace TravelPlanner.DB.Migrations
 {
