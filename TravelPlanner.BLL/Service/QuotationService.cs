@@ -10,8 +10,14 @@ using TravelPlanner.Domain.Models.Entities.Products;
 
 namespace TravelPlanner.BLL.Service
 {
-    public class QuotationService(IQuotationContainer service) : IQuotationService
+    public class QuotationService : IQuotationService
     {
+        private readonly IQuotationContainer _service;
+
+        public QuotationService(IQuotationContainer service)
+        {
+            _service = service;
+        }
         public async Task<double> FlatCommision(int id, double money)
         {
             var adjustedAmount = await Calculate(id) + money;
@@ -26,7 +32,7 @@ namespace TravelPlanner.BLL.Service
 
         private async Task<double> Calculate(int id)
         {
-            var products = await service.GetQuotationProducts(id);
+            var products = await _service.GetQuotationProducts(id);
             if (products == null || !products.Any())
                 return 0;
             return products.Sum(p => p.Price);

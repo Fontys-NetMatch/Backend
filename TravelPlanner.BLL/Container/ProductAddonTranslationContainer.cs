@@ -1,5 +1,6 @@
 ﻿using LinqToDB;
 using TravelPlanner.DB;
+using TravelPlanner.DB.Interfaces;
 using TravelPlanner.DB.Repositories;
 using TravelPlanner.Domain.Interfaces.BLL.Container;
 using TravelPlanner.Domain.Models.Entities.Translations;
@@ -8,9 +9,9 @@ namespace TravelPlanner.BLL.Container;
 
 public class ProductAddonTranslationContainer : IProductAddonTranslationContainer
 {
-    private readonly ProductAddonTranslationRepository _repository;
+    private readonly IProductAddonTranslationRepository _repository;
 
-    public ProductAddonTranslationContainer(ProductAddonTranslationRepository repository)
+    public ProductAddonTranslationContainer(IProductAddonTranslationRepository repository)
     {
         _repository = repository;
     }
