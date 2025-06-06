@@ -1,15 +1,17 @@
-﻿using Microsoft.AspNetCore.Mvc.Razor;
-using PDF_Generator;
+﻿using PDF_Generator;
 using TravelPlanner.API.Controllers;
 using TravelPlanner.BLL.Container;
 using TravelPlanner.BLL.Service;
 using TravelPlanner.DB;
+using TravelPlanner.DB.Interfaces;
 using TravelPlanner.DB.Lib;
+using TravelPlanner.DB.Repositories;
 using TravelPlanner.Domain.Interfaces.BLL;
 using TravelPlanner.Domain.Interfaces.BLL.Container;
 using TravelPlanner.Domain.Interfaces.BLL.MockGeneration;
 using TravelPlanner.Domain.Interfaces.BLL.Service;
 using TravelPlanner.Domain.Interfaces.PDF;
+using TravelPlanner.Infrastructure.Repositories;
 
 namespace TravelPlanner.API.StartupUtils;
 
@@ -23,36 +25,49 @@ public static class ServicesProvider
         services.AddTransient<DbManager>();
 
         // Controllers
+        // Controllers
+        services.AddControllersWithViews();
         services.AddTransient<StatusController>();
         services.AddTransient<AuthController>();
         services.AddTransient<ProductController>();
         services.AddTransient<ProductTranslationController>();
         services.AddTransient<QuotationController>();
-        services.AddTransient <ProductImageController>();
+        services.AddTransient<ProductImageController>();
         services.AddTransient<MockController>();
 
         // Containers
-        services.AddSingleton<IAddonDateContainer, AddonDateContainer>();
-        services.AddSingleton<IAuthContainer, AuthContainer>();
-        services.AddSingleton<ICustomerContainer, CustomerContainer>();
-        services.AddSingleton<IProductAddonContainer, ProductAddonContainer>();
-        services.AddSingleton<IProductContainer, ProductContainer>();
-        services.AddSingleton<IProductDateContainer, ProductDateContainer>();
-        services.AddSingleton<IProductImageContainer, ProductImageContainer>();
-        services.AddSingleton<IProductTranslationContainer, ProductTranslationContainer>();
-        services.AddSingleton<IQuotationContainer, QuotationContainer>();
-        services.AddSingleton<IUserContainer, UserContainer>();
+        services.AddTransient<IAddonDateContainer, AddonDateContainer>();
+        services.AddTransient<IAuthContainer, AuthContainer>();
+        services.AddTransient<ICustomerContainer, CustomerContainer>();
+        services.AddTransient<IProductAddonContainer, ProductAddonContainer>();
+        services.AddTransient<IProductContainer, ProductContainer>();
+        services.AddTransient<IProductDateContainer, ProductDateContainer>();
+        services.AddTransient<IProductImageContainer, ProductImageContainer>();
+        services.AddTransient<IProductTranslationContainer, ProductTranslationContainer>();
+        services.AddTransient<IQuotationContainer, QuotationContainer>();
+        services.AddTransient<IUserContainer, UserContainer>();
 
         // Services
-        services.AddRazorPages();
-        services.AddSingleton<IRazorViewToStringRenderer, RazorViewToStringRenderer>();
-        services.AddSingleton<IRazorViewEngine, RazorViewEngine>();
-        services.AddSingleton<IPDFService, PDFService>();
-        services.AddSingleton<IQuotationService, QuotationService>();
-        services.AddSingleton<IProductRestoreService, ProductRestoreService>();
-        services.AddSingleton<IProductDeleteService, ProductDeleteService>();
+        services.AddTransient<IPDFService, PDFService>();
+        services.AddTransient<IQuotationService, QuotationService>();
+        services.AddTransient<IProductRestoreService, ProductRestoreService>();
+        services.AddTransient<IProductDeleteService, ProductDeleteService>();
+        services.AddTransient<IRazorViewToStringRenderer, RazorViewToStringRenderer>();
+
+
+        // Repositories
+        services.AddTransient<IAuthRepository, AuthRepository>();
+        services.AddTransient<IProductRepository, ProductRepository>();
+        services.AddTransient<IProductTranslationRepository, ProductTranslationRepository>();
+        services.AddTransient<IProductImageRepository, ProductImageRepository>();
+        services.AddTransient<IProductDateRepository, ProductDateRepository>();
+        services.AddTransient<IProductAddonRepository, ProductAddonRepository>();
+        services.AddTransient<IUserRepository, UserRepository>();
+        services.AddTransient<IQuotationRepository, QuotationRepository>();
+        services.AddTransient<ICustomerRepository, CustomerRepository>();
+        services.AddTransient<IAddonDateRepository, AddonDateRepository>();
         
         // Mock Generation
-        services.AddScoped<IProductInformationFactory, ProductInformationFactory>();
+        services.AddTransient<IProductInformationFactory, ProductInformationFactory>();
     }
 }

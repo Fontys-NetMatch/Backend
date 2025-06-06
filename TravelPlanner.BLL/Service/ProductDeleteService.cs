@@ -11,22 +11,20 @@ public class ProductDeleteService : IProductDeleteService
     private readonly IProductDateContainer _productDateService;
     private readonly IProductImageContainer _productImageService;
     private readonly IProductTranslationContainer _productTranslationService;
-    private readonly IProductTypeContainer _productTypeService;
 
-    private bool product = false, productdate = false, productimage = false, producttranslation = false, producttype = false;
+    private bool product = false, productdate = false, productimage = false, producttranslation = false;
 
     public ProductDeleteService(
         IProductContainer productService,
         IProductDateContainer productDateService,
         IProductImageContainer productImageService,
-        IProductTranslationContainer productTranslationService,
-        IProductTypeContainer productTypeService)
+        IProductTranslationContainer productTranslationService
+        )
     {
         _productService = productService;
         _productDateService = productDateService;
         _productImageService = productImageService;
         _productTranslationService = productTranslationService;
-        _productTypeService = productTypeService;
     }
 
     public async Task DeleteProduct(int id)
@@ -37,11 +35,9 @@ public class ProductDeleteService : IProductDeleteService
             productdate = await _productDateService.SoftDelete(id);
             productimage = await _productImageService.SoftDelete(id);
             producttranslation = await _productTranslationService.SoftDelete(id);
-            producttype = await _productTypeService.SoftDelete(id);
         }
         catch (Exception e)
         {
-            if (producttype) await _productTypeService.Restore(id);
             if (producttranslation) await _productTranslationService.Restore(id);
             if (productimage) await _productImageService.Restore(id);
             if (productdate) await _productDateService.Restore(id);
