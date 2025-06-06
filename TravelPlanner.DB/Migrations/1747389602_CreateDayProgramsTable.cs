@@ -21,15 +21,6 @@ namespace TravelPlanner.DB.Migrations
                 "GeoCoordinates",  
                 "Id"                 
             );
-
-
-            DbUtils.GenerateForeignKey(
-                dbContext,
-                "MediaContexts",
-                "DayProgramId",
-                "DayPrograms",
-                "Id"
-            );
         }
     }
 }

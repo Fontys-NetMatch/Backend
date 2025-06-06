@@ -29,7 +29,7 @@ public class ProductInformationFactory : IProductInformationFactory
             city: GetRandomString(6),
             address: $"{_random.Next(1, 100)} {GetRandomString(10)} St.",
             telephoneNumber: $"+{_random.Next(1, 100)}-{_random.Next(1000000, 9999999)}",
-            coordinates: new GeoCoordinates(
+            geoCoordinates: new GeoCoordinates(
                 longitude: GetRandomDouble(-180, 180),
                 latitude: GetRandomDouble(-90, 90)
             ),
