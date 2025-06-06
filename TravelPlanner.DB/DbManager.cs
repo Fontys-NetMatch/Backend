@@ -43,6 +43,8 @@ public class DbManager : DbContext
     public ITable<FacilityTypeEntity> FacilityTypes => this.GetTable<FacilityTypeEntity>();
     public ITable<ProductCharacteristics> ProductCharacteristics => this.GetTable<ProductCharacteristics>();
     public ITable<IdentifierTypeEntity> IdentifierTypes => this.GetTable<IdentifierTypeEntity>();
+    public ITable<ProductCodeEntity> ProductCodes => this.GetTable<ProductCodeEntity>();
+
 
 
 
