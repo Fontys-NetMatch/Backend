@@ -23,6 +23,6 @@ namespace TravelPlanner.Domain.Models.Entities.Translations
         public required int ProductTypeId { get; set; }
 
         [Association(ThisKey = nameof(ProductTypeId), OtherKey = nameof(ProductType.Id), CanBeNull = false)]
-        public ProductType ProductType { get; set; } = null!;
+        public ProductTypeEntity ProductType { get; set; } = null!;
     }
 }

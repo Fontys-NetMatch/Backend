@@ -14,7 +14,7 @@ public record ProductResponseWithDates : ProductResponse
         string? endLocation,
         DateTime? deletedAt,
         int productTypeId,
-        Domain.Models.Entities.Products.ProductType productType,
+        Domain.Models.Entities.Products.ProductTypeEntity productType,
         List<ProductTranslationResponse> translations,
         List<ProductDateResponse> dates
     ){

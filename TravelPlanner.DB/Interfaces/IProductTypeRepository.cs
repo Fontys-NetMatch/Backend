@@ -4,10 +4,10 @@ namespace TravelPlanner.DB.Interfaces
 {
     public interface IProductTypeRepository
     {
-        Task<int> CreateAsync(ProductType productType);
-        Task<List<ProductType>> GetAllActiveAsync();
-        Task<List<ProductType>> GetAllAsync();
-        Task<ProductType?> GetByIdAsync(int id);
-        Task<int> UpdateAsync(ProductType productType);
+        Task<int> CreateAsync(ProductTypeEntity productType);
+        Task<List<ProductTypeEntity>> GetAllActiveAsync();
+        Task<List<ProductTypeEntity>> GetAllAsync();
+        Task<ProductTypeEntity?> GetByIdAsync(int id);
+        Task<int> UpdateAsync(ProductTypeEntity productType);
     }
 }

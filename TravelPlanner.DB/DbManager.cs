@@ -22,7 +22,7 @@ public class DbManager : DbContext
     public ITable<Product> Products => this.GetTable<Product>();
     public ITable<ProductTranslation> ProductTranslations => this.GetTable<ProductTranslation>();
     public ITable<ProductImage> ProductImages => this.GetTable<ProductImage>();
-    public ITable<ProductType> ProductTypes => this.GetTable<ProductType>();
+    public ITable<ProductTypeEntity> ProductTypes => this.GetTable<ProductTypeEntity>();
     public ITable<ProductTypeTranslation> ProductTypeTranslations => this.GetTable<ProductTypeTranslation>();
     public ITable<ProductAddon> ProductAddons => this.GetTable<ProductAddon>();
     public ITable<ProductAddonTranslation> ProductAddonTranslations => this.GetTable<ProductAddonTranslation>();
