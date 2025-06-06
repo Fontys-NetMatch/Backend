@@ -18,6 +18,7 @@ namespace TravelPlanner.DB.Repositories
                 .LoadWith(p => p.ProductType.Translations)
                 .LoadWith(p => p.Translations)
                 .LoadWith(p => p.Dates)
+                .LoadWith(p => p.Images)
                 .FirstOrDefaultAsync(p => p.Id == id);
 
         public Task<List<Product>> GetFilteredAsync(ProductFiltersData filters)
