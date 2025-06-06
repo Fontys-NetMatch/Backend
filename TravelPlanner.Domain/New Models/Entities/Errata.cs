@@ -3,7 +3,7 @@ using LinqToDB.Mapping;
 
 namespace TravelPlanner.Domain.Models.Entities
 {
-    [Table("Errata")]
+    [Table("Erratas")]
     public class Errata
     {
         [PrimaryKey, Identity]

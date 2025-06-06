@@ -2,7 +2,7 @@
 
 namespace TravelPlanner.Domain.Models.Entities
 {
-    [Table("ExtraOption")]
+    [Table("ExtraOptions")]
     public class ExtraOption
     {
         [PrimaryKey, Identity]
