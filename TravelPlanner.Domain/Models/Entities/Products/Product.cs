@@ -32,4 +32,8 @@ public record Product
     [Association(ThisKey = nameof(Id), OtherKey = nameof(ProductTranslation.ProductId))]
     public List<ProductTranslation> Translations { get; init; } = null!;
 
+
+    [Association(ThisKey = nameof(Id), OtherKey = nameof(ProductImage.ProductId))]
+    public List<ProductImage> Images { get; set; } = new();
+
 }

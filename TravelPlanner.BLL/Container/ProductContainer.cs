@@ -25,8 +25,23 @@ public class ProductContainer : IProductContainer
 
     public async Task<Product?> GetById(int id)
     {
+<<<<<<< Updated upstream
         if (id <= 0) throw new ArgumentException("Invalid product Id", nameof(id));
         return await repository.GetByIdAsync(id);
+=======
+        if (id <= 0)
+        {
+            throw new ArgumentException("Invalid product Id", nameof(id));
+        }
+
+        return await _db.Products
+            .LoadWith(p => p.ProductType)
+            .LoadWith(p => p.ProductType.Translations)
+            .LoadWith(p => p.Translations)
+            .LoadWith(p => p.Dates)
+            .LoadWith(p => p.Images)
+            .FirstOrDefaultAsync(p => p.Id == id);
+>>>>>>> Stashed changes
     }
 
     public async Task<List<Product>> GetAll(ProductFiltersData filters)
