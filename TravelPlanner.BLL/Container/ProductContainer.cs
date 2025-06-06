@@ -35,9 +35,13 @@ public class ProductContainer : IProductContainer
         return products ?? throw new InvalidOperationException("No products found");
     }
 
-    public async Task Create(ProductData data)
+    public async Task<int> Create(ProductData data)
     {
-        if (data.ProductTypeId <= 0) throw new ArgumentException("Invalid product type Id");
+        if (data == null)
+            throw new ArgumentNullException(nameof(data), "Product data cannot be null");
+
+        if (data.ProductTypeId <= 0)
+            throw new ArgumentException("Invalid product type Id", nameof(data.ProductTypeId));
 
         var product = new Product
         {
@@ -47,9 +51,13 @@ public class ProductContainer : IProductContainer
             ProductTypeId = data.ProductTypeId
         };
 
-        if (await repository.CreateAsync(product) <= 0)
+        var result = await repository.CreateAsync(product);
+        if (result <= 0)
             throw new InvalidOperationException("Failed to create product");
+
+        return result;
     }
+
 
     public async Task Update(int id, ProductData data)
     {
