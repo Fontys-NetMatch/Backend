@@ -9,7 +9,7 @@ using TravelPlanner.Domain.Models.Entities.Product;
 
 namespace TravelPlanner.Domain.Models.Entities.Translations
 {
-    [Table("ProductAddonTranslation")]
+    [Table("ProductAddonTranslations")]
     public record ProductAddonTranslation
     {
 
