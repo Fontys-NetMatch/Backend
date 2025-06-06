@@ -15,34 +15,30 @@ public class ProductTypeRepository : IProductTypeRepository
         _db = db;
     }
 
-    public Task<ProductType?> GetByIdAsync(int id)
+    public Task<ProductTypeEntity?> GetByIdAsync(int id)
     {
         return _db.ProductTypes
-                  .LoadWith(p => p.Translations)
                   .FirstOrDefaultAsync(p => p.Id == id);
     }
 
-    public Task<List<ProductType>> GetAllAsync()
+    public Task<List<ProductTypeEntity>> GetAllAsync()
     {
         return _db.ProductTypes
-                  .LoadWith(p => p.Translations)
                   .ToListAsync();
     }
 
-    public Task<List<ProductType>> GetAllActiveAsync()
+    public Task<List<ProductTypeEntity>> GetAllActiveAsync()
     {
         return _db.ProductTypes
-                  .Where(p => p.IsActive)
-                  .LoadWith(p => p.Translations)
                   .ToListAsync();
     }
 
-    public Task<int> CreateAsync(ProductType productType)
+    public Task<int> CreateAsync(ProductTypeEntity productType)
     {
         return _db.InsertWithInt32IdentityAsync(productType);
     }
 
-    public Task<int> UpdateAsync(ProductType productType)
+    public Task<int> UpdateAsync(ProductTypeEntity productType)
     {
         return _db.UpdateAsync(productType);
     }

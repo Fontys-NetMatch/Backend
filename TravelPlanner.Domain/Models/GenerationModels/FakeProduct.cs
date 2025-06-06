@@ -2,6 +2,7 @@
 using TravelPlanner.Domain.Models.Entities.Products;
 using TravelPlanner.Domain.Models.Entities.Translations;
 using TravelPlanner.Domain.Models.Request.Product;
+using TravelPlanner.Domain.New_Models.Enums;
 
 namespace TravelPlanner.Domain.Models.GenerationModels;
 
@@ -12,7 +13,7 @@ public record FakeProduct
 
     public string? EndLocation { get; init; }
 
-    public string ProductTypeName { get; init; } = null!;
+    public ProductType ProductType { get; init; }
 
     public List<ProductTranslation> Translations { get; init; } = null!;
 

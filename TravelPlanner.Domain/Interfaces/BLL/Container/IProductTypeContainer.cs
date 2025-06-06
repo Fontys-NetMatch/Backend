@@ -13,9 +13,9 @@ namespace TravelPlanner.Domain.Interfaces.BLL.Container
     public interface IProductTypeContainer
     {
 
-        Task<List<ProductType>> GetAll();
-        Task<List<ProductType>> GetAllActive();
-        Task<ProductType?> GetById(int id);
+        Task<List<ProductTypeEntity>> GetAll();
+        Task<List<ProductTypeEntity>> GetAllActive();
+        Task<ProductTypeEntity?> GetById(int id);
         Task Create(ProductTypeData product);
         Task Update(int id, ProductTypeData product);
         Task<bool> SoftDelete(int id);
