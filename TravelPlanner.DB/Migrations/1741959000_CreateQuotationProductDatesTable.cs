@@ -6,7 +6,7 @@ using TravelPlanner.Domain.Models.Entities;
 
 namespace TravelPlanner.DB.Migrations;
 
-public class CreateQuotationProductDates : IMigration
+public class CreateQuotationProductDatesTable : IMigration
 {
     public void Up(DbContext dbContext)
     {

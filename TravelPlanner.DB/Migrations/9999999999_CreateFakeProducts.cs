@@ -7,6 +7,7 @@ using TravelPlanner.Domain.Models.Entities;
 using TravelPlanner.Domain.Models.Entities.Products;
 using TravelPlanner.Domain.Models.Entities.Translations;
 using TravelPlanner.Domain.Models.GenerationModels;
+using TravelPlanner.Domain.New_Models.Enums;
 
 namespace TravelPlanner.DB.Migrations;
 
@@ -14,123 +15,12 @@ namespace TravelPlanner.DB.Migrations;
 public class CreateFakeProducts : IMigration
 {
 
-    private List<ProductType> ProductTypes = [
-        new ProductType
-        {
-            IsActive = true,
-            Translations = new List<ProductTypeTranslation>
-            {
-                new ProductTypeTranslation { LangIsoCode = "en", Name = "Flight", IsActive = true, ProductTypeId = 0 },
-                new ProductTypeTranslation { LangIsoCode = "nl", Name = "Vlucht", IsActive = true, ProductTypeId = 0 }
-            }
-        },
-        new ProductType
-        {
-            IsActive = true,
-            Translations = new List<ProductTypeTranslation>
-            {
-                new ProductTypeTranslation { LangIsoCode = "en", Name = "Hotel", IsActive = true, ProductTypeId = 0 },
-                new ProductTypeTranslation { LangIsoCode = "nl", Name = "Hotel", IsActive = true, ProductTypeId = 0 }
-            }
-        },
-        new ProductType
-        {
-            IsActive = true,
-            Translations = new List<ProductTypeTranslation>
-            {
-                new ProductTypeTranslation { LangIsoCode = "en", Name = "Hostel", IsActive = true, ProductTypeId = 0 },
-                new ProductTypeTranslation { LangIsoCode = "nl", Name = "Hostel", IsActive = true, ProductTypeId = 0 }
-            }
-        },
-        new ProductType
-        {
-            IsActive = true,
-            Translations = new List<ProductTypeTranslation>
-            {
-                new ProductTypeTranslation { LangIsoCode = "en", Name = "Car", IsActive = true, ProductTypeId = 0 },
-                new ProductTypeTranslation { LangIsoCode = "nl", Name = "Auto", IsActive = true, ProductTypeId = 0 }
-            }
-        },
-        new ProductType
-        {
-            IsActive = true,
-            Translations = new List<ProductTypeTranslation>
-            {
-                new ProductTypeTranslation { LangIsoCode = "en", Name = "Exhibit", IsActive = true, ProductTypeId = 0 },
-                new ProductTypeTranslation { LangIsoCode = "nl", Name = "Tentoonstelling", IsActive = true, ProductTypeId = 0 }
-            }
-        },
-        new ProductType
-        {
-            IsActive = true,
-            Translations = new List<ProductTypeTranslation>
-            {
-                new ProductTypeTranslation { LangIsoCode = "en", Name = "Cruise", IsActive = true, ProductTypeId = 0 },
-                new ProductTypeTranslation { LangIsoCode = "nl", Name = "Cruise", IsActive = true, ProductTypeId = 0 }
-            }
-        },
-        new ProductType
-        {
-            IsActive = true,
-            Translations = new List<ProductTypeTranslation>
-            {
-                new ProductTypeTranslation { LangIsoCode = "en", Name = "Bus", IsActive = true, ProductTypeId = 0 },
-                new ProductTypeTranslation { LangIsoCode = "nl", Name = "Bus", IsActive = true, ProductTypeId = 0 }
-            }
-        },
-        new ProductType
-        {
-            IsActive = true,
-            Translations = new List<ProductTypeTranslation>
-            {
-                new ProductTypeTranslation { LangIsoCode = "en", Name = "Train", IsActive = true, ProductTypeId = 0 },
-                new ProductTypeTranslation { LangIsoCode = "nl", Name = "Trein", IsActive = true, ProductTypeId = 0 }
-            }
-        },
-        new ProductType
-        {
-            IsActive = true,
-            Translations = new List<ProductTypeTranslation>
-            {
-                new ProductTypeTranslation { LangIsoCode = "en", Name = "Restaurant Booking", IsActive = true, ProductTypeId = 0 },
-                new ProductTypeTranslation { LangIsoCode = "nl", Name = "Restaurantreservering", IsActive = true, ProductTypeId = 0 }
-            }
-        },
-        new ProductType
-        {
-            IsActive = true,
-            Translations = new List<ProductTypeTranslation>
-            {
-                new ProductTypeTranslation { LangIsoCode = "en", Name = "Event", IsActive = true, ProductTypeId = 0 },
-                new ProductTypeTranslation { LangIsoCode = "nl", Name = "Evenement", IsActive = true, ProductTypeId = 0 }
-            }
-        },
-        new ProductType
-        {
-            IsActive = true,
-            Translations = new List<ProductTypeTranslation>
-            {
-                new ProductTypeTranslation { LangIsoCode = "en", Name = "Insurance", IsActive = true, ProductTypeId = 0 },
-                new ProductTypeTranslation { LangIsoCode = "nl", Name = "Verzekering", IsActive = true, ProductTypeId = 0 }
-            }
-        },
-        new ProductType
-        {
-            IsActive = true,
-            Translations = new List<ProductTypeTranslation>
-            {
-                new ProductTypeTranslation { LangIsoCode = "en", Name = "Guided Tour", IsActive = true, ProductTypeId = 0 },
-                new ProductTypeTranslation { LangIsoCode = "nl", Name = "Gids Tour", IsActive = true, ProductTypeId = 0 }
-            }
-        }
-    ];
-
     private List<FakeProduct> Products = [
         new FakeProduct
         {
             StartLocation = "Amsterdam",
             EndLocation = "New York",
-            ProductTypeName = "Flight",
+            ProductType = ProductType.Package,
             Translations = new List<ProductTranslation>
             {
                 new ProductTranslation { LangIsoCode = "en", Name = "Flight to NYC", Description = "Direct flight from Amsterdam to New York.", Tags = new List<string>(){ "flight", "usa", "travel" }, IsActive = true, ProductId = 0 },
@@ -147,7 +37,7 @@ public class CreateFakeProducts : IMigration
         {
             StartLocation = "Berlin",
             EndLocation = "Munich",
-            ProductTypeName = "Train",
+            ProductType = ProductType.HolidayPark,
             Translations = new List<ProductTranslation>
             {
                 new ProductTranslation { LangIsoCode = "en", Name = "Train Berlin to Munich", Description = "High-speed train journey through Germany.", Tags = new List<string>(){ "train", "germany", "fast" }, IsActive = true, ProductId = 0 },
@@ -164,7 +54,7 @@ public class CreateFakeProducts : IMigration
         {
             StartLocation = "Rome",
             EndLocation = "Rome",
-            ProductTypeName = "Hotel",
+            ProductType = ProductType.Hotel,
             Translations = new List<ProductTranslation>
             {
                 new ProductTranslation { LangIsoCode = "en", Name = "Rome Grand Hotel", Description = "5-star luxury hotel in the heart of Rome.", Tags = new List<string>(){ "hotel", "rome", "luxury" }, IsActive = true, ProductId = 0 },
@@ -181,7 +71,7 @@ public class CreateFakeProducts : IMigration
         {
             StartLocation = "Paris",
             EndLocation = "Barcelona",
-            ProductTypeName = "Bus",
+            ProductType = ProductType.Package,
             Translations = new List<ProductTranslation>
             {
                 new ProductTranslation { LangIsoCode = "en", Name = "Bus Paris to Barcelona", Description = "Affordable ride from Paris to Barcelona.", Tags = new List<string>(){ "bus", "cheap", "spain" }, IsActive = true, ProductId = 0 },
@@ -198,7 +88,7 @@ public class CreateFakeProducts : IMigration
         {
             StartLocation = "London",
             EndLocation = "London",
-            ProductTypeName = "Car",
+            ProductType = ProductType.Package,
             Translations = new List<ProductTranslation>
             {
                 new ProductTranslation { LangIsoCode = "en", Name = "London Car Rental", Description = "Rent a car in London for your adventure.", Tags = new List<string>(){ "car", "rental", "london" }, IsActive = true, ProductId = 0 },
@@ -215,7 +105,7 @@ public class CreateFakeProducts : IMigration
         {
             StartLocation = "Oslo",
             EndLocation = "Copenhagen",
-            ProductTypeName = "Cruise",
+            ProductType = ProductType.HolidayPark,
             Translations = new List<ProductTranslation>
             {
                 new ProductTranslation { LangIsoCode = "en", Name = "Oslo-Copenhagen Cruise", Description = "Beautiful fjord cruise between Oslo and Copenhagen.", Tags = new List<string>(){ "cruise", "norway", "denmark" }, IsActive = true, ProductId = 0 },
@@ -232,7 +122,7 @@ public class CreateFakeProducts : IMigration
         {
             StartLocation = "Madrid",
             EndLocation = "Lisbon",
-            ProductTypeName = "Guided Tour",
+            ProductType = ProductType.Hotel,
             Translations = new List<ProductTranslation>
             {
                 new ProductTranslation { LangIsoCode = "en", Name = "Madrid Walking Tour", Description = "Guided tour through the historic streets of Madrid.", Tags = new List<string>(){ "tour", "spain", "guide" }, IsActive = true, ProductId = 0 },
@@ -249,7 +139,7 @@ public class CreateFakeProducts : IMigration
         {
             StartLocation = "Prague",
             EndLocation = "Vienna",
-            ProductTypeName = "Exhibit",
+            ProductType = ProductType.HolidayPark,
             Translations = new List<ProductTranslation>
             {
                 new ProductTranslation { LangIsoCode = "en", Name = "Budget Hostel in Prague", Description = "Stay in a cozy hostel in Prague.", Tags = new List<string>(){ "hostel", "prague", "budget" }, IsActive = true, ProductId = 0 },
@@ -266,7 +156,7 @@ public class CreateFakeProducts : IMigration
         {
             StartLocation = "Athens",
             EndLocation = "Santorini",
-            ProductTypeName = "Flight",
+            ProductType = ProductType.Package,
             Translations = new List<ProductTranslation>
             {
                 new ProductTranslation { LangIsoCode = "en", Name = "Flight Athens to Santorini", Description = "Fly between Greek islands.", Tags = new List<string>(){ "flight", "greece", "islands" }, IsActive = true, ProductId = 0 },
@@ -283,7 +173,7 @@ public class CreateFakeProducts : IMigration
         {
             StartLocation = "Brussels",
             EndLocation = "Antwerp",
-            ProductTypeName = "Event",
+            ProductType = ProductType.Hotel,
             Translations = new List<ProductTranslation>
             {
                 new ProductTranslation { LangIsoCode = "en", Name = "Live Music in Brussels", Description = "Event with top artists performing live.", Tags = new List<string>(){ "event", "music", "brussels" }, IsActive = true, ProductId = 0 },
@@ -300,7 +190,7 @@ public class CreateFakeProducts : IMigration
         {
             StartLocation = "Zurich",
             EndLocation = "Geneva",
-            ProductTypeName = "Restaurant Booking",
+            ProductType = ProductType.Package,
             Translations = new List<ProductTranslation>
             {
                 new ProductTranslation { LangIsoCode = "en", Name = "Restaurant Reservation Zurich", Description = "Book a table in top Zurich restaurants.", Tags = new List<string>(){ "food", "reservation", "zurich" }, IsActive = true, ProductId = 0 },
@@ -317,7 +207,7 @@ public class CreateFakeProducts : IMigration
         {
             StartLocation = "Helsinki",
             EndLocation = "Stockholm",
-            ProductTypeName = "Exhibit",
+            ProductType = ProductType.HolidayPark,
             Translations = new List<ProductTranslation>
             {
                 new ProductTranslation { LangIsoCode = "en", Name = "Art Exhibit in Stockholm", Description = "Explore modern art in the Nordic region.", Tags = new List<string>(){ "exhibit", "art", "sweden" }, IsActive = true, ProductId = 0 },
@@ -334,7 +224,7 @@ public class CreateFakeProducts : IMigration
         {
             StartLocation = "Dublin",
             EndLocation = "Cork",
-            ProductTypeName = "Insurance",
+            ProductType = ProductType.Package,
             Translations = new List<ProductTranslation>
             {
                 new ProductTranslation { LangIsoCode = "en", Name = "Travel Insurance Ireland", Description = "Comprehensive insurance for your trip.", Tags = new List<string>(){ "insurance", "ireland", "travel" }, IsActive = true, ProductId = 0 },
@@ -351,7 +241,7 @@ public class CreateFakeProducts : IMigration
         {
             StartLocation = "Venice",
             EndLocation = "Florence",
-            ProductTypeName = "Hotel",
+            ProductType = ProductType.Hotel,
             Translations = new List<ProductTranslation>
             {
                 new ProductTranslation { LangIsoCode = "en", Name = "Venice Lagoon Hotel", Description = "Charming stay on the canals of Venice.", Tags = new List<string>(){ "hotel", "venice", "romantic" }, IsActive = true, ProductId = 0 },
@@ -368,7 +258,7 @@ public class CreateFakeProducts : IMigration
         {
             StartLocation = "Nice",
             EndLocation = "Marseille",
-            ProductTypeName = "Hostel",
+            ProductType = ProductType.Package,
             Translations = new List<ProductTranslation>
             {
                 new ProductTranslation { LangIsoCode = "en", Name = "Hostel near Marseille Beach", Description = "Budget-friendly hostel by the sea.", Tags = new List<string>(){ "hostel", "marseille", "beach" }, IsActive = true, ProductId = 0 },
@@ -385,7 +275,7 @@ public class CreateFakeProducts : IMigration
         {
             StartLocation = "Frankfurt",
             EndLocation = "Berlin",
-            ProductTypeName = "Flight",
+            ProductType = ProductType.Hotel,
             Translations = new List<ProductTranslation>
             {
                 new ProductTranslation { LangIsoCode = "en", Name = "Frankfurt-Berlin Flight", Description = "Business-class flight within Germany.", Tags = new List<string>(){ "flight", "berlin", "germany" }, IsActive = true, ProductId = 0 },
@@ -402,7 +292,7 @@ public class CreateFakeProducts : IMigration
         {
             StartLocation = "Edinburgh",
             EndLocation = "Glasgow",
-            ProductTypeName = "Train",
+            ProductType = ProductType.HolidayPark,
             Translations = new List<ProductTranslation>
             {
                 new ProductTranslation { LangIsoCode = "en", Name = "Scenic Train in Scotland", Description = "Ride through the Scottish highlands.", Tags = new List<string>(){ "train", "scotland", "view" }, IsActive = true, ProductId = 0 },
@@ -419,7 +309,7 @@ public class CreateFakeProducts : IMigration
         {
             StartLocation = "Reykjavik",
             EndLocation = "Akureyri",
-            ProductTypeName = "Guided Tour",
+            ProductType = ProductType.Package,
             Translations = new List<ProductTranslation>
             {
                 new ProductTranslation { LangIsoCode = "en", Name = "Icelandic Adventure Tour", Description = "Explore volcanoes and glaciers with a guide.", Tags = new List<string>(){ "tour", "iceland", "adventure" }, IsActive = true, ProductId = 0 },
@@ -436,7 +326,7 @@ public class CreateFakeProducts : IMigration
         {
             StartLocation = "Warsaw",
             EndLocation = "Krakow",
-            ProductTypeName = "Bus",
+            ProductType = ProductType.Package,
             Translations = new List<ProductTranslation>
             {
                 new ProductTranslation { LangIsoCode = "en", Name = "Polish Express Bus", Description = "Efficient travel between Warsaw and Krakow.", Tags = new List<string>(){ "bus", "poland", "express" }, IsActive = true, ProductId = 0 },
@@ -453,7 +343,7 @@ public class CreateFakeProducts : IMigration
         {
             StartLocation = "Lisbon",
             EndLocation = "Porto",
-            ProductTypeName = "Car",
+            ProductType = ProductType.Hotel,
             Translations = new List<ProductTranslation>
             {
                 new ProductTranslation { LangIsoCode = "en", Name = "Lisbon Car Hire", Description = "Rent a car and explore the coast.", Tags = new List<string>(){ "car", "lisbon", "hire" }, IsActive = true, ProductId = 0 },
@@ -471,26 +361,14 @@ public class CreateFakeProducts : IMigration
     public void Up(DbContext dbContext)
     {
 
-        foreach (var productType in ProductTypes)
-        {
-            var productTypeId = dbContext.InsertWithInt32Identity(productType);
-            productType.Id = productTypeId;
 
-            foreach (var productTypeTranslation in productType.Translations)
-            {
-                productTypeTranslation.ProductTypeId = productTypeId;
-                dbContext.InsertWithInt32Identity(productTypeTranslation);
-            }
-
-            Console.WriteLine("Inserted product type: " + productType.Translations[0].Name);
-        }
 
         foreach (var product in Products)
         {
-            var productType = ProductTypes.Find(x => x.Translations[0].Name == product.ProductTypeName);
-            if (productType == null)
+            int TypeID = ((int)product.ProductType);
+            if (product.ProductType == null)
             {
-                Console.WriteLine("Product type not found: " + product.ProductTypeName);
+                Console.WriteLine("Product type not found: " + product.ProductType);
                 continue;
             }
 
@@ -498,7 +376,7 @@ public class CreateFakeProducts : IMigration
             {
                 StartLocation = product.StartLocation,
                 EndLocation = product.EndLocation,
-                ProductTypeId = productType.Id,
+                ProductTypeId = TypeID,
                 DeletedAt = null
             };
             var productId = dbContext.InsertWithInt32Identity(dbProduct);

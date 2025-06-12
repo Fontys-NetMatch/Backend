@@ -13,7 +13,6 @@ public static class Router
         ProductController.Register(app);
         ProductTranslationController.Register(app);
 
-        ProductTypeController.Register(app);
 
         QuotationController.Register(app);
         CustomerController.Register(app);

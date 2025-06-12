@@ -15,7 +15,7 @@ public record ProductResponse : BaseResponse
 
     public int ProductTypeId { get; set; }
 
-    public Domain.Models.Entities.Products.ProductType ProductType { get; set; } = null!;
+    public Domain.Models.Entities.Products.ProductTypeEntity ProductType { get; set; } = null!;
 
     public List<ProductTranslationResponse> Translations { get; set; } = null!;
 
@@ -29,7 +29,7 @@ public record ProductResponse : BaseResponse
         string? endLocation,
         DateTime? deletedAt,
         int productTypeId,
-        Domain.Models.Entities.Products.ProductType productType,
+        Domain.Models.Entities.Products.ProductTypeEntity productType,
         List<ProductTranslationResponse> translations
     ){
         Id = id;

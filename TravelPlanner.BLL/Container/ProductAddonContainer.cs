@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using LinqToDB;
 using TravelPlanner.DB;
+using TravelPlanner.DB.Interfaces;
 using TravelPlanner.DB.Repositories;
 using TravelPlanner.Domain.Interfaces.BLL.Container;
 using TravelPlanner.Domain.Models.Entities.Product;
@@ -12,9 +13,9 @@ namespace TravelPlanner.BLL.Container
 {
     public class ProductAddonContainer : IProductAddonContainer
     {
-        private readonly ProductAddonRepository _repository;
+        private readonly IProductAddonRepository _repository;
 
-        public ProductAddonContainer(ProductAddonRepository repository)
+        public ProductAddonContainer(IProductAddonRepository repository)
         {
             _repository = repository;
         }

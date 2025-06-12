@@ -24,7 +24,7 @@ public record Product
     public int ProductTypeId { get; set; }
 
     [Association(ThisKey = nameof(ProductTypeId), OtherKey = nameof(ProductType.Id))]
-    public ProductType ProductType { get; set; } = null!;
+    public ProductTypeEntity ProductType { get; set; } = null!;
 
     [Association(ThisKey = nameof(Id), OtherKey = nameof(ProductDate.ProductId))]
     public List<ProductDate> Dates { get; set; } = null!;

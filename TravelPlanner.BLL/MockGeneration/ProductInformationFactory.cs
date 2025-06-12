@@ -1,15 +1,23 @@
 ﻿using TravelPlanner.Domain.Interfaces.BLL.MockGeneration;
 using TravelPlanner.Domain.Models.Entities;
+using TravelPlanner.Domain.Models.Entities.Products;
 using TravelPlanner.Domain.New_Models.Entities;
 using TravelPlanner.Domain.New_Models.Entities.Media;
 using TravelPlanner.Domain.New_Models.Entities.Product;
 using TravelPlanner.Domain.New_Models.Enums;
 using TravelPlanner.Domain.New_Models.Enums.Enums;
+using ProductType = TravelPlanner.Domain.New_Models.Enums.ProductType;
 
 public class ProductInformationFactory : IProductInformationFactory
 {
     private readonly Random _random = new();
+    
 
+    public ProductInformationFactory()
+    {
+        
+    }
+    
     public ProductInformation GenerateRandom()
     {
         var type = GetRandomEnum<ProductType>();

@@ -46,8 +46,6 @@ public class MigrationManager
 
         migrations = migrations.OrderBy(t => long.TryParse(t.Name.Split('_')[0], out var timestamp) ? timestamp : long.MaxValue).ToList();
 
-
-
         foreach (var migration in migrations)
         {
             // Check if migration is already applied
@@ -55,6 +53,8 @@ public class MigrationManager
             var forceOnDev = migration.GetCustomAttribute<ForceOnDev>() != null;
             var forceMigration = forceOnDev && config.IsDevMode();
             var devOnly = migration.GetCustomAttribute<DevOnly>() != null;
+            
+            if(migrationName == "<>c") continue;
 
             if (devOnly && !config.IsDevMode())
             {

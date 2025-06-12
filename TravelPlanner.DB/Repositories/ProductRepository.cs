@@ -15,7 +15,6 @@ namespace TravelPlanner.DB.Repositories
         public Task<Product?> GetByIdAsync(int id) =>
             db.Products
                 .LoadWith(p => p.ProductType)
-                .LoadWith(p => p.ProductType.Translations)
                 .LoadWith(p => p.Translations)
                 .LoadWith(p => p.Dates)
                 .LoadWith(p => p.Images)
@@ -62,7 +61,7 @@ namespace TravelPlanner.DB.Repositories
 
             return query
                 .LoadWith(p => p.ProductType)
-                .LoadWith(p => p.ProductType.Translations)
+                .LoadWith(p => p.ProductType)
                 .LoadWith(p => p.Translations)
                 .LoadWith(p => p.Dates)
                 .ToListAsync();

@@ -6,6 +6,7 @@ using System.Linq;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using TravelPlanner.DB.Interfaces;
 using TravelPlanner.Domain.Interfaces.BLL.Container;
 using TravelPlanner.Domain.Models.Entities.Products;
 using TravelPlanner.Domain.Models.Entities.Translations;
@@ -17,9 +18,9 @@ namespace TravelPlanner.BLL.Container;
 
 public class ProductTypeContainer: IProductTypeContainer
 {
-    private readonly ProductTypeRepository _repository;
+    private readonly IProductTypeRepository _repository;
 
-    public ProductTypeContainer(ProductTypeRepository repository)
+    public ProductTypeContainer(IProductTypeRepository repository)
     {
         _repository = repository;
     }

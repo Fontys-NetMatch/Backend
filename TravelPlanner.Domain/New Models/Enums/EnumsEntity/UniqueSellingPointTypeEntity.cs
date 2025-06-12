@@ -5,7 +5,7 @@ namespace TravelPlanner.Domain.Models.Entities.UniqueSellingPoints
     [Table("UniqueSellingPointTypes")]
     public class UniqueSellingPointTypeEntity
     {
-        [PrimaryKey]
+        [Column, PrimaryKey]
         public int Id { get; set; }
 
         [Column, NotNull]

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using LinqToDB;
 using TravelPlanner.DB;
+using TravelPlanner.DB.Interfaces;
 using TravelPlanner.Domain.Models.Entities;
 using TravelPlanner.Domain.Interfaces.BLL;
 using TravelPlanner.Domain.Interfaces.BLL.Container;
@@ -14,9 +15,9 @@ namespace TravelPlanner.BLL.Container;
 
 public class UserContainer : IUserContainer
 {
-    private readonly UserRepository _repository;
+    private readonly IUserRepository _repository;
 
-    public UserContainer(UserRepository repository)
+    public UserContainer(IUserRepository repository)
     {
         _repository = repository;
     }
