@@ -9,7 +9,7 @@ namespace TravelPlanner.Domain.Models.Entities.Products;
 public record ProductTypeEntity
 {
 
-    [Column, PrimaryKey, Identity]
+    [Column, PrimaryKey]
     public int Id { get; set; }
 
     [Column, NotNull]

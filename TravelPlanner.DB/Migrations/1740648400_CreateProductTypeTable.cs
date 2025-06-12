@@ -9,7 +9,7 @@ using TravelPlanner.Domain.New_Models.Enums;
 
 namespace TravelPlanner.DB.Migrations;
 
-public class CreateProductType : IMigration
+public class CreateProductTypeTable : IMigration
 {
     public void Up(DbContext dbContext)
     {
@@ -25,7 +25,7 @@ public class CreateProductType : IMigration
 
         foreach (var type in Types)
         {
-            dbContext.Insert(type);
+            dbContext.InsertOrReplace(type);
         }
     }
 }

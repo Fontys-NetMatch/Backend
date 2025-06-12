@@ -8,7 +8,7 @@ using TravelPlanner.Domain.Models.Entities.Translations;
 
 namespace TravelPlanner.DB.Migrations;
 
-public class CreateProductTypesTranslations : IMigration
+public class CreateProductTypesTranslationsTable : IMigration
 {
     public void Up(DbContext dbContext)
     {
