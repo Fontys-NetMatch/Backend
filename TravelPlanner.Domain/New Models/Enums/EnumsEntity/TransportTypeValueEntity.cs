@@ -5,7 +5,7 @@ namespace TravelPlanner.Domain.Models.Entities.Transport
     [Table("TransportTypeValues")]
     public class TransportTypeValueEntity
     {
-        [PrimaryKey]
+        [Column, PrimaryKey]
         public int Id { get; set; }
 
         [Column, NotNull]

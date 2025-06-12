@@ -10,7 +10,7 @@ namespace TravelPlanner.Domain.Models.Entities
     [Table("RoomTypes")]
     public class RoomTypeEntity
     {
-        [PrimaryKey]
+        [Column, PrimaryKey]
         public int Id { get; set; }
 
         [Column, NotNull]
