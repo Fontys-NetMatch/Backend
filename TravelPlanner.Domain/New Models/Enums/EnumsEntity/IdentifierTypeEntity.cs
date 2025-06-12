@@ -10,7 +10,7 @@ namespace TravelPlanner.Domain.New_Models.Enums.EnumsEntity
     [Table("IdentifierTypes")]
     public class IdentifierTypeEntity
     {
-        [PrimaryKey]
+        [Column, PrimaryKey]
         public int Id { get; set; }
 
         [Column, NotNull]

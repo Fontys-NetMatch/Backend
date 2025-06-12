@@ -6,7 +6,7 @@ using TravelPlanner.Domain.New_Models.Enums;
 
 namespace TravelPlanner.DB.Migrations
 {
-    public class CreateContentSupplierTable : IMigration
+    public class CreateContentSuppliersTable : IMigration
     {
         public void Up(DbContext dbContext)
         {
@@ -22,7 +22,7 @@ namespace TravelPlanner.DB.Migrations
 
             foreach (var supplier in suppliers)
             {
-                dbContext.Insert(supplier);
+                dbContext.InsertOrReplace(supplier);
             }
 
         }

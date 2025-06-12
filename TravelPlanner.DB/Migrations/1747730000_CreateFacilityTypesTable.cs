@@ -27,7 +27,7 @@ namespace TravelPlanner.DB.Migrations
 
             foreach (var t in types)
             {
-                dbContext.Insert(t);
+                dbContext.InsertOrReplace(t);
             }
         }
     }
