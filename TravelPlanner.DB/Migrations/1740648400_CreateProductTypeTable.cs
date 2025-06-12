@@ -14,11 +14,26 @@ public class CreateProductType : IMigration
     {
         dbContext.CreateTable<ProductType>(tableOptions: TableOptions.CheckExistence);
 
+<<<<<<< Updated upstream
         DbUtils.AssignDefaultValue(
             dbContext,
             "ProductTypes",
             "IsActive",
             true
         );
+=======
+        var Types = Enum.GetValues(typeof(ProductType))    
+                            .Cast<ProductType>()
+                            .Select(e => new ProductTypeEntity
+                            {
+                                Id = (int)e,
+                                Name = e.ToString()
+                            });
+
+        foreach (var type in Types)
+        {
+            dbContext.Insert(type);
+        }
+>>>>>>> Stashed changes
     }
 }
