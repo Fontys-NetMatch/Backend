@@ -1,7 +1,6 @@
 ﻿using LinqToDB;
 using Microsoft.AspNetCore.Mvc;
 using TravelPlanner.DB;
-using TravelPlanner.DB.Interfaces;
 using TravelPlanner.Domain.Enums;
 using TravelPlanner.Domain.Interfaces.BLL;
 using TravelPlanner.Domain.Interfaces.BLL.Container;
@@ -15,10 +14,10 @@ namespace TravelPlanner.BLL.Container;
 
 public class QuotationContainer: IQuotationContainer
 {
-    private readonly IQuotationRepository _repository;
+    private readonly QuotationRepository _repository;
     private readonly IPDFService _pdf;
 
-    public QuotationContainer(IQuotationRepository repository, IPDFService pdf)
+    public QuotationContainer(QuotationRepository repository, IPDFService pdf)
     {
         _repository = repository;
         _pdf = pdf;
