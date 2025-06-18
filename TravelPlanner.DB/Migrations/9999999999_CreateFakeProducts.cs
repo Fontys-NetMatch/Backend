@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using LinqToDB;
+using Newtonsoft.Json;
 using TravelPlanner.DB;
 using TravelPlanner.DB.Lib;
 using TravelPlanner.DB.Lib.MigrationsManager;
@@ -15,388 +16,407 @@ namespace TravelPlanner.DB.Migrations;
 public class CreateFakeProducts : IMigration
 {
 
-    private List<FakeProduct> Products = [
-        new FakeProduct
-        {
-            StartLocation = "Amsterdam",
-            EndLocation = "New York",
-            ProductType = ProductType.Package,
-            Translations = new List<ProductTranslation>
-            {
-                new ProductTranslation { LangIsoCode = "en", Name = "Flight to NYC", Description = "Direct flight from Amsterdam to New York.", Tags = new List<string>(){ "flight", "usa", "travel" }, IsActive = true, ProductId = 0 },
-                new ProductTranslation { LangIsoCode = "nl", Name = "Vlucht naar NYC", Description = "Directe vlucht van Amsterdam naar New York.", Tags = new List<string>(){ "vlucht", "vs", "reizen" }, IsActive = true, ProductId = 0 }
-            },
-            ProductDates = [
-                new ProductDate { Price = 19.99, StartDate = DateTime.Now, EndDate = DateTime.Now.AddDays(7), Slots = 250, ProductId = 0 },
-                new ProductDate { Price = 29.99, StartDate = DateTime.Now.AddDays(10), EndDate = DateTime.Now.AddDays(20), Slots = 200, ProductId = 0 },
-                new ProductDate { Price = 39.99, StartDate = DateTime.Now.AddDays(30), EndDate = DateTime.Now.AddDays(40), Slots = 150, ProductId = 0 },
-                new ProductDate { Price = 49.99, StartDate = DateTime.Now.AddDays(50), EndDate = DateTime.Now.AddDays(60), Slots = 100, ProductId = 0 }
-            ]
-        },
-        new FakeProduct
-        {
-            StartLocation = "Berlin",
-            EndLocation = "Munich",
-            ProductType = ProductType.HolidayPark,
-            Translations = new List<ProductTranslation>
-            {
-                new ProductTranslation { LangIsoCode = "en", Name = "Train Berlin to Munich", Description = "High-speed train journey through Germany.", Tags = new List<string>(){ "train", "germany", "fast" }, IsActive = true, ProductId = 0 },
-                new ProductTranslation { LangIsoCode = "nl", Name = "Trein van Berlijn naar München", Description = "Hogesnelheidstrein door Duitsland.", Tags = new List<string>(){ "trein", "duitsland", "snel" }, IsActive = true, ProductId = 0 }
-            },
-            ProductDates = [
-                new ProductDate { Price = 9.99, StartDate = DateTime.Now, EndDate = DateTime.Now.AddDays(7), Slots = 100, ProductId = 0 },
-                new ProductDate { Price = 19.99, StartDate = DateTime.Now.AddDays(10), EndDate = DateTime.Now.AddDays(20), Slots = 80, ProductId = 0 },
-                new ProductDate { Price = 29.99, StartDate = DateTime.Now.AddDays(30), EndDate = DateTime.Now.AddDays(40), Slots = 60, ProductId = 0 },
-                new ProductDate { Price = 39.99, StartDate = DateTime.Now.AddDays(50), EndDate = DateTime.Now.AddDays(60), Slots = 40, ProductId = 0 }
-            ]
-        },
-        new FakeProduct
-        {
-            StartLocation = "Rome",
-            EndLocation = "Rome",
-            ProductType = ProductType.Hotel,
-            Translations = new List<ProductTranslation>
-            {
-                new ProductTranslation { LangIsoCode = "en", Name = "Rome Grand Hotel", Description = "5-star luxury hotel in the heart of Rome.", Tags = new List<string>(){ "hotel", "rome", "luxury" }, IsActive = true, ProductId = 0 },
-                new ProductTranslation { LangIsoCode = "nl", Name = "Rome Grand Hotel", Description = "5-sterren luxe hotel in het hart van Rome.", Tags = new List<string>(){ "hotel", "rome", "luxe" }, IsActive = true, ProductId = 0 }
-            },
-            ProductDates = [
-                new ProductDate { Price = 199.99, StartDate = DateTime.Now, EndDate = DateTime.Now.AddDays(7), Slots = 50, ProductId = 0 },
-                new ProductDate { Price = 249.99, StartDate = DateTime.Now.AddDays(10), EndDate = DateTime.Now.AddDays(20), Slots = 40, ProductId = 0 },
-                new ProductDate { Price = 299.99, StartDate = DateTime.Now.AddDays(30), EndDate = DateTime.Now.AddDays(40), Slots = 30, ProductId = 0 },
-                new ProductDate { Price = 349.99, StartDate = DateTime.Now.AddDays(50), EndDate = DateTime.Now.AddDays(60), Slots = 20, ProductId = 0 }
-            ]
-        },
-        new FakeProduct
-        {
-            StartLocation = "Paris",
-            EndLocation = "Barcelona",
-            ProductType = ProductType.Package,
-            Translations = new List<ProductTranslation>
-            {
-                new ProductTranslation { LangIsoCode = "en", Name = "Bus Paris to Barcelona", Description = "Affordable ride from Paris to Barcelona.", Tags = new List<string>(){ "bus", "cheap", "spain" }, IsActive = true, ProductId = 0 },
-                new ProductTranslation { LangIsoCode = "nl", Name = "Bus Parijs naar Barcelona", Description = "Betaalbare rit van Parijs naar Barcelona.", Tags = new List<string>(){ "bus", "goedkoop", "spanje" }, IsActive = true, ProductId = 0 }
-            },
-            ProductDates = [
-                new ProductDate { Price = 29.99, StartDate = DateTime.Now, EndDate = DateTime.Now.AddDays(7), Slots = 150, ProductId = 0 },
-                new ProductDate { Price = 39.99, StartDate = DateTime.Now.AddDays(10), EndDate = DateTime.Now.AddDays(20), Slots = 120, ProductId = 0 },
-                new ProductDate { Price = 49.99, StartDate = DateTime.Now.AddDays(30), EndDate = DateTime.Now.AddDays(40), Slots = 100, ProductId = 0 },
-                new ProductDate { Price = 59.99, StartDate = DateTime.Now.AddDays(50), EndDate = DateTime.Now.AddDays(60), Slots = 80, ProductId = 0 }
-            ]
-        },
-        new FakeProduct
-        {
-            StartLocation = "London",
-            EndLocation = "London",
-            ProductType = ProductType.Package,
-            Translations = new List<ProductTranslation>
-            {
-                new ProductTranslation { LangIsoCode = "en", Name = "London Car Rental", Description = "Rent a car in London for your adventure.", Tags = new List<string>(){ "car", "rental", "london" }, IsActive = true, ProductId = 0 },
-                new ProductTranslation { LangIsoCode = "nl", Name = "Autoverhuur Londen", Description = "Huur een auto in Londen voor je avontuur.", Tags = new List<string>(){ "auto", "huur", "londen" }, IsActive = true, ProductId = 0 }
-            },
-            ProductDates = [
-                new ProductDate { Price = 49.99, StartDate = DateTime.Now, EndDate = DateTime.Now.AddDays(7), Slots = 20, ProductId = 0 },
-                new ProductDate { Price = 59.99, StartDate = DateTime.Now.AddDays(10), EndDate = DateTime.Now.AddDays(20), Slots = 15, ProductId = 0 },
-                new ProductDate { Price = 69.99, StartDate = DateTime.Now.AddDays(30), EndDate = DateTime.Now.AddDays(40), Slots = 10, ProductId = 0 },
-                new ProductDate { Price = 79.99, StartDate = DateTime.Now.AddDays(50), EndDate = DateTime.Now.AddDays(60), Slots = 5, ProductId = 0 }
-            ]
-        },
-        new FakeProduct
-        {
-            StartLocation = "Oslo",
-            EndLocation = "Copenhagen",
-            ProductType = ProductType.HolidayPark,
-            Translations = new List<ProductTranslation>
-            {
-                new ProductTranslation { LangIsoCode = "en", Name = "Oslo-Copenhagen Cruise", Description = "Beautiful fjord cruise between Oslo and Copenhagen.", Tags = new List<string>(){ "cruise", "norway", "denmark" }, IsActive = true, ProductId = 0 },
-                new ProductTranslation { LangIsoCode = "nl", Name = "Cruise Oslo-Kopenhagen", Description = "Prachtige fjordencruise tussen Oslo en Kopenhagen.", Tags = new List<string>(){ "cruise", "noorwegen", "denemarken" }, IsActive = true, ProductId = 0 }
-            },
-            ProductDates = [
-                new ProductDate { Price = 99.99, StartDate = DateTime.Now, EndDate = DateTime.Now.AddDays(7), Slots = 50, ProductId = 0 },
-                new ProductDate { Price = 109.99, StartDate = DateTime.Now.AddDays(10), EndDate = DateTime.Now.AddDays(20), Slots = 40, ProductId = 0 },
-                new ProductDate { Price = 119.99, StartDate = DateTime.Now.AddDays(30), EndDate = DateTime.Now.AddDays(40), Slots = 30, ProductId = 0 },
-                new ProductDate { Price = 129.99, StartDate = DateTime.Now.AddDays(50), EndDate = DateTime.Now.AddDays(60), Slots = 20, ProductId = 0 }
-            ]
-        },
-        new FakeProduct
-        {
-            StartLocation = "Madrid",
-            EndLocation = "Lisbon",
-            ProductType = ProductType.Hotel,
-            Translations = new List<ProductTranslation>
-            {
-                new ProductTranslation { LangIsoCode = "en", Name = "Madrid Walking Tour", Description = "Guided tour through the historic streets of Madrid.", Tags = new List<string>(){ "tour", "spain", "guide" }, IsActive = true, ProductId = 0 },
-                new ProductTranslation { LangIsoCode = "nl", Name = "Wandeltocht Madrid", Description = "Gids tour door de historische straten van Madrid.", Tags = new List<string>(){ "tour", "spanje", "gids" }, IsActive = true, ProductId = 0 }
-            },
-            ProductDates = [
-                new ProductDate { Price = 29.99, StartDate = DateTime.Now, EndDate = DateTime.Now.AddDays(7), Slots = 100, ProductId = 0 },
-                new ProductDate { Price = 39.99, StartDate = DateTime.Now.AddDays(10), EndDate = DateTime.Now.AddDays(20), Slots = 80, ProductId = 0 },
-                new ProductDate { Price = 49.99, StartDate = DateTime.Now.AddDays(30), EndDate = DateTime.Now.AddDays(40), Slots = 60, ProductId = 0 },
-                new ProductDate { Price = 59.99, StartDate = DateTime.Now.AddDays(50), EndDate = DateTime.Now.AddDays(60), Slots = 40, ProductId = 0 }
-            ]
-        },
-        new FakeProduct
-        {
-            StartLocation = "Prague",
-            EndLocation = "Vienna",
-            ProductType = ProductType.HolidayPark,
-            Translations = new List<ProductTranslation>
-            {
-                new ProductTranslation { LangIsoCode = "en", Name = "Budget Hostel in Prague", Description = "Stay in a cozy hostel in Prague.", Tags = new List<string>(){ "hostel", "prague", "budget" }, IsActive = true, ProductId = 0 },
-                new ProductTranslation { LangIsoCode = "nl", Name = "Budget Hostel in Praag", Description = "Verblijf in een gezellig hostel in Praag.", Tags = new List<string>(){ "hostel", "praag", "budget" }, IsActive = true, ProductId = 0 }
-            },
-            ProductDates = [
-                new ProductDate { Price = 19.99, StartDate = DateTime.Now, EndDate = DateTime.Now.AddDays(7), Slots = 50, ProductId = 0 },
-                new ProductDate { Price = 29.99, StartDate = DateTime.Now.AddDays(10), EndDate = DateTime.Now.AddDays(20), Slots = 40, ProductId = 0 },
-                new ProductDate { Price = 39.99, StartDate = DateTime.Now.AddDays(30), EndDate = DateTime.Now.AddDays(40), Slots = 30, ProductId = 0 },
-                new ProductDate { Price = 49.99, StartDate = DateTime.Now.AddDays(50), EndDate = DateTime.Now.AddDays(60), Slots = 20, ProductId = 0 }
-            ]
-        },
-        new FakeProduct
-        {
-            StartLocation = "Athens",
-            EndLocation = "Santorini",
-            ProductType = ProductType.Package,
-            Translations = new List<ProductTranslation>
-            {
-                new ProductTranslation { LangIsoCode = "en", Name = "Flight Athens to Santorini", Description = "Fly between Greek islands.", Tags = new List<string>(){ "flight", "greece", "islands" }, IsActive = true, ProductId = 0 },
-                new ProductTranslation { LangIsoCode = "nl", Name = "Vlucht Athene naar Santorini", Description = "Vlieg tussen de Griekse eilanden.", Tags = new List<string>(){ "vlucht", "griekenland", "eilanden" }, IsActive = true, ProductId = 0 }
-            },
-            ProductDates = [
-                new ProductDate { Price = 49.99, StartDate = DateTime.Now, EndDate = DateTime.Now.AddDays(7), Slots = 100, ProductId = 0 },
-                new ProductDate { Price = 59.99, StartDate = DateTime.Now.AddDays(10), EndDate = DateTime.Now.AddDays(20), Slots = 80, ProductId = 0 },
-                new ProductDate { Price = 69.99, StartDate = DateTime.Now.AddDays(30), EndDate = DateTime.Now.AddDays(40), Slots = 60, ProductId = 0 },
-                new ProductDate { Price = 79.99, StartDate = DateTime.Now.AddDays(50), EndDate = DateTime.Now.AddDays(60), Slots = 40, ProductId = 0 }
-            ]
-        },
-        new FakeProduct
-        {
-            StartLocation = "Brussels",
-            EndLocation = "Antwerp",
-            ProductType = ProductType.Hotel,
-            Translations = new List<ProductTranslation>
-            {
-                new ProductTranslation { LangIsoCode = "en", Name = "Live Music in Brussels", Description = "Event with top artists performing live.", Tags = new List<string>(){ "event", "music", "brussels" }, IsActive = true, ProductId = 0 },
-                new ProductTranslation { LangIsoCode = "nl", Name = "Live Muziek in Brussel", Description = "Evenement met topartiesten live op het podium.", Tags = new List<string>(){ "evenement", "muziek", "brussel" }, IsActive = true, ProductId = 0 }
-            },
-            ProductDates = [
-                new ProductDate { Price = 19.99, StartDate = DateTime.Now, EndDate = DateTime.Now.AddDays(7), Slots = 200, ProductId = 0 },
-                new ProductDate { Price = 29.99, StartDate = DateTime.Now.AddDays(10), EndDate = DateTime.Now.AddDays(20), Slots = 150, ProductId = 0 },
-                new ProductDate { Price = 39.99, StartDate = DateTime.Now.AddDays(30), EndDate = DateTime.Now.AddDays(40), Slots = 100, ProductId = 0 },
-                new ProductDate { Price = 49.99, StartDate = DateTime.Now.AddDays(50), EndDate = DateTime.Now.AddDays(60), Slots = 50, ProductId = 0 }
-            ]
-        },
-        new FakeProduct
-        {
-            StartLocation = "Zurich",
-            EndLocation = "Geneva",
-            ProductType = ProductType.Package,
-            Translations = new List<ProductTranslation>
-            {
-                new ProductTranslation { LangIsoCode = "en", Name = "Restaurant Reservation Zurich", Description = "Book a table in top Zurich restaurants.", Tags = new List<string>(){ "food", "reservation", "zurich" }, IsActive = true, ProductId = 0 },
-                new ProductTranslation { LangIsoCode = "nl", Name = "Restaurantreservering Zürich", Description = "Reserveer een tafel in toprestaurants in Zürich.", Tags = new List<string>(){ "eten", "reservering", "zürich" }, IsActive = true, ProductId = 0 }
-            },
-            ProductDates = [
-                new ProductDate { Price = 29.99, StartDate = DateTime.Now, EndDate = DateTime.Now.AddDays(7), Slots = 100, ProductId = 0 },
-                new ProductDate { Price = 39.99, StartDate = DateTime.Now.AddDays(10), EndDate = DateTime.Now.AddDays(20), Slots = 80, ProductId = 0 },
-                new ProductDate { Price = 49.99, StartDate = DateTime.Now.AddDays(30), EndDate = DateTime.Now.AddDays(40), Slots = 60, ProductId = 0 },
-                new ProductDate { Price = 59.99, StartDate = DateTime.Now.AddDays(50), EndDate = DateTime.Now.AddDays(60), Slots = 40, ProductId = 0 }
-            ]
-        },
-        new FakeProduct
-        {
-            StartLocation = "Helsinki",
-            EndLocation = "Stockholm",
-            ProductType = ProductType.HolidayPark,
-            Translations = new List<ProductTranslation>
-            {
-                new ProductTranslation { LangIsoCode = "en", Name = "Art Exhibit in Stockholm", Description = "Explore modern art in the Nordic region.", Tags = new List<string>(){ "exhibit", "art", "sweden" }, IsActive = true, ProductId = 0 },
-                new ProductTranslation { LangIsoCode = "nl", Name = "Kunsttentoonstelling in Stockholm", Description = "Ontdek moderne kunst in Scandinavië.", Tags = new List<string>(){ "tentoonstelling", "kunst", "zweden" }, IsActive = true, ProductId = 0 }
-            },
-            ProductDates = [
-                new ProductDate { Price = 49.99, StartDate = DateTime.Now, EndDate = DateTime.Now.AddDays(7), Slots = 100, ProductId = 0 },
-                new ProductDate { Price = 49.99, StartDate = DateTime.Now.AddDays(10), EndDate = DateTime.Now.AddDays(20), Slots = 80, ProductId = 0 },
-                new ProductDate { Price = 49.99, StartDate = DateTime.Now.AddDays(30), EndDate = DateTime.Now.AddDays(40), Slots = 60, ProductId = 0 },
-                new ProductDate { Price = 49.99, StartDate = DateTime.Now.AddDays(50), EndDate = DateTime.Now.AddDays(60), Slots = 40, ProductId = 0 }
-            ]
-        },
-        new FakeProduct
-        {
-            StartLocation = "Dublin",
-            EndLocation = "Cork",
-            ProductType = ProductType.Package,
-            Translations = new List<ProductTranslation>
-            {
-                new ProductTranslation { LangIsoCode = "en", Name = "Travel Insurance Ireland", Description = "Comprehensive insurance for your trip.", Tags = new List<string>(){ "insurance", "ireland", "travel" }, IsActive = true, ProductId = 0 },
-                new ProductTranslation { LangIsoCode = "nl", Name = "Reisverzekering Ierland", Description = "Uitgebreide verzekering voor je reis.", Tags = new List<string>(){ "verzekering", "ierland", "reizen" }, IsActive = true, ProductId = 0 }
-            },
-            ProductDates = [
-                new ProductDate { Price = 9.99, StartDate = DateTime.Now, EndDate = DateTime.Now.AddDays(7), Slots = 100, ProductId = 0 },
-                new ProductDate { Price = 19.99, StartDate = DateTime.Now.AddDays(10), EndDate = DateTime.Now.AddDays(20), Slots = 80, ProductId = 0 },
-                new ProductDate { Price = 29.99, StartDate = DateTime.Now.AddDays(30), EndDate = DateTime.Now.AddDays(40), Slots = 60, ProductId = 0 },
-                new ProductDate { Price = 39.99, StartDate = DateTime.Now.AddDays(50), EndDate = DateTime.Now.AddDays(60), Slots = 40, ProductId = 0 }
-            ]
-        },
-        new FakeProduct
-        {
-            StartLocation = "Venice",
-            EndLocation = "Florence",
-            ProductType = ProductType.Hotel,
-            Translations = new List<ProductTranslation>
-            {
-                new ProductTranslation { LangIsoCode = "en", Name = "Venice Lagoon Hotel", Description = "Charming stay on the canals of Venice.", Tags = new List<string>(){ "hotel", "venice", "romantic" }, IsActive = true, ProductId = 0 },
-                new ProductTranslation { LangIsoCode = "nl", Name = "Hotel Venetië Lagoon", Description = "Charmant verblijf aan de kanalen van Venetië.", Tags = new List<string>(){ "hotel", "venetië", "romantisch" }, IsActive = true, ProductId = 0 }
-            },
-            ProductDates = [
-                new ProductDate { Price = 9.99, StartDate = DateTime.Now, EndDate = DateTime.Now.AddDays(7), Slots = 100, ProductId = 0 },
-                new ProductDate { Price = 19.99, StartDate = DateTime.Now.AddDays(10), EndDate = DateTime.Now.AddDays(20), Slots = 80, ProductId = 0 },
-                new ProductDate { Price = 29.99, StartDate = DateTime.Now.AddDays(30), EndDate = DateTime.Now.AddDays(40), Slots = 60, ProductId = 0 },
-                new ProductDate { Price = 39.99, StartDate = DateTime.Now.AddDays(50), EndDate = DateTime.Now.AddDays(60), Slots = 40, ProductId = 0 }
-            ]
-        },
-        new FakeProduct
-        {
-            StartLocation = "Nice",
-            EndLocation = "Marseille",
-            ProductType = ProductType.Package,
-            Translations = new List<ProductTranslation>
-            {
-                new ProductTranslation { LangIsoCode = "en", Name = "Hostel near Marseille Beach", Description = "Budget-friendly hostel by the sea.", Tags = new List<string>(){ "hostel", "marseille", "beach" }, IsActive = true, ProductId = 0 },
-                new ProductTranslation { LangIsoCode = "nl", Name = "Hostel bij het strand van Marseille", Description = "Budgetvriendelijk hostel aan zee.", Tags = new List<string>(){ "hostel", "marseille", "strand" }, IsActive = true, ProductId = 0 }
-            },
-            ProductDates = [
-                new ProductDate { Price = 9.99, StartDate = DateTime.Now, EndDate = DateTime.Now.AddDays(7), Slots = 100, ProductId = 0 },
-                new ProductDate { Price = 19.99, StartDate = DateTime.Now.AddDays(10), EndDate = DateTime.Now.AddDays(20), Slots = 80, ProductId = 0 },
-                new ProductDate { Price = 29.99, StartDate = DateTime.Now.AddDays(30), EndDate = DateTime.Now.AddDays(40), Slots = 60, ProductId = 0 },
-                new ProductDate { Price = 39.99, StartDate = DateTime.Now.AddDays(50), EndDate = DateTime.Now.AddDays(60), Slots = 40, ProductId = 0 }
-            ]
-        },
-        new FakeProduct
-        {
-            StartLocation = "Frankfurt",
-            EndLocation = "Berlin",
-            ProductType = ProductType.Hotel,
-            Translations = new List<ProductTranslation>
-            {
-                new ProductTranslation { LangIsoCode = "en", Name = "Frankfurt-Berlin Flight", Description = "Business-class flight within Germany.", Tags = new List<string>(){ "flight", "berlin", "germany" }, IsActive = true, ProductId = 0 },
-                new ProductTranslation { LangIsoCode = "nl", Name = "Vlucht Frankfurt-Berlijn", Description = "Businessclass vlucht binnen Duitsland.", Tags = new List<string>(){ "vlucht", "berlijn", "duitsland" }, IsActive = true, ProductId = 0 }
-            },
-            ProductDates = [
-                new ProductDate { Price = 9.99, StartDate = DateTime.Now, EndDate = DateTime.Now.AddDays(7), Slots = 100, ProductId = 0 },
-                new ProductDate { Price = 19.99, StartDate = DateTime.Now.AddDays(10), EndDate = DateTime.Now.AddDays(20), Slots = 80, ProductId = 0 },
-                new ProductDate { Price = 29.99, StartDate = DateTime.Now.AddDays(30), EndDate = DateTime.Now.AddDays(40), Slots = 60, ProductId = 0 },
-                new ProductDate { Price = 39.99, StartDate = DateTime.Now.AddDays(50), EndDate = DateTime.Now.AddDays(60), Slots = 40, ProductId = 0 }
-            ]
-        },
-        new FakeProduct
-        {
-            StartLocation = "Edinburgh",
-            EndLocation = "Glasgow",
-            ProductType = ProductType.HolidayPark,
-            Translations = new List<ProductTranslation>
-            {
-                new ProductTranslation { LangIsoCode = "en", Name = "Scenic Train in Scotland", Description = "Ride through the Scottish highlands.", Tags = new List<string>(){ "train", "scotland", "view" }, IsActive = true, ProductId = 0 },
-                new ProductTranslation { LangIsoCode = "nl", Name = "Pittoreske treinreis in Schotland", Description = "Reis door de Schotse Hooglanden.", Tags = new List<string>(){ "trein", "schotland", "uitzicht" }, IsActive = true, ProductId = 0 }
-            },
-            ProductDates = [
-                new ProductDate { Price = 9.99, StartDate = DateTime.Now, EndDate = DateTime.Now.AddDays(7), Slots = 100, ProductId = 0 },
-                new ProductDate { Price = 19.99, StartDate = DateTime.Now.AddDays(10), EndDate = DateTime.Now.AddDays(20), Slots = 80, ProductId = 0 },
-                new ProductDate { Price = 29.99, StartDate = DateTime.Now.AddDays(30), EndDate = DateTime.Now.AddDays(40), Slots = 60, ProductId = 0 },
-                new ProductDate { Price = 39.99, StartDate = DateTime.Now.AddDays(50), EndDate = DateTime.Now.AddDays(60), Slots = 40, ProductId = 0 }
-            ]
-        },
-        new FakeProduct
-        {
-            StartLocation = "Reykjavik",
-            EndLocation = "Akureyri",
-            ProductType = ProductType.Package,
-            Translations = new List<ProductTranslation>
-            {
-                new ProductTranslation { LangIsoCode = "en", Name = "Icelandic Adventure Tour", Description = "Explore volcanoes and glaciers with a guide.", Tags = new List<string>(){ "tour", "iceland", "adventure" }, IsActive = true, ProductId = 0 },
-                new ProductTranslation { LangIsoCode = "nl", Name = "IJslandse Avontuurlijke Tour", Description = "Ontdek vulkanen en gletsjers met een gids.", Tags = new List<string>(){ "tour", "ijsland", "avontuur" }, IsActive = true, ProductId = 0 }
-            },
-            ProductDates = [
-                new ProductDate { Price = 9.99, StartDate = DateTime.Now, EndDate = DateTime.Now.AddDays(7), Slots = 100, ProductId = 0 },
-                new ProductDate { Price = 19.99, StartDate = DateTime.Now.AddDays(10), EndDate = DateTime.Now.AddDays(20), Slots = 80, ProductId = 0 },
-                new ProductDate { Price = 29.99, StartDate = DateTime.Now.AddDays(30), EndDate = DateTime.Now.AddDays(40), Slots = 60, ProductId = 0 },
-                new ProductDate { Price = 39.99, StartDate = DateTime.Now.AddDays(50), EndDate = DateTime.Now.AddDays(60), Slots = 40, ProductId = 0 }
-            ]
-        },
-        new FakeProduct
-        {
-            StartLocation = "Warsaw",
-            EndLocation = "Krakow",
-            ProductType = ProductType.Package,
-            Translations = new List<ProductTranslation>
-            {
-                new ProductTranslation { LangIsoCode = "en", Name = "Polish Express Bus", Description = "Efficient travel between Warsaw and Krakow.", Tags = new List<string>(){ "bus", "poland", "express" }, IsActive = true, ProductId = 0 },
-                new ProductTranslation { LangIsoCode = "nl", Name = "Poolse Expressbus", Description = "Efficiënt reizen tussen Warschau en Krakau.", Tags = new List<string>(){ "bus", "polen", "snel" }, IsActive = true, ProductId = 0 }
-            },
-            ProductDates = [
-                new ProductDate { Price = 29.99, StartDate = DateTime.Now, EndDate = DateTime.Now.AddDays(7), Slots = 100, ProductId = 0 },
-                new ProductDate { Price = 29.99, StartDate = DateTime.Now.AddDays(10), EndDate = DateTime.Now.AddDays(20), Slots = 80, ProductId = 0 },
-                new ProductDate { Price = 29.99, StartDate = DateTime.Now.AddDays(30), EndDate = DateTime.Now.AddDays(40), Slots = 60, ProductId = 0 },
-                new ProductDate { Price = 29.99, StartDate = DateTime.Now.AddDays(50), EndDate = DateTime.Now.AddDays(60), Slots = 40, ProductId = 0 }
-            ]
-        },
-        new FakeProduct
-        {
-            StartLocation = "Lisbon",
-            EndLocation = "Porto",
-            ProductType = ProductType.Hotel,
-            Translations = new List<ProductTranslation>
-            {
-                new ProductTranslation { LangIsoCode = "en", Name = "Lisbon Car Hire", Description = "Rent a car and explore the coast.", Tags = new List<string>(){ "car", "lisbon", "hire" }, IsActive = true, ProductId = 0 },
-                new ProductTranslation { LangIsoCode = "nl", Name = "Autohuur Lissabon", Description = "Huur een auto en ontdek de kust.", Tags = new List<string>(){ "auto", "lissabon", "huur" }, IsActive = true, ProductId = 0 }
-            },
-            ProductDates = [
-                new ProductDate { Price = 9.99, StartDate = DateTime.Now, EndDate = DateTime.Now.AddDays(7), Slots = 100, ProductId = 0 },
-                new ProductDate { Price = 19.99, StartDate = DateTime.Now.AddDays(10), EndDate = DateTime.Now.AddDays(20), Slots = 80, ProductId = 0 },
-                new ProductDate { Price = 29.99, StartDate = DateTime.Now.AddDays(30), EndDate = DateTime.Now.AddDays(40), Slots = 60, ProductId = 0 },
-                new ProductDate { Price = 39.99, StartDate = DateTime.Now.AddDays(50), EndDate = DateTime.Now.AddDays(60), Slots = 40, ProductId = 0 }
-            ]
-        }
+
+    public int ProductCount = 1000;
+    public int MinProductsPerLocationAndType = 5;
+    
+    public List<string> locations = [
+        "Amsterdam, Netherlands",
+        "Paris, France",
+        "Tokyo, Japan",
+        "New York, USA",
+        "Sydney, Australia",
+        "London, United Kingdom",
+        "Rome, Italy",
+        "Bangkok, Thailand",
+        "Cape Town, South Africa",
+        "Rio de Janeiro, Brazil",
+        "Barcelona, Spain",
+        "Dubai, United Arab Emirates",
+        "Toronto, Canada",
+        "Singapore, Singapore",
+        "Marrakech, Morocco",
+        "San Francisco, USA",
+        "Seoul, South Korea",
+        "Istanbul, Turkey",
+        "Mexico City, Mexico",
+        "Auckland, New Zealand",
+        "Vienna, Austria",
+        "Hong Kong, China",
+        "Havana, Cuba",
+        "Stockholm, Sweden",
+        "Cairo, Egypt",
+        "Vancouver, Canada",
+        "Kyoto, Japan",
+        "Buenos Aires, Argentina",
+        "Athens, Greece",
+        "Prague, Czech Republic",
+        "Mumbai, India",
+        "Lisbon, Portugal",
+        "Reykjavik, Iceland",
+        "Nairobi, Kenya",
+        "Edinburgh, United Kingdom",
+        "Santiago, Chile",
+        "Hanoi, Vietnam",
+        "Budapest, Hungary",
+        "Chicago, USA",
+        "Lima, Peru"
     ];
+    public List<FakeProductType> Types = [
+    new FakeProductType
+    {
+        Value = "flight",
+        NameEn = "Flight from {start} to {end}",
+        NameNl = "Vlucht van {start} naar {end}",
+        DescriptionEn = "A one-way or round-trip airline ticket from {start} to {end}, available in economy, business, or first-class.",
+        DescriptionNl = "Een enkele reis of retour vliegticket van {start} naar {end}, beschikbaar in economy, business of eerste klasse."
+    },
+    new FakeProductType
+    {
+        Value = "hotel",
+        NameEn = "Hotel in {end}",
+        NameNl = "Hotel in {end}",
+        DescriptionEn = "A hotel room in {end} with options for single, double, or suite accommodations, including amenities like Wi-Fi and breakfast.",
+        DescriptionNl = "Een hotelkamer in {end} met opties voor eenpersoons-, tweepersoons- of suitekamers, inclusief voorzieningen zoals Wi-Fi en ontbijt."
+    },
+    new FakeProductType
+    {
+        Value = "car",
+        NameEn = "Car Rental in {end}",
+        NameNl = "Autohuur in {end}",
+        DescriptionEn = "A rental car in {end}, available in compact, SUV, or luxury models for flexible travel.",
+        DescriptionNl = "Een huurauto in {end}, beschikbaar in compacte, SUV- of luxemodellen voor flexibel reizen."
+    },
+    new FakeProductType
+    {
+        Value = "cruise",
+        NameEn = "Cruise from {start} to {end}",
+        NameNl = "Cruise van {start} naar {end}",
+        DescriptionEn = "A multi-day cruise package from {start} to {end}, including cabin accommodations, dining, and onboard activities.",
+        DescriptionNl = "Een meerdaags cruisepakket van {start} naar {end}, inclusief cabine-accommodaties, dineren en activiteiten aan boord."
+    },
+    new FakeProductType
+    {
+        Value = "train",
+        NameEn = "Train from {start} to {end}",
+        NameNl = "Trein van {start} naar {end}",
+        DescriptionEn = "A train ticket from {start} to {end}, offering standard or first-class seating with scenic views.",
+        DescriptionNl = "Een treinticket van {start} naar {end}, met standaard- of eersteklas zitplaatsen en schilderachtige uitzichten."
+    },
+    new FakeProductType
+    {
+        Value = "tour",
+        NameEn = "Guided Tour in {end}",
+        NameNl = "Rondleiding in {end}",
+        DescriptionEn = "A guided tour package in {end}, featuring expert-led visits to key attractions and cultural sites.",
+        DescriptionNl = "Een rondleidingspakket in {end}, met deskundige bezoeken aan belangrijke bezienswaardigheden en culturele locaties."
+    },
+    new FakeProductType
+    {
+        Value = "camping",
+        NameEn = "Camping in {end}",
+        NameNl = "Kamperen in {end}",
+        DescriptionEn = "A camping spot in {end}, equipped for tents or RVs with access to nature and basic facilities.",
+        DescriptionNl = "Een kampeerplek in {end}, geschikt voor tenten of campers met toegang tot natuur en basisvoorzieningen."
+    },
+    new FakeProductType
+    {
+        Value = "event",
+        NameEn = "Event in {end}",
+        NameNl = "Evenement in {end}",
+        DescriptionEn = "A ticket to a special event in {end}, such as a concert, festival, or cultural performance.",
+        DescriptionNl = "Een ticket voor een speciaal evenement in {end}, zoals een concert, festival of culturele voorstelling."
+    },
+    new FakeProductType
+    {
+        Value = "bus",
+        NameEn = "Bus Trip from {start} to {end}",
+        NameNl = "Busreis van {start} naar {end}",
+        DescriptionEn = "A bus ticket from {start} to {end}, providing comfortable seating and scheduled departures.",
+        DescriptionNl = "Een busticket van {start} naar {end}, met comfortabele zitplaatsen en geplande vertrektijden."
+    },
+    new FakeProductType
+    {
+        Value = "apartment",
+        NameEn = "Apartment Rental in {end}",
+        NameNl = "Appartementverhuur in {end}",
+        DescriptionEn = "A fully furnished apartment in {end}, available for short-term stays with kitchen and living areas.",
+        DescriptionNl = "Een volledig gemeubileerd appartement in {end}, beschikbaar voor kort verblijf met keuken en woonruimtes."
+    },
+    new FakeProductType
+    {
+        Value = "activity",
+        NameEn = "Activity in {end}",
+        NameNl = "Activiteit in {end}",
+        DescriptionEn = "A pre-booked activity in {end}, such as hiking, kayaking, or a cooking class.",
+        DescriptionNl = "Een vooraf geboekte activiteit in {end}, zoals wandelen, kajakken of een kookworkshop."
+    },
+    new FakeProductType
+    {
+        Value = "ferry",
+        NameEn = "Ferry from {start} to {end}",
+        NameNl = "Veerboot van {start} naar {end}",
+        DescriptionEn = "A ferry ticket from {start} to {end}, offering passenger or vehicle transport with onboard amenities.",
+        DescriptionNl = "Een veerbootticket van {start} naar {end}, met passagiers- of voertuigtransport en voorzieningen aan boord."
+    },
+    new FakeProductType
+    {
+        Value = "resort",
+        NameEn = "Resort Stay in {end}",
+        NameNl = "Resortverblijf in {end}",
+        DescriptionEn = "A resort package in {end}, including accommodations, dining, and access to pools or spas.",
+        DescriptionNl = "Een resortpakket in {end}, inclusief accommodaties, dineren en toegang tot zwembaden of spa's."
+    }
+];
+
+    public List<FakeProduct> GenerateProducts()
+    {
+        List<FakeProduct> products = [];
+        Random random = new Random();
+        
+        // Ensure minimum products per location and type
+        foreach (var type in Types)
+        {
+            foreach (var location in locations)
+            {
+                for (int i = 0; i < MinProductsPerLocationAndType; i++)
+                {
+                    if (products.Count >= ProductCount) break;
+                    
+                    var startLocation = locations[random.Next(locations.Count)];
+                    var endLocation = location;
+                    
+                    // Ensure start and end locations are different
+                    while (startLocation == endLocation)
+                    {
+                        endLocation = locations[random.Next(locations.Count)];
+                    }
+                    
+                    var newProduct = new FakeProduct
+                    {
+                        StartLocation = startLocation,
+                        EndLocation = endLocation,
+                        ProductType = ProductType.Package,
+                        Translations = new List<ProductTranslation>
+                        {
+                            new ProductTranslation 
+                            { 
+                                LangIsoCode = "en",
+                                Name = type.NameEn.Replace("{start}", startLocation).Replace("{end}", endLocation),
+                                Description = type.DescriptionEn.Replace("{start}", startLocation).Replace("{end}", endLocation),
+                                Tags = new List<string>(),
+                                IsActive = true,
+                                ProductId = products.Count
+                            },
+                            new ProductTranslation 
+                            { 
+                                LangIsoCode = "nl", 
+                                Name = type.NameNl.Replace("{start}", startLocation).Replace("{end}", endLocation),
+                                Description = type.DescriptionNl.Replace("{start}", startLocation).Replace("{end}", endLocation),
+                                Tags = new List<string>(),
+                                IsActive = true,
+                                ProductId = products.Count
+                            }
+                        },
+                        ProductDates = GenerateProductDates(products.Count, random)
+                    };
+                    products.Add(newProduct);
+                }
+            }
+        }
+        
+        // Fill remaining products up to ProductCount
+        while (products.Count < ProductCount)
+        {
+            var type = Types[random.Next(Types.Count)];
+            var startLocation = locations[random.Next(locations.Count)];
+            var endLocation = locations[random.Next(locations.Count)];
+            
+            // Ensure start and end locations are different
+            while (startLocation == endLocation)
+            {
+                endLocation = locations[random.Next(locations.Count)];
+            }
+            
+            var newProduct = new FakeProduct
+            {
+                StartLocation = startLocation,
+                EndLocation = endLocation,
+                ProductType = ProductType.Package,
+                Translations = new List<ProductTranslation>
+                {
+                    new ProductTranslation 
+                    { 
+                        LangIsoCode = "en", 
+                        Name = type.NameEn.Replace("{start}", startLocation).Replace("{end}", endLocation),
+                        Description = type.DescriptionEn.Replace("{start}", startLocation).Replace("{end}", endLocation),
+                        Tags = new List<string>(),
+                        IsActive = true,
+                        ProductId = products.Count
+                    },
+                    new ProductTranslation
+                    { 
+                        LangIsoCode = "nl", 
+                        Name = type.NameNl.Replace("{start}", startLocation).Replace("{end}", endLocation),
+                        Description = type.DescriptionNl.Replace("{start}", startLocation).Replace("{end}", endLocation),
+                        Tags = new List<string>(),
+                        IsActive = true,
+                        ProductId = products.Count
+                    }
+                },
+                ProductDates = GenerateProductDates(products.Count, random)
+            };
+            products.Add(newProduct);
+        }
+
+        return products;
+    }
+
+    private static List<ProductDate> GenerateProductDates(int productId, Random random)
+    {
+        List<ProductDate> dates = [];
+        var now = DateTime.Now;
+        
+        for (int i = 0; i < 50; i++)
+        {
+            var startDaysOffset = random.Next(0, 365); // Random start date within a year
+            var duration = random.Next(1, 15); // Random duration 1-14 days
+            var price = Math.Round(random.NextDouble() * (1000 - 50) + 50, 2); // Random price between 50 and 1000
+            var slots = random.Next(50, 300); // Random slots between 50 and 300
+            
+            dates.Add(new ProductDate
+            {
+                Price = price,
+                StartDate = now.AddDays(startDaysOffset),
+                EndDate = now.AddDays(startDaysOffset + duration),
+                Slots = slots,
+                ProductId = productId
+            });
+        }
+        
+        return dates;
+    }
+
 
     public void Up(DbContext dbContext)
     {
+        var products = GenerateProducts();
+        var productTranslationBatches = new List<List<ProductTranslation>>();
+        var productDateBatches = new List<List<ProductDate>>();
 
-
-
-        foreach (var product in Products)
+        foreach (var product in products)
         {
-            int TypeID = ((int)product.ProductType);
+            int typeId = ((int)product.ProductType);
             if (product.ProductType == null)
             {
                 Console.WriteLine("Product type not found: " + product.ProductType);
                 continue;
             }
 
-            var dbProduct = new Product
+            // Insert Product
+            using (var productCmd = dbContext.CreateCommand())
             {
-                StartLocation = product.StartLocation,
-                EndLocation = product.EndLocation,
-                ProductTypeId = TypeID,
-                DeletedAt = null
-            };
-            var productId = dbContext.InsertWithInt32Identity(dbProduct);
+                // Escape string values to prevent basic SQL injection and syntax errors
+                // This is a simplistic escaping and is NOT a substitute for proper parameterization.
+                var startLocationEscaped = EscapeSqlString(product.StartLocation);
+                var endLocationEscaped = EscapeSqlString(product.EndLocation);
+                var deletedAtSql = "NULL";
 
-            foreach (var productTranslation in product.Translations)
-            {
-                productTranslation.ProductId = productId;
-                dbContext.InsertWithInt32Identity(productTranslation);
+                productCmd.CommandText = $@"
+                    INSERT INTO `Products`(`StartLocation`, `EndLocation`, `DeletedAt`, `ProductTypeId`) 
+                    VALUES ('{startLocationEscaped}', '{endLocationEscaped}', {deletedAtSql}, {typeId});
+                    SELECT LAST_INSERT_ID();"; // For MySQL, use SCOPE_IDENTITY() for SQL Server
+
+                var productId = Convert.ToInt32(productCmd.ExecuteScalar());
+
+                // Prepare Product Translations for batch insert
+                var currentProductTranslations = new List<ProductTranslation>();
+                foreach (var productTranslation in product.Translations)
+                {
+                    productTranslation.ProductId = productId;
+                    currentProductTranslations.Add(productTranslation);
+                }
+                productTranslationBatches.Add(currentProductTranslations);
+
+                // Prepare Product Dates for batch insert
+                var currentProductDates = new List<ProductDate>();
+                foreach (var productDate in product.ProductDates)
+                {
+                    productDate.ProductId = productId;
+                    currentProductDates.Add(productDate);
+                }
+                productDateBatches.Add(currentProductDates);
+
+                Console.WriteLine("Prepared product for insertion: " + product.Translations[0].Name);
             }
-
-            foreach (var productDate in product.ProductDates)
-            {
-                productDate.ProductId = productId;
-                dbContext.InsertWithInt32Identity(productDate);
-            }
-
-            Console.WriteLine("Inserted product: " + product.Translations[0].Name);
         }
 
-        Console.WriteLine("All products and product types inserted successfully.");
+        // Perform batch insert for Product Translations
+        foreach (var batch in productTranslationBatches)
+        {
+            if (batch.Any())
+            {
+                using (var translationCmd = dbContext.CreateCommand())
+                {
+                    var values = string.Join(",", batch.Select(pt =>
+                    {
+                        // Again, simplistic escaping.
+                        var langIsoCodeEscaped = EscapeSqlString(pt.LangIsoCode);
+                        var nameEscaped = EscapeSqlString(pt.Name);
+                        var descriptionEscaped = EscapeSqlString(pt.Description ?? "NULL");
+                        var tagsEscaped = JsonConvert.SerializeObject(pt.Tags);
+                        var isActiveInt = pt.IsActive ? 1 : 0; // Convert boolean to integer for SQL
+
+                        return $"('{langIsoCodeEscaped}', '{nameEscaped}', '{descriptionEscaped}', '{tagsEscaped}', {isActiveInt}, {pt.ProductId})";
+                    }));
+
+                    translationCmd.CommandText = $@"
+                        INSERT INTO `ProductTranslations`(`LangIsoCode`, `Name`, `Description`, `Tags`, `IsActive`, `ProductId`) 
+                        VALUES {values};";
+
+                    translationCmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        // Perform batch insert for Product Dates
+        foreach (var batch in productDateBatches)
+        {
+            if (batch.Any())
+            {
+                using (var dateCmd = dbContext.CreateCommand())
+                {
+                    var values = string.Join(",", batch.Select(pd =>
+                    {
+                        var priceSql = pd.Price.ToString(System.Globalization.CultureInfo.InvariantCulture); // Ensure decimal format is correct for SQL
+                        
+                        // Convert DateTime to Unix timestamp (seconds since epoch)
+                        var unixEpoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+                        var startDateUnix = (long)(pd.StartDate.ToUniversalTime() - unixEpoch).TotalSeconds;
+                        var endDateUnix = (long)(pd.EndDate.ToUniversalTime() - unixEpoch).TotalSeconds;
+
+                        var isActiveInt = pd.IsActive ? 1 : 0;
+
+                        return $"({priceSql}, {startDateUnix}, {endDateUnix}, {pd.Slots}, {isActiveInt}, {pd.ProductId})";
+                    }));
+
+                    dateCmd.CommandText = $@"
+                        INSERT INTO `ProductDates`(`Price`, `StartDate`, `EndDate`, `Slots`, `IsActive`, `ProductId`) 
+                        VALUES {values};";
+
+                    dateCmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        Console.WriteLine("All products, translations, and product dates inserted successfully.");
+    }
+    
+    private string EscapeSqlString(string? value)
+    {
+        if (value == null) return "NULL";
+        // Replace single quotes with two single quotes
+        return value.Replace("'", "''");
     }
 
 }
