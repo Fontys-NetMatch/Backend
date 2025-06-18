@@ -16,10 +16,6 @@ namespace TravelPlanner.Domain.Interfaces.BLL.Container
         Task<List<ProductTypeEntity>> GetAll();
         Task<List<ProductTypeEntity>> GetAllActive();
         Task<ProductTypeEntity?> GetById(int id);
-        Task Create(ProductTypeData product);
-        Task Update(int id, ProductTypeData product);
-        Task<bool> SoftDelete(int id);
-        Task<bool> Restore(int id);
 
     }
 }
