@@ -24,12 +24,12 @@ public class QuotationContainer: IQuotationContainer
         _pdf = pdf;
     }
 
-    public async Task<int> CreateQuotation(QuotationData data, int userId)
+    public async Task<int> CreateQuotation(QuotationData data)
     {
         if (data == null)
             throw new ArgumentNullException(nameof(data));
 
-        var error = (data.Name, data.CustomerId, userId) switch
+        var error = (data.Name, data.CustomerId, data.UserId) switch
         {
             var (name, _, _) when string.IsNullOrWhiteSpace(name) => "Quotation name is required",
             var (_, customerId, _) when customerId <= 0 => "Invalid Customer Id",
@@ -43,7 +43,7 @@ public class QuotationContainer: IQuotationContainer
         {
             Name = data.Name,
             CustomerId = data.CustomerId,
-            UserId = userId,
+            UserId = data.UserId,
             Status = QuotationStatus.Open,
             Customer = null,//fix this
             User = null
